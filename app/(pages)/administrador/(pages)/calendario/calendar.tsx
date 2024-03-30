@@ -24,6 +24,9 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 
+import 'moment/locale/es'
+moment.locale('es')
+
 const localizer = momentLocalizer(moment)
 const DnDCalendar = withDragAndDrop(Calendar)
 
@@ -77,11 +80,19 @@ export default function CalendarClient ({ events }: { events: Events[] }) {
   }
 
   return (
-    <div className='App'>
+    <div className='App flex justify-center py-6'>
       <DnDCalendar
+      messages={{
+        next: 'Siguiente',
+        previous: 'Anterior',
+        today: 'Hoy',
+        month: 'Mes',
+        week: 'Semana',
+        day: 'Día'
+      }}
         defaultDate={moment().toDate()}
         defaultView='week'
-        views={['week', 'day', 'agenda']}
+        views={['month', 'week', 'day']}
         events={state}
         localizer={localizer}
         onEventDrop={onEventDrop}
@@ -95,7 +106,7 @@ export default function CalendarClient ({ events }: { events: Events[] }) {
           setEventSelected(event as Events)
         }}
         resizable
-        style={{ height: '100vh' }}
+        style={{ height: '100vh', width: '100vh' }}
       />
 
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
