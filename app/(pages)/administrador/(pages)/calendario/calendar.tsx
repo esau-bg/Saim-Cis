@@ -3,7 +3,7 @@ import React from 'react'
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import withDragAndDrop, {
-  type EventInteractionArgs
+// type EventInteractionArgs
 } from 'react-big-calendar/lib/addons/dragAndDrop'
 import {
   AlertDialog,
@@ -21,8 +21,8 @@ import 'react-big-calendar/lib/css/react-big-calendar.css'
 import { formatFecha } from '@/app/actions'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
+// import { Button } from '@/components/ui/button'
+// import Link from 'next/link'
 
 import 'moment/locale/es'
 moment.locale('es')
@@ -31,47 +31,47 @@ const localizer = momentLocalizer(moment)
 const DnDCalendar = withDragAndDrop(Calendar)
 
 export default function CalendarClient ({ events }: { events: Events[] }) {
-  const [state, setState] = React.useState<Events[]>(events)
+  // const [state, setState] = React.useState<Events[]>(events)
   const [isOpen, setIsOpen] = React.useState(false)
   const [eventSelected, setEventSelected] = React.useState<Events | null>(null)
 
-  const onEventResize = (args: EventInteractionArgs<object>) => {
-    const { start, end } = args
+  // const onEventResize = (args: EventInteractionArgs<object>) => {
+  //   const { start, end } = args
 
-    setState((state) => {
-      return state.map((event) => {
-        if (event.id === (args.event as Events).id) {
-          return { ...event, start: start as Date, end: end as Date }
-        } else {
-          return event
-        }
-      })
-    })
-  }
+  //   setState((state) => {
+  //     return state.map((event) => {
+  //       if (event.id === (args.event as Events).id) {
+  //         return { ...event, start: start as Date, end: end as Date }
+  //       } else {
+  //         return event
+  //       }
+  //     })
+  //   })
+  // }
 
-  const onEventDrop = (args: EventInteractionArgs<object>) => {
-    const { start, end } = args
+  // const onEventDrop = (args: EventInteractionArgs<object>) => {
+  //   const { start, end } = args
 
-    setState((prevState) => {
-      // Creamos una nueva copia de los eventos
-      const newEvents = [...prevState]
+  //   setState((prevState) => {
+  //     // Creamos una nueva copia de los eventos
+  //     const newEvents = [...prevState]
 
-      // Buscamos el evento que se ha movido y actualizamos sus fechas
-      const eventIndex = newEvents.findIndex(
-        (event) => event.id === (args.event as Events).id
-      )
-      if (eventIndex !== -1) {
-        newEvents[eventIndex] = {
-          ...newEvents[eventIndex],
-          start: start as Date,
-          end: end as Date
-        }
-      }
+  //     // Buscamos el evento que se ha movido y actualizamos sus fechas
+  //     const eventIndex = newEvents.findIndex(
+  //       (event) => event.id === (args.event as Events).id
+  //     )
+  //     if (eventIndex !== -1) {
+  //       newEvents[eventIndex] = {
+  //         ...newEvents[eventIndex],
+  //         start: start as Date,
+  //         end: end as Date
+  //       }
+  //     }
 
-      // Devolvemos los nuevos eventos como el nuevo estado
-      return newEvents
-    })
-  }
+  //     // Devolvemos los nuevos eventos como el nuevo estado
+  //     return newEvents
+  //   })
+  // }
 
   function toLocalISOString ({ date }: { date: Date }) {
     const offset = date.getTimezoneOffset()
@@ -82,21 +82,21 @@ export default function CalendarClient ({ events }: { events: Events[] }) {
   return (
     <div className='App flex justify-center py-6'>
       <DnDCalendar
-      messages={{
-        next: 'Siguiente',
-        previous: 'Anterior',
-        today: 'Hoy',
-        month: 'Mes',
-        week: 'Semana',
-        day: 'Día'
-      }}
+        messages={{
+          next: 'Siguiente',
+          previous: 'Anterior',
+          today: 'Hoy',
+          month: 'Mes',
+          week: 'Semana',
+          day: 'Día'
+        }}
         defaultDate={moment().toDate()}
         defaultView='week'
         views={['month', 'week', 'day']}
-        events={state}
+        events={events}
         localizer={localizer}
-        onEventDrop={onEventDrop}
-        onEventResize={onEventResize}
+        // onEventDrop={onEventDrop}
+        // onEventResize={onEventResize}
 
         onDoubleClickEvent={(
           event: object,
@@ -105,8 +105,9 @@ export default function CalendarClient ({ events }: { events: Events[] }) {
           setIsOpen(true)
           setEventSelected(event as Events)
         }}
-        resizable
-        style={{ height: '100vh', width: '100vh' }}
+        style={{ height: '88vh', width: '100vh' }}
+        draggableAccessor={() => false}
+        resizableAccessor={() => false}
       />
 
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
@@ -241,15 +242,15 @@ export default function CalendarClient ({ events }: { events: Events[] }) {
           <AlertDialogFooter>
             <footer className='w-full flex justify-between '>
 
-            <Button asChild variant={'link'}>
-              <Link href={`calendario/${eventSelected?.info?.id}`}>
-                Ver detalles
-              </Link>
-            </Button>
-            <div className='flex gap-2'>
-              <AlertDialogCancel>Cerrar</AlertDialogCancel>
-              <AlertDialogAction disabled>Guardar</AlertDialogAction>
-            </div>
+              {/* <Button asChild variant={'link'}>
+                  <Link href={`calendario/${eventSelected?.info?.id}`}>
+                    Ver detalles
+                  </Link>
+              </Button> */}
+              <div className='flex gap-2'>
+                <AlertDialogCancel>Cerrar</AlertDialogCancel>
+                <AlertDialogAction disabled>Guardar</AlertDialogAction>
+              </div>
             </footer>
           </AlertDialogFooter>
         </AlertDialogContent>
