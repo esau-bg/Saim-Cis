@@ -127,34 +127,35 @@ export default function CitasPaciente ({ events }: { events: Events[] }) {
               </div>
               <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
                 <div className='grid gap-2'>
-                  <Label className='' htmlFor='first-name'>
-                    Nombre
+                  <Label className='' htmlFor='full-name'>
+                    Nombre del paciente
                   </Label>
                   <Input
-                    placeholder='Nombre'
+                    placeholder='Nombre Completo'
                     type='text'
                     autoCapitalize='none'
-                    autoComplete='first-name'
+                    autoComplete='full-name'
                     autoCorrect='off'
                     autoFocus
                     defaultValue={
-                      eventSelected?.info?.paciente?.nombre ?? 'No disponible'
+                      `${eventSelected?.info?.paciente?.nombre ?? 'No disponible'} ${eventSelected?.info?.paciente?.apellido ?? 'No disponible'}`
                     }
                     disabled
                   />
                 </div>
                 <div className='grid gap-2'>
-                  <Label className='' htmlFor='family-name'>
-                    Apellido
+                  <Label className='' htmlFor='full-name'>
+                    Nombre del doctor
                   </Label>
                   <Input
-                    placeholder='Apellidos'
+                    placeholder='Nombre Completo Doctor'
                     type='text'
                     autoCapitalize='none'
-                    autoComplete='family-name'
+                    autoComplete='full-name'
                     autoCorrect='off'
+                    autoFocus
                     defaultValue={
-                      eventSelected?.info?.paciente?.apellido ?? 'No disponible'
+                      `${eventSelected?.info?.doctor?.nombre ?? 'No disponible'} ${eventSelected?.info?.doctor?.apellido ?? 'No disponible'}`
                     }
                     disabled
                   />

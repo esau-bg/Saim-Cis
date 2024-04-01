@@ -53,7 +53,7 @@ declare global {
       title: string
       allDay?: boolean
       id?: string
-      info?: Citas & { paciente: Personas | null }
+      info?: Citas & { paciente: Personas | null } & { doctor: Personas | null }
     }
 
 }

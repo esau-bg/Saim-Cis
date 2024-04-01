@@ -5,7 +5,7 @@ import { getIDEstadoConsultaByEstado } from '@/app/actions'
 export async function getCitasByPaciente ({ id_paciente }: { id_paciente: string }) {
   const { data: citas, error: errorCitas } = await supabase
     .from('citas')
-    .select('*, paciente:personas!citas_id_paciente_fkey(*)')
+    .select('*, paciente:personas!citas_id_paciente_fkey(*), doctor:personas!citas_id_doctor_fkey(*) ')
     .eq('id_paciente', id_paciente)
     .order('fecha_inicio', { ascending: true })
 

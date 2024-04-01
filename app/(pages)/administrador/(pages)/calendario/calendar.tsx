@@ -128,7 +128,7 @@ export default function CalendarClient ({ events }: { events: Events[] }) {
               <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
                 <div className='grid gap-2'>
                   <Label className='' htmlFor='first-name'>
-                    Nombre
+                    Nombre Paciente
                   </Label>
                   <Input
                     placeholder='Nombre'
@@ -145,7 +145,7 @@ export default function CalendarClient ({ events }: { events: Events[] }) {
                 </div>
                 <div className='grid gap-2'>
                   <Label className='' htmlFor='family-name'>
-                    Apellido
+                    Apellido Paciente
                   </Label>
                   <Input
                     placeholder='Apellidos'
@@ -155,6 +155,40 @@ export default function CalendarClient ({ events }: { events: Events[] }) {
                     autoCorrect='off'
                     defaultValue={
                       eventSelected?.info?.paciente?.apellido ?? 'No disponible'
+                    }
+                    disabled
+                  />
+                </div>
+                <div className='grid gap-2'>
+                  <Label className='' htmlFor='first-name'>
+                    Nombre Doctor
+                  </Label>
+                  <Input
+                    placeholder='Nombre'
+                    type='text'
+                    autoCapitalize='none'
+                    autoComplete='first-name'
+                    autoCorrect='off'
+                    autoFocus
+                    defaultValue={
+                      eventSelected?.info?.paciente?.nombre ?? 'No disponible'
+                    }
+                    disabled
+                  />
+                </div>
+                <div className='grid gap-2'>
+                  <Label className='' htmlFor='first-name'>
+                    Especialidad Doctor
+                  </Label>
+                  <Input
+                    placeholder='Especialidad'
+                    type='text'
+                    autoCapitalize='none'
+                    autoComplete='first-name'
+                    autoCorrect='off'
+                    autoFocus
+                    defaultValue={
+                      eventSelected?.info?.paciente?.nombre ?? 'No disponible'
                     }
                     disabled
                   />
