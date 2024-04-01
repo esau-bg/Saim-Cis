@@ -1,10 +1,23 @@
+import { getCitasByPaciente } from '@/app/(pages)/doctor/actions'
 import CalendarClient from './calendar'
-import { getCitasByDoctor } from '@/app/(pages)/doctor/actions'
+import { getInfoPersona } from '@/app/actions'
 
 export default async function page () {
-  const { citas, errorCitas } = await getCitasByDoctor({
-    id_doctor: '90b4168c-8aa6-4548-9055-4c00bf36ee32'
-  })
+  const { usuario, errorUsuario } = await getInfoPersona()
+
+  if (errorUsuario) {
+    return (
+      <div>
+        <span>Error al obtener los datos del usuario</span>
+      </div>
+    )
+  }
+
+  if (!usuario) {
+    return (<div>Loading...</div>)
+  }
+
+  const { citas, errorCitas } = await getCitasByPaciente({ id_paciente: usuario.id })
 
   if (errorCitas) return <div>Error</div>
 
