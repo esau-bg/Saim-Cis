@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useState } from 'react'
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import withDragAndDrop, {
@@ -79,8 +79,10 @@ export default function CitasPaciente ({ events }: { events: Events[] }) {
     return date.toISOString().slice(0, -1)
   }
 
+  const [theme] = useState('dark')
+
   return (
-    <div className='App flex justify-center py-6'>
+    <div className='App flex justify-center py-6 dark:text-white'>
       <DnDCalendar
         messages={{
           next: 'Siguiente',
@@ -108,6 +110,7 @@ export default function CitasPaciente ({ events }: { events: Events[] }) {
         style={{ height: '88vh', width: '100vh' }}
         draggableAccessor={() => false}
         resizableAccessor={() => false}
+        className={`rbc-calendar-${theme}`}
       />
 
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
