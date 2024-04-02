@@ -115,7 +115,7 @@ export default function ConsultaClient ({ consulta }: { consulta: Consultas & { 
               data-hs-overlay="#hs-modal-editar-preclinica"
                 size={'icon'}
                 variant={'ghost'}
-                className='  hs-tooltip-toggle'
+                className='hs-tooltip-toggle'
             >
               <PencilSquareIcon className="h-5 " />
               <span className="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 transition-opacity inline-block absolute invisible z-10 py-1 px-2 bg-sec-var-900/90 text-xs font-medium text-white rounded shadow-sm  " role="tooltip">

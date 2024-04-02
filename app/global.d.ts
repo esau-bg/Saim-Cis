@@ -57,4 +57,15 @@ declare global {
       info?: Citas & { paciente: Personas | null }
     }
 
+    interface SendInfoDiagnostico {
+      id_diagnostico: string
+      fecha_diagnostico: string
+      numero_expediente: string
+      id_consulta: string
+      enfermedades: string
+      observacion: string
+      interno: boolean
+      diferencial: boolean
+    }
+
 }

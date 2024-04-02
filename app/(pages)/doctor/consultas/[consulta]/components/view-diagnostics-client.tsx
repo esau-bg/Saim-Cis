@@ -1,18 +1,26 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useTransition } from 'react'
-import { ToastContainer, toast } from 'react-toastify'
+import { useState, useTransition } from 'react'
+import { ToastContainer } from 'react-toastify'
 
 import LogoSaimCis from '@/components/logo-saim-cis'
+import { EllipsisHorizontalCircleIcon } from '@heroicons/react/24/outline'
+import { Button } from '@/components/ui/button'
+import { ModalDetallesDiagnostico } from './modals/modal-detalles-diagnosticos'
 
 export function ViewDiagnosticsClient ({ diagnosticos }: { diagnosticos: InfoDiagnosticos | null }) {
   const pathname = usePathname()
+  const [diagnosticoSeleccionado, setDiagnosticoSeleccionado] =
+    useState<SendInfoDiagnostico | null>(null)
 
   const [isPending] = useTransition()
 
   return (
     <>
+     <div className="h-96 w-96 absolute z-50">
+            <ModalDetallesDiagnostico diagnostico={diagnosticoSeleccionado} />
+        </div>
         {
           isPending && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/50 dark:bg-black/50 ">
@@ -102,6 +110,14 @@ export function ViewDiagnosticsClient ({ diagnosticos }: { diagnosticos: InfoDia
                         <td className="whitespace-nowrap px-3 py-3">
                           {diagnostico.observacion}
                         </td>
+                        <td className="whitespace-nowrap px-3 py-3">
+                        <Button type="button"
+                                data-hs-overlay="#hs-modal-detalles-diagnostico"
+                                onClick={() => { setDiagnosticoSeleccionado(diagnostico) }}
+                              >
+                                <EllipsisHorizontalCircleIcon className="h-5 " />
+                        </Button>
+                        </td>
 
                     </tr>
                     ))
@@ -111,6 +127,7 @@ export function ViewDiagnosticsClient ({ diagnosticos }: { diagnosticos: InfoDia
               </div>
             </div>
           </div>
+
           <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -124,6 +141,7 @@ export function ViewDiagnosticsClient ({ diagnosticos }: { diagnosticos: InfoDia
         theme="light"
       />
         </div>
+
 </>
   )
 }
