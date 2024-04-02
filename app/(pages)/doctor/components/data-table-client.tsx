@@ -57,14 +57,45 @@ export default function DataTableClient ({ consultas }: { consultas: InfoConsult
                 <thead>
                     <tr>
                     <th scope="col" className="px-3 py-3 text-start text-xs font-medium text-gray-600 dark:text-gray-400  uppercase">Paciente</th>
-                    <th scope="col" className="px-3 py-3 text-start text-xs font-medium text-gray-600 dark:text-gray-400 uppercase">ID Consulta</th>
+                    <th scope="col" className="px-3 py-3 text-start text-xs font-medium text-gray-600 dark:text-gray-400 uppercase">DNI</th>
                     <th scope="col" className="px-3 py-3 text-end text-xs font-medium text-gray-600 dark:text-gray-400 uppercase">Fecha Consulta</th>
                     <th scope="col" className="px-3 py-3 text-end text-xs font-medium text-gray-600 dark:text-gray-400 uppercase">Estado</th>
                   </tr>
                   </thead>
                   <tbody >
-
-                    {consultas.map((consulta, index) => (
+                  {consultas.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="">
+                        <div className="w-full flex flex-col justify-center items-center p-4 gap-2">
+                          <div className="rounded-full stroke-neutral-600 dark:stroke-slate-600 bg-neutral-200 dark:bg-slate-900 p-4">
+                            <svg
+                              className="w-16 h-16"
+                              viewBox="0 0 28 28"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M6 8H6.01M6 16H6.01M6 12H18C20.2091 12 22 10.2091 22 8C22 5.79086 20.2091 4 18 4H6C3.79086 4 2 5.79086 2 8C2 10.2091 3.79086 12 6 12ZM6 12C3.79086 12 2 13.7909 2 16C2 18.2091 3.79086 20 6 20H14"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              ></path>
+                              <path
+                                d="M17 16L22 21M22 16L17 21"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              ></path>
+                            </svg>
+                          </div>
+                          <span className="text-neutral-500 dark:text-slate-600">
+                            No se encontraron Consultas pendientes
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
+                    consultas.map((consulta, index) => (
                       <tr
                         key={index}
                         className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
@@ -83,7 +114,7 @@ export default function DataTableClient ({ consultas }: { consultas: InfoConsult
                           </div>
                         </td>
                         <td className="whitespace-nowrap px-3 py-3">
-                          {consulta.id_consulta}
+                          {consulta.dni}
                         </td>
                         <td className="whitespace-nowrap px-3 py-3 text-end">
                           {consulta.fecha_consulta
@@ -135,7 +166,8 @@ export default function DataTableClient ({ consultas }: { consultas: InfoConsult
                           </div>
                         </td>
                     </tr>
-                    ))}
+                    ))
+                  )}
                   </tbody>
                 </table>
               </div>

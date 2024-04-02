@@ -251,9 +251,9 @@ export async function getTotalPagesByEstadoAndQuery ({
 export async function getConsultasByEstadoAndQuery ({
   estado,
   query = '',
-  offset,
-  perPage,
-  currentPage
+  offset = 0,
+  perPage = 6,
+  currentPage = 1
 }: {
   estado: EstadosConsultas
   query: string
@@ -261,13 +261,17 @@ export async function getConsultasByEstadoAndQuery ({
   perPage: number
   currentPage: number
 }) {
+  offset = isNaN(offset) ? 0 : offset
+  perPage = isNaN(perPage) ? 6 : perPage
+  currentPage = isNaN(currentPage) ? 1 : currentPage
+
   const { data: consultas, error } = await supabase.rpc(
     'get_consultas_by_estado_and_filter_pagination',
     {
       estado_param: estado,
       filtro_param: query,
       offset_param: offset,
-      limit_param: currentPage * perPage - 1
+      limit_param: currentPage * perPage
     }
   )
 

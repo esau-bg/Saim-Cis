@@ -54,7 +54,7 @@ export interface Database {
             isOneToOne: false
             referencedRelation: 'personas'
             referencedColumns: ['id']
-          },
+          }
         ]
       }
       consultas: {
@@ -118,7 +118,7 @@ export interface Database {
             isOneToOne: false
             referencedRelation: 'estado_consultas'
             referencedColumns: ['id']
-          },
+          }
         ]
       }
       diagnosticos: {
@@ -166,7 +166,7 @@ export interface Database {
             isOneToOne: false
             referencedRelation: 'expedientes'
             referencedColumns: ['id']
-          },
+          }
         ]
       }
       especializacion_x_personas: {
@@ -196,7 +196,7 @@ export interface Database {
             isOneToOne: false
             referencedRelation: 'personas'
             referencedColumns: ['id']
-          },
+          }
         ]
       }
       especializaciones: {
@@ -222,7 +222,7 @@ export interface Database {
             isOneToOne: false
             referencedRelation: 'roles'
             referencedColumns: ['id']
-          },
+          }
         ]
       }
       estado_consultas: {
@@ -263,7 +263,7 @@ export interface Database {
             isOneToOne: false
             referencedRelation: 'personas'
             referencedColumns: ['id']
-          },
+          }
         ]
       }
       personas: {
@@ -353,7 +353,7 @@ export interface Database {
             isOneToOne: false
             referencedRelation: 'users'
             referencedColumns: ['id']
-          },
+          }
         ]
       }
       roles: {
@@ -396,6 +396,31 @@ export interface Database {
       get_consultas_count_by_estado_and_filter: {
         Args: {
           estado_param: string
+          filtro_param: string
+        }
+        Returns: number
+      }
+      get_diagnosticos_by_expediente_and_filter_pagination: {
+        Args: {
+          expediente_param: string
+          filtro_param: string
+          offset_param: number
+          limit_param: number
+        }
+        Returns: Array<{
+          id_diagnostico: string
+          fecha_diagnostico: string
+          numero_expediente: string
+          id_consulta: string
+          enfermedades: string
+          observacion: string
+          interno: boolean
+          diferencial: boolean
+        }>
+      }
+      get_diagnosticos_count_by_expediente_and_filter: {
+        Args: {
+          expediente_param: string
           filtro_param: string
         }
         Returns: number
@@ -450,7 +475,7 @@ export type Tables<
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof (Database[PublicTableNameOrOptions['schema']]['Tables'] &
     Database[PublicTableNameOrOptions['schema']]['Views'])
-    : never = never,
+    : never = never
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? (Database[PublicTableNameOrOptions['schema']]['Tables'] &
     Database[PublicTableNameOrOptions['schema']]['Views'])[TableName] extends {
@@ -474,7 +499,7 @@ export type TablesInsert<
   | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicTableNameOrOptions['schema']]['Tables']
-    : never = never,
+    : never = never
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? Database[PublicTableNameOrOptions['schema']]['Tables'][TableName] extends {
     Insert: infer I
@@ -495,7 +520,7 @@ export type TablesUpdate<
   | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicTableNameOrOptions['schema']]['Tables']
-    : never = never,
+    : never = never
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? Database[PublicTableNameOrOptions['schema']]['Tables'][TableName] extends {
     Update: infer U
@@ -516,7 +541,7 @@ export type Enums<
   | { schema: keyof Database },
   EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicEnumNameOrOptions['schema']]['Enums']
-    : never = never,
+    : never = never
 > = PublicEnumNameOrOptions extends { schema: keyof Database }
   ? Database[PublicEnumNameOrOptions['schema']]['Enums'][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema['Enums']
