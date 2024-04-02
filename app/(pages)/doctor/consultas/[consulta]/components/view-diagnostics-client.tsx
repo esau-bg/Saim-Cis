@@ -8,6 +8,7 @@ import LogoSaimCis from '@/components/logo-saim-cis'
 import { EllipsisHorizontalCircleIcon } from '@heroicons/react/24/outline'
 import { Button } from '@/components/ui/button'
 import { ModalDetallesDiagnostico } from './modals/modal-detalles-diagnosticos'
+import { Modal } from './modals/modal'
 
 export function ViewDiagnosticsClient ({ diagnosticos }: { diagnosticos: InfoDiagnosticos | null }) {
   const pathname = usePathname()
@@ -15,6 +16,11 @@ export function ViewDiagnosticsClient ({ diagnosticos }: { diagnosticos: InfoDia
     useState<SendInfoDiagnostico | null>(null)
 
   const [isPending] = useTransition()
+
+  const handleClick = (diagnostico: SendInfoDiagnostico) => {
+    setDiagnosticoSeleccionado(diagnostico)
+    console.log('Estado de diagnosticoSeleccionado:', diagnosticoSeleccionado)
+  }
 
   return (
     <>
@@ -111,12 +117,14 @@ export function ViewDiagnosticsClient ({ diagnosticos }: { diagnosticos: InfoDia
                           {diagnostico.observacion}
                         </td>
                         <td className="whitespace-nowrap px-3 py-3">
-                        <Button type="button"
+                        {/* <Button type="button"
                                 data-hs-overlay="#hs-modal-detalles-diagnostico"
-                                onClick={() => { setDiagnosticoSeleccionado(diagnostico) }}
+                                onClick={() => { handleClick(diagnostico) }}
                               >
                                 <EllipsisHorizontalCircleIcon className="h-5 " />
-                        </Button>
+                        </Button> */}
+                        <Modal diagnostico = {diagnostico}/>
+
                         </td>
 
                     </tr>
