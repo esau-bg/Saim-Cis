@@ -5,6 +5,7 @@ import FormDiagnostic from './components/form-diagnostic'
 import { ModalEditarPreclinica } from './components/modal-editar-preclinica'
 import { PencilSquareIcon } from '@heroicons/react/20/solid'
 import { Button } from '@/components/ui/button'
+import { ModalHistorialDiagnostico } from './components/modals/modal-historial-diagnosticos'
 
 export default function ConsultaClient ({ consulta }: { consulta: Consultas & { expedientes: Expedientes & { personas: Personas | null } | null } & { estado: EstadoConsultas | null } }) {
   return (
@@ -126,9 +127,13 @@ export default function ConsultaClient ({ consulta }: { consulta: Consultas & { 
 
     </aside>
 
-      <aside className="">
-        <h2 className="text-2xl font-medium my-3 text-center">Diagnostico</h2>
-
+      <aside className="max-w-lg mx-auto relative">
+        <h2 className="text-2xl font-medium my-3 text-center">
+          Diagnostico
+        </h2>
+        <div className='absolute end-0 top-0'>
+          <ModalHistorialDiagnostico idExpediente = {consulta.id_expediente}/>
+        </div>
         <FormDiagnostic consulta={consulta} />
       </aside>
       <div>

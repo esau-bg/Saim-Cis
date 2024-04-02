@@ -79,3 +79,63 @@ export async function getEstadoConsultaAndChange ({ idConsulta, estado }: { idCo
     .single()
   return { dataIDEstado: dataUpdate, errorIDEstado: errorUpdate }
 }
+
+export async function getTotalPagesByExpedienteAndQuery ({
+  expediente,
+  query
+}: {
+  expediente: string
+  query: string
+}) {
+  const { data: totalPages, error } = await supabase.rpc(
+    'get_diagnosticos_count_by_expediente_and_filter',
+    {
+      expediente_param: expediente,
+      filtro_param: query
+    }
+  )
+  console.log(expediente, totalPages, error)
+
+  return totalPages
+}
+
+export async function getDiagnosticosByExpedienteAndQuery ({
+  idExpediente,
+  query = '',
+  offset = 0,
+  perPage = 6,
+  currentPage = 1
+}: {
+  idExpediente: string
+  query: string
+  offset: number
+  perPage: number
+  currentPage: number
+}) {
+  offset = isNaN(offset) ? 0 : offset
+  perPage = isNaN(perPage) ? 6 : perPage
+  currentPage = isNaN(currentPage) ? 1 : currentPage
+
+  const { data: diagnosticos, error } = await supabase.rpc(
+    'get_diagnosticos_by_expediente_and_filter_pagination',
+    {
+      expediente_param: idExpediente,
+      filtro_param: query,
+      offset_param: offset,
+      limit_param: currentPage * perPage
+    }
+  )
+
+  console.log(diagnosticos, error)
+  return { diagnosticos }
+}
+
+/* export async function getDiagnosticsHistory ({ numExpediente }: { numExpediente: string }) {
+  const { data: diagnostics, error: errorDiagnostics } = await supabase
+    .from('diagnosticos')
+    .select('*')
+    .eq('id_expediente', numExpediente)
+    .order('fecha_diagnostico', { ascending: true })
+
+  return { diagnostics, errorDiagnostics }
+} */
