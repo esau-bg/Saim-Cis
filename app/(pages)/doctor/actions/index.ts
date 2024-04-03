@@ -127,7 +127,7 @@ export async function getDiagnosticosByExpedienteAndQuery ({
   )
 
   console.log(diagnosticos, error)
-  return { diagnosticos }
+  return { diagnosticos, error }
 }
 
 /* export async function getDiagnosticsHistory ({ numExpediente }: { numExpediente: string }) {

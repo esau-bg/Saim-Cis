@@ -1,32 +1,21 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState, useTransition } from 'react'
+import { useTransition } from 'react'
 import { ToastContainer } from 'react-toastify'
 
 import LogoSaimCis from '@/components/logo-saim-cis'
-import { EllipsisHorizontalCircleIcon } from '@heroicons/react/24/outline'
-import { Button } from '@/components/ui/button'
-import { ModalDetallesDiagnostico } from './modals/modal-detalles-diagnosticos'
+// import { EllipsisHorizontalCircleIcon } from '@heroicons/react/24/outline'
+// import { Button } from '@/components/ui/button'
+// import { ModalDetallesDiagnostico } from './modals/modal-detalles-diagnosticos'
 import { Modal } from './modals/modal'
 
 export function ViewDiagnosticsClient ({ diagnosticos }: { diagnosticos: InfoDiagnosticos | null }) {
   const pathname = usePathname()
-  const [diagnosticoSeleccionado, setDiagnosticoSeleccionado] =
-    useState<SendInfoDiagnostico | null>(null)
-
   const [isPending] = useTransition()
-
-  const handleClick = (diagnostico: SendInfoDiagnostico) => {
-    setDiagnosticoSeleccionado(diagnostico)
-    console.log('Estado de diagnosticoSeleccionado:', diagnosticoSeleccionado)
-  }
 
   return (
     <>
-     <div className="h-96 w-96 absolute z-50">
-            <ModalDetallesDiagnostico diagnostico={diagnosticoSeleccionado} />
-        </div>
         {
           isPending && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/50 dark:bg-black/50 ">

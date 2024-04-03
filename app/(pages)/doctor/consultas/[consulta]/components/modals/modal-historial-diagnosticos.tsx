@@ -1,5 +1,3 @@
-'use client'
-import { useState, useEffect } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -18,7 +16,7 @@ import { ViewDiagnosticsClient } from '../view-diagnostics-client'
 import Search from '@/components/search-query'
 
 const ITEMS_PER_PAGE = 6
-export function ModalHistorialDiagnostico ({
+export async function ModalHistorialDiagnostico ({
   idExpediente,
   searchParams
 }: {
@@ -30,65 +28,40 @@ export function ModalHistorialDiagnostico ({
 }
 ) {
   const query = searchParams?.query ?? ''
+  console.log(query)
   const currentPage = Number(searchParams?.page) ?? 1
   const offset = (currentPage - 1) * ITEMS_PER_PAGE
 
-  const [isLoading, setIsLoading] = useState(true)
-  const [totalPages, setTotalPages] = useState<number | null>(null)
-  const [diagnosticos, setDiagnosticos] = useState<InfoDiagnosticos | null>(null)
+  const totalPages = await getTotalPagesByExpedienteAndQuery({
+    expediente: idExpediente,
+    query
+  })
 
-  useEffect(() => {
-    let isMounted = true
-
-    getDiagnosticosByExpedienteAndQuery({
-      idExpediente,
-      query,
-      offset,
-      perPage: ITEMS_PER_PAGE,
-      currentPage
-    }).then((data) => {
-      if (isMounted) {
-        setDiagnosticos(data.diagnosticos)
-        setIsLoading(false)
-      }
-    }).catch((error) => {
-      console.error('Error al obtener los datos:', error)
-      setIsLoading(false)
-    })
-
-    return () => {
-      isMounted = false
-    }
-  }, [idExpediente, query, currentPage])
-
-  // obtenemos el total de paginas por el expediente y el query
-  useEffect(() => {
-    let isMounted = true
-
-    getTotalPagesByExpedienteAndQuery({
-      expediente: idExpediente,
-      query
-    }).then((data) => {
-      if (isMounted) {
-        setTotalPages(data)
-        setIsLoading(false)
-      }
-    }).catch((error) => {
-      console.error('Error al obtener los datos:', error)
-      setIsLoading(false)
-    })
-
-    return () => {
-      isMounted = false
-    }
-  }, [idExpediente, query])
-
-  if (totalPages === null || isLoading) {
+  if (totalPages === null) {
     return (
-      <ToastServer message="Cargando..." />
+      <ToastServer message="Error al obtener el total de páginas del Expediente" />
     )
   }
-  // const [diagnosticos, setDiagnosticos] = useState([])
+
+  const { diagnosticos, error } = await getDiagnosticosByExpedienteAndQuery({
+    idExpediente,
+    query,
+    offset,
+    perPage: ITEMS_PER_PAGE,
+    currentPage
+  })
+
+  if (error) {
+    console.log(error)
+  }
+
+  if (!diagnosticos) {
+    return (
+      <div>
+        <span>Error al obtener todos los diagnosticos</span>
+      </div>
+    )
+  }
 
   return (
     <Dialog>
