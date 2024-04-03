@@ -1,59 +1,127 @@
 'use client'
-import { useRouter } from 'next/navigation'
-import { FormDetallesDiagnostico } from './forms/form-detalles-diagnostico'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
 
-export function ModalDetallesDiagnostico ({ diagnostico }: { diagnostico: SendInfoDiagnostico | null }) {
-  const route = useRouter()
-  const handleRedirect = () => {
-    route.refresh()
-  }
+import { PlusIcon } from '@heroicons/react/20/solid'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { CheckBox } from '@/components/ui/checkbox'
 
+export function ModalDetallesDiagnostico ({
+  diagnostico
+}: {
+  diagnostico: SendInfoDiagnostico
+}
+
+) {
   return (
-    <>
-    <div
-        id="hs-modal-detalles-diagnostico"
-        className="hs-overlay hidden size-full fixed top-0 start-0 z-[80] overflow-x-hidden overflow-y-auto pointer-events-none bg-amber-300"
-      >
-        <div className="hs-overlay-open:mt-7 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full m-3 sm:mx-auto">
-          <div className="bg-white border border-gray-200 rounded-xl pointer-events-auto shadow-sm dark:bg-gray-800 dark:border-gray-700">
-            <div className="p-4 sm:p-7">
-              <div className="text-center flex justify-end">
-                <button
-                onClick={handleRedirect}
-                  type="button"
-                  className="flex justify-center items-center size-7 text-sm font-semibold rounded-lg border border-transparent text-gray-800 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:border-transparent dark:hover:bg-gray-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                  data-hs-overlay="#hs-modal-detalles-diagnostico"
-                >
-                  <span className="sr-only">Close</span>
-                  <svg
-                    className="flex-shrink-0 size-4"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                  >
-                    <path d="M18 6 6 18" />
-                    <path d="m6 6 12 12" />
-                  </svg>
-                </button>
-              </div>
-              <div className="text-center">
-                <h2 className="block text-2xl font-bold text-gray-800 dark:text-gray-200">
-                  Agregar Signos Vitales del Paciente
+    <Dialog >
 
-                </h2>
+    <DialogTrigger asChild>
+      <Button variant={'outline'} className="justify-start font-normal duration-500 hover:bg-sec hover:text-white">
+        Ver
+        <PlusIcon className="h-4 w-4 ml-1" />
+      </Button>
+    </DialogTrigger>
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>
+          <form className='grid gap-3'>
+            <aside className='grid gap-3'>
+              <div>
+                <Label className=' text-lg'>Informacion de los Diagnosticos</Label>
               </div>
-              <div className="mt-5">
-                <FormDetallesDiagnostico
-                  diagnostico = {diagnostico}
-                />
+              <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+                <div className='grid gap-2'>
+                  <Label className='' htmlFor='Enfermedades'>
+                    Enfermedades
+                  </Label>
+                  <Input
+                    placeholder='Enfermedades'
+                    type='text'
+                    autoCapitalize='none'
+                    autoComplete='Enfermedades'
+                    autoCorrect='off'
+                    defaultValue={`${diagnostico?.enfermedades}`}
+                    disabled
+                    className='w-full'
+                  />
+                </div>
+                <div className='grid gap-2'>
+                  <Label htmlFor='diferencial' className='flex items-center space-x-2'>
+                    <span>Es Diferencial?</span>
+                    <CheckBox
+                      type='checkbox'
+                      checked={diagnostico?.diferencial}
+                      disabled // Cambia el color del checkbox si lo deseas
+                    />
+                  </Label>
+                </div>
+
+                <div className='grid gap-2'>
+                  <Label className='' htmlFor='family-name'>
+                    Observacion
+                  </Label>
+                  <Input
+                    placeholder='Obersevaciones'
+                    type='text'
+                    autoCapitalize='none'
+                    autoComplete='family-name'
+                    autoCorrect='off'
+                    defaultValue={`${diagnostico?.observacion}`}
+                    disabled
+                  />
+                </div>
+                <div className='grid gap-2'>
+                  <Label className='' htmlFor='Fecha-Diagnostico'>
+                    Fecha de Diagnostico
+                  </Label>
+                  <Input
+                    placeholder='Fecha-Diagnostico'
+                    type='text'
+                    autoCapitalize='none'
+                    autoComplete='first-name'
+                    autoCorrect='off'
+                    autoFocus
+                    defaultValue={diagnostico.fecha_diagnostico
+                      ? new Date(diagnostico.fecha_diagnostico).toLocaleDateString(
+                        'es-ES',
+                        {
+                          year: 'numeric',
+                          month: 'long',
+                          day: '2-digit'
+                        }
+                      )
+                      : 'No disponible'}
+                    disabled
+                  />
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
+            </aside>
+
+            <aside className='grid gap-3'>
+                <div className='grid gap-2'>
+                  <Label htmlFor='interno' className='flex items-center space-x-2'>
+                    <span>Atendido Internamente</span>
+                    <CheckBox
+                      type='checkbox'
+                      checked={diagnostico?.interno}
+                      disabled // Cambia el color del checkbox si lo deseas
+                    />
+                  </Label>
+                </div>
+            </aside>
+          </form>
+        </DialogTitle>
+      </DialogHeader>
+    </DialogContent>
+    </Dialog>
+
   )
 }

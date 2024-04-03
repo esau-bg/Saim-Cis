@@ -5,10 +5,10 @@ import { usePathname, useRouter } from 'next/navigation'
 
 // import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import { useTransition } from 'react'
-import { ToastContainer, toast } from 'react-toastify'
+import { ToastContainer } from 'react-toastify'
 
 import LogoSaimCis from '@/components/logo-saim-cis'
-import { Modal } from '../../components/modals/modal'
+import { ModalDetallesDiagnostico } from '../../components/modals/modal-detalles-diagnosticos'
 
 interface SendInfoConsultas {
   estado_consulta: string
@@ -127,7 +127,7 @@ export default function DataTableClient ({ diagnosticos }: { diagnosticos: InfoD
                           </div>
                         </td>
                         <td className="whitespace-nowrap px-3 py-3">
-                        <Modal diagnostico = {diagnostico}/>
+                        <ModalDetallesDiagnostico diagnostico = {diagnostico}/>
 
                         </td>
 
