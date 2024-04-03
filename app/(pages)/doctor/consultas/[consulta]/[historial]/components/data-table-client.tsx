@@ -1,15 +1,41 @@
 'use client'
+// import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation'
+// import { DetallesPage } from '../consultas/detalle/page'
+
+// import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import { useTransition } from 'react'
-import { ToastContainer } from 'react-toastify'
+import { ToastContainer, toast } from 'react-toastify'
 
 import LogoSaimCis from '@/components/logo-saim-cis'
-// import { EllipsisHorizontalCircleIcon } from '@heroicons/react/24/outline'
-// import { Button } from '@/components/ui/button'
-// import { ModalDetallesDiagnostico } from './modals/modal-detalles-diagnosticos'
-import { Modal } from './modals/modal'
+import { Modal } from '../../components/modals/modal'
 
-export function ViewDiagnosticsClient ({ diagnosticos }: { diagnosticos: InfoDiagnosticos | null }) {
+interface SendInfoConsultas {
+  estado_consulta: string
+  id_consulta: string
+}
+
+export default function DataTableClient ({ diagnosticos }: { diagnosticos: InfoDiagnosticos | null }) {
+  const pathname = usePathname()
+  const router = useRouter()
+
   const [isPending] = useTransition()
+
+  const handleRedirect = (consulta: SendInfoConsultas) => {
+    /* startTransition(async () => {
+      if (consulta.estado_consulta === 'preclinica') {
+        const { dataIDEstado, errorIDEstado } = await getEstadoConsultaAndChange({ idConsulta: consulta.id_consulta, estado: 'diagnostico' })
+        if (errorIDEstado) {
+          toast.error('Error al cambiar el estado de la consulta')
+        }
+        if (!dataIDEstado) {
+          toast.error('Error al cambiar el estado de la consulta')
+        }
+      }
+    }) */
+    router.push(`${pathname}/${consulta.id_consulta}`)
+    router.refresh()
+  }
 
   return (
     <>
@@ -75,12 +101,6 @@ export function ViewDiagnosticsClient ({ diagnosticos }: { diagnosticos: InfoDia
                       >
                         <td className="whitespace-nowrap py-3 pl-3 pr-3">
                           <div className="flex items-center gap-3">
-                            {/* <img
-                              src={consulta.consulta?.avatar_url ?? 'https://leplanb.lesmontagne.net/wp-content/uploads/sites/5/2017/06/default_avatar.png'}
-                              className="rounded-full w-6 h-6"
-
-                              alt={`Fotografia perfil de ${consulta.nombre}`}
-                            /> */}
                             <span className='whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200'>
                               {diagnostico.enfermedades}
                             </span>
@@ -107,12 +127,6 @@ export function ViewDiagnosticsClient ({ diagnosticos }: { diagnosticos: InfoDia
                           </div>
                         </td>
                         <td className="whitespace-nowrap px-3 py-3">
-                        {/* <Button type="button"
-                                data-hs-overlay="#hs-modal-detalles-diagnostico"
-                                onClick={() => { handleClick(diagnostico) }}
-                              >
-                                <EllipsisHorizontalCircleIcon className="h-5 " />
-                        </Button> */}
                         <Modal diagnostico = {diagnostico}/>
 
                         </td>

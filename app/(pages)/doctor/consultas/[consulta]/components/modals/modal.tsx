@@ -18,7 +18,6 @@ export function Modal ({
 
 ) {
   return (
-    <div className="bg-blue-100 w-50 h-50">
     <Dialog >
 
     <DialogTrigger asChild>
@@ -38,7 +37,6 @@ export function Modal ({
       </DialogHeader>
     </DialogContent>
     </Dialog>
-    </div>
 
   )
 }

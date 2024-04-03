@@ -14,8 +14,10 @@ import { getDiagnosticosByExpedienteAndQuery, getTotalPagesByExpedienteAndQuery 
 import ToastServer from '@/components/toast-server'
 import { ViewDiagnosticsClient } from '../view-diagnostics-client'
 import Search from '@/components/search-query'
+import { Suspense } from 'react'
+import Pagination from '@/components/pagination'
 
-const ITEMS_PER_PAGE = 6
+const ITEMS_PER_PAGE = 5
 export async function ModalHistorialDiagnostico ({
   idExpediente,
   searchParams
@@ -85,11 +87,13 @@ export async function ModalHistorialDiagnostico ({
           <Search placeholder="Buscar diagnóstico..." debounce={200} />
           {/* <AgregarPaciente /> */}
         </div>
-        {totalPages !== null ? (
+        <Suspense fallback={<span>Cargando...</span>}>
           <ViewDiagnosticsClient diagnosticos={diagnosticos} />
-        ) : (
-          <ToastServer message="Error al obtener el total de páginas por el numero de expediente" />
-        )}
+        </Suspense>
+        <div className="my-2 flex w-full justify-center">
+          <Pagination totalPages={totalPages} />
+        </div>
+
       </DialogContent>
     </Dialog>
   )
