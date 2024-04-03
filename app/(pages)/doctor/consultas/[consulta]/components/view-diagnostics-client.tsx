@@ -1,6 +1,4 @@
 'use client'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import { useTransition } from 'react'
 import { ToastContainer } from 'react-toastify'
 
@@ -11,7 +9,6 @@ import LogoSaimCis from '@/components/logo-saim-cis'
 import { Modal } from './modals/modal'
 
 export function ViewDiagnosticsClient ({ diagnosticos }: { diagnosticos: InfoDiagnosticos | null }) {
-  const pathname = usePathname()
   const [isPending] = useTransition()
 
   return (
@@ -32,7 +29,7 @@ export function ViewDiagnosticsClient ({ diagnosticos }: { diagnosticos: InfoDia
               <div className="border rounded-lg overflow-hidden dark:border-gray-700">
                 <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead>
-                    <tr>
+                    <tr className=''>
                     <th scope="col" className="px-3 py-3 text-start text-xs font-medium text-gray-600 dark:text-gray-400  uppercase">Diagnóstico</th>
                     <th scope="col" className="px-3 py-3 text-start text-xs font-medium text-gray-600 dark:text-gray-400 uppercase">Fecha</th>
                     <th scope="col" className="px-3 py-3 text-start text-xs font-medium text-gray-600 dark:text-gray-400 uppercase">Observación</th>
@@ -76,7 +73,7 @@ export function ViewDiagnosticsClient ({ diagnosticos }: { diagnosticos: InfoDia
                         key={index}
                         className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                       >
-                        <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                        <td className="whitespace-nowrap py-3 pl-3 pr-3">
                           <div className="flex items-center gap-3">
                             {/* <img
                               src={consulta.consulta?.avatar_url ?? 'https://leplanb.lesmontagne.net/wp-content/uploads/sites/5/2017/06/default_avatar.png'}
@@ -84,9 +81,9 @@ export function ViewDiagnosticsClient ({ diagnosticos }: { diagnosticos: InfoDia
 
                               alt={`Fotografia perfil de ${consulta.nombre}`}
                             /> */}
-                            <Link href={`${pathname}/${diagnostico.id_diagnostico}`} className=' whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200'>
+                            <span className='whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200'>
                               {diagnostico.enfermedades}
-                            </Link>
+                            </span>
                           </div>
                         </td>
 
@@ -103,7 +100,11 @@ export function ViewDiagnosticsClient ({ diagnosticos }: { diagnosticos: InfoDia
                             : 'No disponible'}
                         </td>
                         <td className="whitespace-nowrap px-3 py-3">
-                          {diagnostico.observacion}
+                        <div className="flex items-center gap-3">
+                            <span className='truncate grid grid-cols-1 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200'>
+                            {diagnostico.observacion}
+                            </span>
+                          </div>
                         </td>
                         <td className="whitespace-nowrap px-3 py-3">
                         {/* <Button type="button"
