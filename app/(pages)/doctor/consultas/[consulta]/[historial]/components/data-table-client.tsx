@@ -12,6 +12,7 @@ import { ModalDetallesDiagnostico } from '../../components/modals/modal-detalles
 import { Button } from '@/components/ui/button'
 import { ArrowLeftCircleIcon } from '@heroicons/react/20/solid'
 import Search from '@/components/search-query'
+import Tags from '@/components/tags'
 
 export default function DataTableClient ({ diagnosticos }: { diagnosticos: InfoDiagnosticos | null }) {
   // Redireccionar hacia consultas
@@ -98,7 +99,7 @@ export default function DataTableClient ({ diagnosticos }: { diagnosticos: InfoD
                         <td className="whitespace-nowrap py-3 pl-3 pr-3">
                           <div className="flex items-center gap-3">
                             <span className='whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200'>
-                              {diagnostico.enfermedades}
+                              <Tags input={diagnostico.enfermedades} />
                             </span>
                           </div>
                         </td>

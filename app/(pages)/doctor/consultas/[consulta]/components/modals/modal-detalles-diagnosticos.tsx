@@ -11,7 +11,8 @@ import { PlusIcon } from '@heroicons/react/20/solid'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-import { CheckBox } from '@/components/ui/checkbox'
+import Tags from '@/components/tags'
+import { Checkbox } from '@/components/ui/checkbox'
 
 export function ModalDetallesDiagnostico ({
   diagnostico
@@ -33,37 +34,31 @@ export function ModalDetallesDiagnostico ({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            <form className='grid gap-3'>
-              <aside className='grid gap-3'>
+            <form className='grid gap-4'>
+              <aside className='grid gap-4'>
                 <div>
                   <Label className=' text-lg'>Informacion de los Diagnosticos</Label>
                 </div>
-                <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-                  <div className='grid gap-2'>
+                <div className='grid gap-2'>
                     <Label className='' htmlFor='Enfermedades'>
                       Enfermedades
                     </Label>
-                    <Input
-                      placeholder='Enfermedades'
-                      type='text'
-                      autoCapitalize='none'
-                      autoComplete='Enfermedades'
-                      autoCorrect='off'
-                      defaultValue={`${diagnostico?.enfermedades}`}
-                      disabled
-                      className='w-full'
-                    />
+                    <div className='rounded-md border p-2 border-gray-100 dark:border-gray-900 '>
+
+                    <Tags input={diagnostico?.enfermedades} />
+                    </div>
                   </div>
-                  <div className='grid gap-2'>
+
+                  <div className='flex w-full justify-end -mt-2'>
                     <Label htmlFor='diferencial' className='flex items-center space-x-2'>
                       <span>Es Diferencial?</span>
-                      <CheckBox
-                        type='checkbox'
+                      <Checkbox
                         checked={diagnostico?.diferencial}
                         disabled // Cambia el color del checkbox si lo deseas
                       />
                     </Label>
                   </div>
+                <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
 
                   <div className='grid gap-2'>
                     <Label className='' htmlFor='family-name'>
@@ -110,11 +105,8 @@ export function ModalDetallesDiagnostico ({
                   <div className='grid gap-2'>
                     <Label htmlFor='interno' className='flex items-center space-x-2'>
                       <span>Atendido Internamente</span>
-                      <CheckBox
-                        type='checkbox'
-                        checked={diagnostico?.interno}
-                        disabled // Cambia el color del checkbox si lo deseas
-                      />
+      <Checkbox disabled checked={diagnostico?.interno} />
+
                     </Label>
                   </div>
               </aside>
