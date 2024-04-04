@@ -8,10 +8,11 @@ import { logoutUser } from '@/lib/actions'
 import { useRouter, usePathname } from 'next/navigation'
 
 import LogoSaimCis from '@/components/logo-saim-cis'
+import { Button } from '@/components/ui/button'
 
 const navigation = [
   { name: 'Perfil', href: '/enfermero', current: true },
-  { name: 'Pacientes', href: '/enfermero/pacientes?page=1', current: false }
+  { name: 'Pacientes', href: '/enfermero/pacientes', current: false }
 ]
 
 function classNames (...classes: string[]) {
@@ -25,6 +26,11 @@ export default function NavbarEnfermeroClient ({ user }: { user: UserType }) {
   const handleLogout = async () => {
     await logoutUser()
     router.push('/')
+  }
+
+  const handleRedirect = (href: string) => {
+    router.push(href)
+    router.refresh()
   }
 
   return (
@@ -52,21 +58,22 @@ export default function NavbarEnfermeroClient ({ user }: { user: UserType }) {
                 <div className="hidden sm:ml-6 sm:block">
                   <div className="flex space-x-4">
                     {navigation.map((item) => (
-                      <Link
+                      <Button
                         key={item.name}
-                        href={item.href}
+                        onClick={() => { handleRedirect(item.href) }}
+                        variant={'link'}
                         className={classNames(
                           pathname === item.href
                             ? 'bg-gray-100 dark:bg-gray-800 text-black dark:text-white'
                             : 'text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800  hover:text-black dark:hover:text-white hover:transition-colors hover:duration-200',
-                          'rounded-md px-3 py-2 text-sm font-medium'
+                          'rounded-md px-3 py-2 text-sm font-medium hover:no-underline'
                         )}
                         aria-current={
                           pathname === item.href ? 'page' : undefined
                         }
                       >
                         {item.name}
-                      </Link>
+                      </Button>
                     ))}
                   </div>
                 </div>

@@ -1,23 +1,22 @@
 import type { Metadata } from 'next'
-// import NavbarAdminClient from './components/navbar-doctor-client'
 import { getPermissionsAndUser } from '@/app/actions'
 import Permissions from '@/components/permissions'
-import React from 'react'
+import NavbarAdministradorClient from './components/navbar-administrador-client'
 
 export const metadata: Metadata = {
-  title: 'Admin',
+  title: 'Administrador',
   description: 'Pagina principal del administrador'
 }
 
-export default async function AdminLayout ({
+export default async function AdministradorLayout ({
   children
 }: {
   children: React.ReactNode
 }) {
   const { permissions, message, errorCode, usuario } =
-  await getPermissionsAndUser({
-    rolNecesario: 'admin'
-  })
+    await getPermissionsAndUser({
+      rolNecesario: 'administrador'
+    })
 
   if (!permissions) {
     return <Permissions message={message} errorCode={errorCode} />
@@ -25,7 +24,8 @@ export default async function AdminLayout ({
 
   return (
     <>
-      hola {usuario}
+      <NavbarAdministradorClient user={usuario ?? null} />
+      {children}
     </>
   )
 }

@@ -9,7 +9,6 @@ export async function readUserSession () {
   return await supabase.auth.getSession()
 }
 
-// logout
 export async function logoutUser () {
   noStore()
   const supabase = await createSupabaseServerClient()

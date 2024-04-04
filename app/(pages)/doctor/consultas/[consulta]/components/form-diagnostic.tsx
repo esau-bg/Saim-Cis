@@ -15,6 +15,7 @@ import { useTransition } from 'react'
 import { createDiagnostico, getEstadoConsultaAndChange } from '../../../actions'
 import InputTags from './input-tags'
 import { useRouter } from 'next/navigation'
+// import { ModalHistorialDiagnostico } from './modals/modal-historial-diagnosticos'
 
 const validationSchema = z.object({
   id_expediente: z.string(),
@@ -150,14 +151,14 @@ export default function FormDiagnostic ({ consulta }: { consulta: Consultas }) {
           </div>
 
           <Button
-          disabled={isPending}
-          className="py-3 px-4 max-w-sm mx-auto inline-flex bg-blue-500 text-white items-center gap-x-2 text-sm font-semibold rounded-lg transition-colors duration-200 border   hover:bg-blue-600 hover:border-blue-500 hover:text-white disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-        >
-          {isPending && (
-            <Icons.spinner className="mr-2 h-4 w-4 animate-spin " />
-          )}
-          Agregar Diagnostico
-        </Button>
+            disabled={isPending}
+            className="py-3 px-4 max-w-sm mx-auto inline-flex bg-blue-500 text-white items-center gap-x-2 text-sm font-semibold rounded-lg transition-colors duration-200 border   hover:bg-blue-600 hover:border-blue-500 hover:text-white disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+          >
+            {isPending && (
+              <Icons.spinner className="mr-2 h-4 w-4 animate-spin " />
+            )}
+            Agregar Diagnostico
+          </Button>
         </div>
 
       </form>

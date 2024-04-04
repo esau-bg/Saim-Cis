@@ -30,7 +30,7 @@ export default async function DataTable ({
   if (!consultas) {
     return (
       <div>
-        <span>Error al obtener los usuarios</span>
+        <span>Error al obtener las consultas</span>
       </div>
     )
   }

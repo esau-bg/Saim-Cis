@@ -5,7 +5,11 @@ import { Dialog, Transition } from '@headlessui/react'
 import Link from 'next/link'
 import { Fragment } from 'react'
 
-export default function WelcomeClient ({ user }: { user: Personas }) {
+export default function WelcomeClient ({ user }: { user: UserType }) {
+  if (!user) {
+    return null
+  }
+
   return (
     <>
       <Transition appear show={true} as={Fragment}>
@@ -35,13 +39,19 @@ export default function WelcomeClient ({ user }: { user: Personas }) {
                     </p>
                   </div>
 
-                  <div className="mt-4 flex justify-center">
-                    <Link
-                      href={`/${user.rol?.toLowerCase()}`}
-                      className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 dark:bg-blue-900 px-4 py-2 text-sm font-medium text-blue-900 dark:text-blue-100 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                    >
-                      Empezar
-                    </Link>
+                  <div className="mt-4 flex justify-center gap-2">
+        {
+          user.role.map((rol) => (
+            <Link
+            key={rol.rol}
+            href={`/${rol.rol.toLowerCase()}`}
+            className="flex text-center justify-center rounded-md border border-transparent bg-blue-100 dark:bg-blue-900 px-4 py-2 text-sm font-medium text-blue-900 dark:text-blue-100 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+          >
+            Empezar como {rol.rol}
+          </Link>
+          ))
+
+        }
                   </div>
                 </Dialog.Panel>
               </Transition.Child>
