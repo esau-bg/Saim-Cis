@@ -17,7 +17,6 @@ import { useTransition } from 'react'
 import {
   verifyUser,
   createPersona,
-  setRoleUser,
   createRandomCode,
   signUpWithEmailAndTempPass,
   getEspecializacionesByRol,
@@ -109,21 +108,6 @@ export function AdministradorDoctorForm () {
     }
 
     startTransition(async () => {
-      const { errorEspecializaciones } = await setEspecializacionUser({
-        idPersona: 'dff16cdd-6afa-43f7-819c-1971bc050a02',
-        especializaciones: data.especializaciones
-      })
-
-      if (errorEspecializaciones) {
-        if (errorEspecializaciones.code === '23505') {
-          toast.error('La especialización ya está registrada')
-          return
-        }
-
-        console.log(errorEspecializaciones)
-        return
-      }
-
       const { error } = await verifyUser({
         correo: data.correo,
         dni: data.dni
@@ -133,10 +117,13 @@ export function AdministradorDoctorForm () {
         return
       }
 
-      // Crear persona
-      const { persona, errorPersona } = await createPersona({ data })
+      // Crear person
+      const personaData = { ...data, especializaciones: undefined }
+      delete personaData.especializaciones
+      const { persona, errorPersona } = await createPersona({ data: personaData })
       if (errorPersona) {
         toast.error(errorPersona.message)
+        return
       }
 
       if (!persona) {
@@ -144,18 +131,18 @@ export function AdministradorDoctorForm () {
         return
       }
 
-      const { data: setRole, error: errorSetRole } = await setRoleUser({
-        id: persona.id,
-        rol: 'doctor'
+      const { errorEspecializaciones } = await setEspecializacionUser({
+        idPersona: persona.id,
+        especializaciones: data.especializaciones
       })
 
-      if (errorSetRole) {
-        toast.error(errorSetRole.message)
-        return
-      }
+      if (errorEspecializaciones) {
+        if (errorEspecializaciones.code === '23505') {
+          toast.error('La especialización ya está registrada')
+          return
+        }
 
-      if (!setRole) {
-        toast.error('Error al asignar el rol de doctor')
+        toast.error(errorEspecializaciones.message)
         return
       }
 

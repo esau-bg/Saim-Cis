@@ -19,6 +19,16 @@ export function calcularEdad (fechaNacimiento: Date) {
   }
 }
 
+export function formatFecha (fecha: Date, formato: 'es-HN' | 'en-US' = 'es-HN', options?: Intl.DateTimeFormatOptions, tipo: 'fecha' | 'hora' = 'fecha', separador: string = ' - ', fechaFinal?: Date, fechaInicio?: Date, fechaRegistro?: Date, typeFormatLong?: 'long' | 'short' | 'narrow' | 'numeric') {
+  if (tipo === 'fecha') {
+    return fecha.toLocaleDateString(formato, options)
+  } else if (tipo === 'hora') {
+    return fecha.toLocaleTimeString(formato, options)
+  } else {
+    return fecha.toLocaleDateString(formato, options) + separador + fechaFinal?.toLocaleDateString(formato, options)
+  }
+}
+
 export async function getUser ({ id }: { id: string }) {
   let usuarioModificado
   const { data: usuario, error: errorUsuario } = await supabase
@@ -241,9 +251,9 @@ export async function getTotalPagesByEstadoAndQuery ({
 export async function getConsultasByEstadoAndQuery ({
   estado,
   query = '',
-  offset,
-  perPage,
-  currentPage
+  offset = 0,
+  perPage = 6,
+  currentPage = 1
 }: {
   estado: EstadosConsultas
   query: string
@@ -251,13 +261,17 @@ export async function getConsultasByEstadoAndQuery ({
   perPage: number
   currentPage: number
 }) {
+  offset = isNaN(offset) ? 0 : offset
+  perPage = isNaN(perPage) ? 6 : perPage
+  currentPage = isNaN(currentPage) ? 1 : currentPage
+
   const { data: consultas, error } = await supabase.rpc(
     'get_consultas_by_estado_and_filter_pagination',
     {
       estado_param: estado,
       filtro_param: query,
       offset_param: offset,
-      limit_param: currentPage * perPage - 1
+      limit_param: currentPage * perPage
     }
   )
 
@@ -387,4 +401,76 @@ export async function getExpedienteByIDPaciente ({ id }: { id: string }) {
     .single()
 
   return { dataID, errorID }
+}
+
+export async function getPacienteByExpediente ({ expediente }: { expediente: string }) {
+  const { data: dataExpediente, error: errorDataExpediente } = await supabase
+    .from('expedientes')
+    .select('*, personas(*)')
+    .eq('id', expediente)
+    .single()
+
+  return { dataExpediente, errorDataExpediente }
+}
+
+export async function setRoleUser ({
+  id,
+  rol
+}: {
+  id: string
+  rol: string
+}) {
+  // Obtener el id de la especializacion por el nombre del rol
+  const { data: especializacion, error: especializacionError } = await supabase
+    .from('especializaciones')
+    .select('id')
+    .eq('nombre', rol)
+    .single()
+
+  if (especializacionError) {
+    return { data: null, error: especializacionError }
+  }
+  if (!especializacion) {
+    return {
+      data: null,
+      error: { code: '0', message: 'No se encontró la especialización' }
+    }
+  }
+
+  const { data, error } = await supabase
+    .from('especializacion_x_personas')
+    .insert({ id_persona: id, id_especializacion: especializacion.id })
+    .select('*')
+    .single()
+
+  return { data, error }
+}
+
+export async function getRoles () {
+  const { data, error } = await supabase
+    .from('roles')
+    .select('*')
+
+  return { data, error }
+}
+
+export async function getEspecializacionesByRol ({
+  rol
+}: {
+  rol: string
+}) {
+  const { data, error } = await supabase
+    .from('especializaciones')
+    .select('*, roles!inner(*)')
+    .eq('roles.nombre', rol)
+
+  return { data, error }
+}
+
+export async function setEspecializacionUser ({ idPersona, especializaciones }: { idPersona: string, especializaciones: Especializaciones[] }) {
+  const { error: errorEspecializaciones } = await supabase
+    .from('especializacion_x_personas')
+    .insert(especializaciones.map(especializacion => ({ id_persona: idPersona, id_especializacion: especializacion.id })))
+
+  return { errorEspecializaciones }
 }

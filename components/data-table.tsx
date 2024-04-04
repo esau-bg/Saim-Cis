@@ -7,11 +7,13 @@ const ITEMS_PER_PAGE = 6
 export default async function DataTable ({
   query,
   currentPage,
-  rol
+  rol,
+  permissons
 }: {
   query: string
   currentPage: number
   rol: RolesPermissons
+  permissons?: boolean
 }) {
   // await new Promise((resolve) => setTimeout(resolve, 5000)) // Simulando una carga lenta
   const offset = (currentPage - 1) * ITEMS_PER_PAGE
@@ -35,5 +37,5 @@ export default async function DataTable ({
       </div>
     )
   }
-  return <DataTableClient users={users} />
+  return <DataTableClient users={users} permissons= {permissons} />
 }

@@ -37,7 +37,7 @@ export default async function EnfermerosAdministradorPagina ({
             <ModalAgregarEnfermero />
           </div>
           <Suspense fallback={<DataTableSkeleton/>}>
-            <DataTable query={query} currentPage={currentPage} rol="enfermero" />
+            <DataTable query={query} currentPage={currentPage} rol="enfermero" permissons />
           </Suspense>
           <div className="my-2 flex w-full justify-center">
             <Pagination totalPages={totalPages} />

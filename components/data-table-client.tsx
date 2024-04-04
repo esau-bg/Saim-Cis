@@ -8,11 +8,14 @@ import { Button } from './ui/button'
 import { ModalPreclinica } from './modals/modal-preclinica'
 import { EllipsisVerticalIcon, LinkIcon } from '@heroicons/react/20/solid'
 import { AlertModalDeleteUser } from './modals/modal-eliminar'
+import { ModalAgregarRolEspecializacion } from './modals/modal-agregar-rol-especializacion'
 
 export default function DataTableClient ({
-  users
+  users,
+  permissons
 }: {
   users: DataTableUsers
+  permissons?: boolean
 }) {
   const [personaSeleccionada, setPersonaSeleccionada] =
     useState<Personas | null>(null)
@@ -177,10 +180,17 @@ export default function DataTableClient ({
                               Ver perfil
                             </Link>
                           </Button>
-
                           <ModalPreclinica persona={personaSeleccionada} />
 
-                          <AlertModalDeleteUser persona={personaSeleccionada} />
+                          {
+                            permissons && (
+                              <>
+                              <ModalAgregarRolEspecializacion persona={personaSeleccionada} />
+
+                              <AlertModalDeleteUser persona={personaSeleccionada} />
+                              </>
+                            )
+                          }
                         </ButtonMoreDataTable>
                       </td>
                     </tr>

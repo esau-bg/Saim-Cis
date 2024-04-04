@@ -101,4 +101,38 @@
   animation-fill-mode: both;
 }
 
+.rbc-time-slot {
+  border-top: 1px solid #f7f7f700 !important;
+}
 
+.rbc-today {
+  background-color: #a5bbf8 !important;
+}
+
+.rbc-off-range-bg {
+  background-color: #8bb7ff !important;
+}
+
+.rbc-toolbar button:active, .rbc-toolbar button.rbc-active {
+  background-color: #c7c3c3 !important;
+  color: #373a3c !important;
+}
+
+@layer components {
+
+  .dark .rbc-calendar-dark {
+    @apply bg-gray-800 text-white;
+  }
+
+  .dark .rbc-calendar-dark button{
+    @apply text-white;
+  }
+
+  .dark .rbc-calendar-dark button:active{
+    @apply text-white bg-black;
+  }
+
+  .dark .rbc-time-slot-dark {
+    @apply border-t-0 border-solid border-opacity-0
+  } 
+}
