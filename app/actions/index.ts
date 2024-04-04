@@ -228,6 +228,8 @@ export async function getUsersByRoleAndQuery ({
     }
   )
 
+  console.log(users, error)
+
   return { users, error }
 }
 
