@@ -9,6 +9,7 @@ declare global {
   type Consultas = DB['public']['Tables']['consultas']['Row']
   type ConsultasInsert = DB['public']['Tables']['consultas']['Insert']
   type Diagnosticos = DB['public']['Tables']['diagnosticos']['Row']
+  type InfoDiagnosticos = DB['public']['Functions']['get_diagnosticos_by_expediente_and_filter_pagination']['Returns']
   type PersonasXUsuarios = DB['public']['Tables']['personas_x_usuarios']['Row']
   type Citas = DB['public']['Tables']['citas']['Row']
   type EstadoConsultas = DB['public']['Tables']['estado_consultas']['Row']
@@ -54,6 +55,17 @@ declare global {
       allDay?: boolean
       id?: string
       info?: Citas & { paciente: Personas | null } & { doctor: Personas | null }
+    }
+
+    interface SendInfoDiagnostico {
+      id_diagnostico: string
+      fecha_diagnostico: string
+      numero_expediente: string
+      id_consulta: string
+      enfermedades: string
+      observacion: string
+      interno: boolean
+      diferencial: boolean
     }
 
 }

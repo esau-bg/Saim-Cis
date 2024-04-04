@@ -5,8 +5,14 @@ import FormDiagnostic from './components/form-diagnostic'
 import { ModalEditarPreclinica } from './components/modal-editar-preclinica'
 import { PencilSquareIcon } from '@heroicons/react/20/solid'
 import { Button } from '@/components/ui/button'
+// import { ModalHistorialDiagnostico } from './components/modals/modal-historial-diagnosticos'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { FolderOpenIcon } from '@heroicons/react/24/outline'
 
 export default function ConsultaClient ({ consulta }: { consulta: Consultas & { expedientes: Expedientes & { personas: Personas | null } | null } & { estado: EstadoConsultas | null } }) {
+  const pathname = usePathname()
+
   return (
     <main className="relative container">
 
@@ -114,7 +120,7 @@ export default function ConsultaClient ({ consulta }: { consulta: Consultas & { 
               data-hs-overlay="#hs-modal-editar-preclinica"
                 size={'icon'}
                 variant={'ghost'}
-                className='  hs-tooltip-toggle'
+                className='hs-tooltip-toggle'
             >
               <PencilSquareIcon className="h-5 " />
               <span className="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 transition-opacity inline-block absolute invisible z-10 py-1 px-2 bg-sec-var-900/90 text-xs font-medium text-white rounded shadow-sm  " role="tooltip">
@@ -126,9 +132,18 @@ export default function ConsultaClient ({ consulta }: { consulta: Consultas & { 
 
     </aside>
 
-      <aside className="">
-        <h2 className="text-2xl font-medium my-3 text-center">Diagnostico</h2>
-
+      <aside className="max-w-lg mx-auto relative">
+        <h2 className="text-2xl font-medium my-3 text-center">
+          Diagnostico
+        </h2>
+        <div className='absolute end-0 top-0'>
+        <Link href={`${pathname}/${consulta.expedientes?.id}`} className=' whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200'>
+          <Button variant={'outline'} className="justify-start font-normal duration-500 hover:bg-sec hover:text-white">
+            Ver Historial
+            <FolderOpenIcon className="h-4 w-4 ml-1" />
+          </Button>
+        </Link>
+        </div>
         <FormDiagnostic consulta={consulta} />
       </aside>
       <div>
