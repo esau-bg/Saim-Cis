@@ -8,11 +8,11 @@ import { Button } from '@/components/ui/button'
 // import { ModalHistorialDiagnostico } from './components/modals/modal-historial-diagnosticos'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { FolderOpenIcon } from '@heroicons/react/24/outline'
 
 export default function ConsultaClient ({ consulta }: { consulta: Consultas & { expedientes: Expedientes & { personas: Personas | null } | null } & { estado: EstadoConsultas | null } }) {
   const pathname = usePathname()
 
-  console.log(consulta.expedientes?.id)
   return (
     <main className="relative container">
 
@@ -138,7 +138,10 @@ export default function ConsultaClient ({ consulta }: { consulta: Consultas & { 
         </h2>
         <div className='absolute end-0 top-0'>
         <Link href={`${pathname}/${consulta.expedientes?.id}`} className=' whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200'>
-          ver Historial
+          <Button variant={'outline'} className="justify-start font-normal duration-500 hover:bg-sec hover:text-white">
+            Ver Historial
+            <FolderOpenIcon className="h-4 w-4 ml-1" />
+          </Button>
         </Link>
         </div>
         <FormDiagnostic consulta={consulta} />

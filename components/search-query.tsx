@@ -17,11 +17,9 @@ export default function Search ({ placeholder, debounce }: { placeholder: string
 
     if (term) {
       params.set('query', term)
-      // console.log(searchParams.get('query'))
     } else {
       params.delete('query')
     }
-    console.log(searchParams.get('query'))
     router.replace(`${pathname}?${params.toString()}`)
   }, debounce ?? 500)
 

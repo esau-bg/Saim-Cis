@@ -403,6 +403,16 @@ export async function getExpedienteByIDPaciente ({ id }: { id: string }) {
   return { dataID, errorID }
 }
 
+export async function getPacienteByExpediente ({ expediente }: { expediente: string }) {
+  const { data: dataExpediente, error: errorDataExpediente } = await supabase
+    .from('expedientes')
+    .select('*, personas(*)')
+    .eq('id', expediente)
+    .single()
+
+  return { dataExpediente, errorDataExpediente }
+}
+
 export async function setRoleUser ({
   id,
   rol

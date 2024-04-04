@@ -15,7 +15,7 @@ import { useTransition } from 'react'
 import { createDiagnostico, getEstadoConsultaAndChange } from '../../../actions'
 import InputTags from './input-tags'
 import { useRouter } from 'next/navigation'
-import { ModalHistorialDiagnostico } from './modals/modal-historial-diagnosticos'
+// import { ModalHistorialDiagnostico } from './modals/modal-historial-diagnosticos'
 
 const validationSchema = z.object({
   id_expediente: z.string(),

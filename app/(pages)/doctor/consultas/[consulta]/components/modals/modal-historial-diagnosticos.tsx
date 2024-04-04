@@ -30,15 +30,17 @@ export async function ModalHistorialDiagnostico ({
 }
 ) {
   const query = searchParams?.query ?? ''
-  console.log(query)
   const currentPage = Number(searchParams?.page) ?? 1
   const offset = (currentPage - 1) * ITEMS_PER_PAGE
 
-  const totalPages = await getTotalPagesByExpedienteAndQuery({
+  const { totalPages, errortotalPages } = await getTotalPagesByExpedienteAndQuery({
     expediente: idExpediente,
     query
   })
 
+  if (errortotalPages) {
+    <ToastServer message="Error al obtener el total de páginas del Expediente" />
+  }
   if (totalPages === null) {
     return (
       <ToastServer message="Error al obtener el total de páginas del Expediente" />

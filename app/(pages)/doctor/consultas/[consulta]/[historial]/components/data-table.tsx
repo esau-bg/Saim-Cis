@@ -1,6 +1,5 @@
 import DataTableClient from './data-table-client'
 import { getDiagnosticosByExpedienteAndQuery } from '../../../../actions'
-// import { getUsersByRoleAndQuery } from "../../(actions)";
 
 const ITEMS_PER_PAGE = 6
 

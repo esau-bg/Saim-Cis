@@ -1,6 +1,6 @@
 'use client'
 // import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 // import { DetallesPage } from '../consultas/detalle/page'
 
 // import { PencilSquareIcon } from '@heroicons/react/24/outline'
@@ -9,33 +9,18 @@ import { ToastContainer } from 'react-toastify'
 
 import LogoSaimCis from '@/components/logo-saim-cis'
 import { ModalDetallesDiagnostico } from '../../components/modals/modal-detalles-diagnosticos'
-
-interface SendInfoConsultas {
-  estado_consulta: string
-  id_consulta: string
-}
+import { Button } from '@/components/ui/button'
+import { ArrowLeftCircleIcon } from '@heroicons/react/20/solid'
+import Search from '@/components/search-query'
 
 export default function DataTableClient ({ diagnosticos }: { diagnosticos: InfoDiagnosticos | null }) {
-  const pathname = usePathname()
+  // Redireccionar hacia consultas
   const router = useRouter()
-
-  const [isPending] = useTransition()
-
-  const handleRedirect = (consulta: SendInfoConsultas) => {
-    /* startTransition(async () => {
-      if (consulta.estado_consulta === 'preclinica') {
-        const { dataIDEstado, errorIDEstado } = await getEstadoConsultaAndChange({ idConsulta: consulta.id_consulta, estado: 'diagnostico' })
-        if (errorIDEstado) {
-          toast.error('Error al cambiar el estado de la consulta')
-        }
-        if (!dataIDEstado) {
-          toast.error('Error al cambiar el estado de la consulta')
-        }
-      }
-    }) */
-    router.push(`${pathname}/${consulta.id_consulta}`)
-    router.refresh()
+  // Funcion para redirijir hacia consultas y refrescar las consultas
+  const handleRedirect = () => {
+    router.back()
   }
+  const [isPending] = useTransition()
 
   return (
     <>
@@ -50,6 +35,17 @@ export default function DataTableClient ({ diagnosticos }: { diagnosticos: InfoD
           )
         }
         <div className="flex flex-col my-4">
+        <div className="my-2 flex justify-between items-center  gap-2 md:mt-6">
+          <Search placeholder="Buscar Diagnóstico..." debounce={200} />
+          <Button
+            variant={'secondary'}
+            className="justify-start font-normal duration-500 hover:bg-sec hover:text-white"
+            onClick={handleRedirect}
+          >
+            Regresar
+            <ArrowLeftCircleIcon className="h-4 w-4 ml-1" />
+          </Button>
+        </div>
           <div className="-m-1.5 overflow-x-auto">
             <div className="p-1.5 min-w-full inline-block align-middle">
               <div className="border rounded-lg overflow-hidden dark:border-gray-700">

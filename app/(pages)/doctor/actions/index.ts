@@ -87,16 +87,15 @@ export async function getTotalPagesByExpedienteAndQuery ({
   expediente: string
   query: string
 }) {
-  const { data: totalPages, error } = await supabase.rpc(
+  const { data: totalPages, error: errortotalPages } = await supabase.rpc(
     'get_diagnosticos_count_by_expediente_and_filter',
     {
       expediente_param: expediente,
       filtro_param: query
     }
   )
-  console.log(expediente, totalPages, error)
 
-  return totalPages
+  return { totalPages, errortotalPages }
 }
 
 export async function getDiagnosticosByExpedienteAndQuery ({
@@ -126,7 +125,6 @@ export async function getDiagnosticosByExpedienteAndQuery ({
     }
   )
 
-  console.log(diagnosticos, error)
   return { diagnosticos, error }
 }
 
