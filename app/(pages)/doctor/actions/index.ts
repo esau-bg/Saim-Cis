@@ -12,6 +12,33 @@ export async function getCitasByPaciente ({ id_paciente }: { id_paciente: string
   return { citas, errorCitas }
 }
 
+export async function createCitaByPaciente ({ data }: { data: CitasInsert }) {
+  const { data: citasInsert, error: errorCitasInsert } = await supabase
+    .from('citas')
+    .insert({ ...data })
+    .select('*, paciente:personas!citas_id_paciente_fkey(*), doctor:personas!citas_id_doctor_fkey(*) ')
+    .single()
+  return { citasInsert, errorCitasInsert }
+}
+
+export async function updateCitaByPaciente ({ data }: { data: CitasUpdate }) {
+  const { data: citasUpdate, error: errorCitasUpdate } = await supabase
+    .from('citas')
+    .update({ ...data })
+    .eq('id', data.id ?? '')
+    .select('*, paciente:personas!citas_id_paciente_fkey(*), doctor:personas!citas_id_doctor_fkey(*) ')
+    .single()
+  return { citasUpdate, errorCitasUpdate }
+}
+
+export async function deleteCita (id: string) {
+  const { data: citasDelete, error: errorCitasDelete } = await supabase
+    .from('citas')
+    .delete()
+    .eq('id', id)
+  return { citasDelete, errorCitasDelete }
+}
+
 export async function getCitasByDoctor ({ id_doctor }: { id_doctor: string }) {
   const { data: citas, error: errorCitas } = await supabase
     .from('citas')
