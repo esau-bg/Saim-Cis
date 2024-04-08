@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import withDragAndDrop, {
@@ -34,6 +34,24 @@ export default function CitasPaciente ({ events }: { events: Events[] }) {
   // const [state, setState] = React.useState<Events[]>(events)
   const [isOpen, setIsOpen] = React.useState(false)
   const [eventSelected, setEventSelected] = React.useState<Events | null>(null)
+  const [myEvents, setMyEvents] = useState<Events[]>(events)
+
+  const handleSelectSlot = useCallback(
+    ({ start, end }: { start: Date, end: Date }) => {
+      const title = window.prompt('Nombre del nuevo evento')
+      if (title) {
+        const newEvent: Events = {
+          start,
+          end,
+          title
+        }
+        setMyEvents(prevEvents => [...prevEvents, newEvent])
+      }
+    },
+    [setMyEvents]
+  )
+
+  const scrollToTime = new Date(1970, 1, 1, 6)
 
   // const onEventResize = (args: EventInteractionArgs<object>) => {
   //   const { start, end } = args
@@ -95,8 +113,11 @@ export default function CitasPaciente ({ events }: { events: Events[] }) {
         defaultDate={moment().toDate()}
         defaultView='week'
         views={['month', 'week', 'day']}
-        events={events}
+        events={myEvents}
         localizer={localizer}
+        onSelectSlot={handleSelectSlot}
+        selectable
+        scrollToTime={scrollToTime}
         // onEventDrop={onEventDrop}
         // onEventResize={onEventResize}
 
