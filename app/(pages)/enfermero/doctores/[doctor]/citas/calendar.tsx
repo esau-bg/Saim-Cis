@@ -14,6 +14,8 @@ import 'react-big-calendar/lib/css/react-big-calendar.css'
 import 'moment/locale/es'
 import { updateCita } from '../../../actions'
 import DialogCita from './components/dialog-cita'
+import { useRouter } from 'next/navigation'
+import { toast, ToastContainer } from 'react-toastify'
 moment.locale('es')
 
 const localizer = momentLocalizer(moment)
@@ -24,6 +26,8 @@ export default function CalendarClient ({ events }: { events: Events[] }) {
   const [isOpen, setIsOpen] = React.useState(false)
   const [eventSelected, setEventSelected] = React.useState<Events | null>(null)
   const [citaMod, setCitaMod] = React.useState<Events | null>(null)
+
+  const router = useRouter()
 
   const onEventResize = (args: EventInteractionArgs<object>) => {
     const { start, end } = args
@@ -73,7 +77,7 @@ export default function CalendarClient ({ events }: { events: Events[] }) {
 
   useEffect(() => {
     const updateCitaAsync = async () => {
-      const { cita, errorCita } = await updateCita({
+      const { errorCita } = await updateCita({
         id: citaMod?.id ?? '',
         data: {
           fecha_inicio:
@@ -81,7 +85,13 @@ export default function CalendarClient ({ events }: { events: Events[] }) {
           fecha_final: moment(citaMod?.end).format('YYYY-MM-DDTHH:mm:ssZ') ?? ''
         }
       })
-      console.log(cita, errorCita)
+
+      if (errorCita) {
+        toast.error('Error al actualizar la cita')
+        return
+      }
+
+      router.refresh()
     }
 
     // console.log(
@@ -128,6 +138,18 @@ export default function CalendarClient ({ events }: { events: Events[] }) {
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         eventSelected={eventSelected}
+      />
+
+      <ToastContainer
+        position='top-right'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
       />
     </div>
   )
