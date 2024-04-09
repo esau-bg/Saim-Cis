@@ -71,4 +71,7 @@ declare global {
       diferencial: boolean
     }
 
+    type InfoMedico =
+    | (Personas & { especialidad: Especializaciones } & { jornada: Jornadas })
+    | null
 }
