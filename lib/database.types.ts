@@ -40,6 +40,9 @@ export interface Database {
           id_doctor?: string
           id_paciente?: string
         }
+        Delete: {
+          id: string
+        }
         Relationships: [
           {
             foreignKeyName: 'citas_id_doctor_fkey'
