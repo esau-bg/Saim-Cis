@@ -99,6 +99,7 @@ export function AdministradorPacienteForm () {
       const { persona, errorPersona } = await createPersona({ data })
       if (errorPersona) {
         toast.error(errorPersona.message)
+        return
       }
 
       if (!persona) {
