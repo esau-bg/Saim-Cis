@@ -474,3 +474,22 @@ export async function setEspecializacionUser ({ idPersona, especializaciones }: 
 
   return { errorEspecializaciones }
 }
+
+export async function getEspecializacionesByDoctor () {
+  const { data, error } = await supabase
+    .from('especializaciones')
+    .select('*, roles!inner(*)')
+    .eq('roles.nombre', 'doctor')
+
+  return { data, error }
+}
+
+export async function getDoctoresByEspecializacion ({ idEspecializacion }: { idEspecializacion: string }) {
+  const { data, error } = await supabase
+    .from('especializacion_x_personas')
+    .select('*, personas(*)')
+    .eq('id_especializacion', idEspecializacion)
+
+  console.log('data', data, 'error:', error)
+  return { data, error }
+}

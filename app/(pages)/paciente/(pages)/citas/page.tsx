@@ -34,7 +34,7 @@ export default async function page () {
 
   return (
       <div className="">
-        <CitasPaciente events={events} />
+        {/* <CitasPaciente events={events} /> */}
         <CardMedicos/>
       </div>
   )
