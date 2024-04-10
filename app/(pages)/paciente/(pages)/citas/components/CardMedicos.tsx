@@ -4,7 +4,7 @@ import * as React from 'react'
 import classNames from 'classnames'
 import { Label } from '@/components/ui/label'
 import AsyncSelect from 'react-select/async'
-import { Card, CardHeader, Image } from '@nextui-org/react'
+import { Card, CardBody, CardFooter } from '@nextui-org/react'
 // import { type SingleValue, type MultiValue } from 'react-select'
 import { getDoctoresByEspecializacion, getEspecializacionesByDoctor } from '@/app/actions'
 
@@ -31,8 +31,9 @@ export default function cardMedicos () {
     if (selectedOption) {
       const { data: doctoresData, error: errorDoctor } = await getDoctoresByEspecializacion({ idEspecializacion: selectedOption.value })
       if (!errorDoctor) {
-        setDoctores(doctoresData || [])
+        setDoctores(doctoresData ?? [])
         setShow(true)
+        console.log(doctoresData)
       }
     }
   }
@@ -52,10 +53,11 @@ export default function cardMedicos () {
     })
 
   return (
-    <div className='grid gap-6'>
+    <div className='grid gap-6 px-2 py-2'>
       <form>
-        <div className='grid gap-3'>
-          <div className='grid gap-1'>
+      <div className="grid gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid gap-2">
             <Label className='' htmlFor='rol'>
               Rol
             </Label>
@@ -82,26 +84,31 @@ export default function cardMedicos () {
             />
           </div>
         </div>
+        </div>
       </form>
 
       {show && (
-        <div className="max-w-[900px] gap-2 grid grid-cols-12 grid-rows-2 px-8">
-        {doctores.map(doctores => (
-          <Card key={doctores.id} className="col-span-12 sm:col-span-4 h-[300px]">
-            <CardHeader className="absolute z-10 top-1 flex-col !items-start">
-              <p className="text-tiny text-white/60 uppercase font-bold">{doctores.nombre}</p>
-              <h4 className="text-white font-medium text-large">{doctores.apellido}</h4>
-            </CardHeader>
-            <Image
-              removeWrapper
-              alt="Card background"
-              className="z-0 w-full h-full object-cover"
-              src={doctores.avatar_url}
-            />
-          </Card>
+      <div className="gap-2 grid grid-cols-2 sm:grid-cols-4">
+        {doctores.map((doctor) => (
+       <Card isFooterBlurred shadow="sm" key={doctor.id_persona} isPressable onPress={() => { console.log(doctor.id_persona) }} >
+       <CardBody className="overflow-visible p-0">
+          <img
+            className="w-100 object-cover shadow-sm rounded-lg"
+            src={doctor.personas?.idUsuario.map(usuario => usuario.avatar_url).join(', ')}
+            alt={`Foto de perfil de ${doctor.personas?.idUsuario.map(usuario => usuario.correo).join(', ')}`}
+          />
+          <CardFooter className="!items-start flex-col absolute bg-white/30 bottom-0 border-t-1 border-zinc-100/50 z-10 justify-between">
+            <p className="text-tiny text-black/60 uppercase font-bold">{doctor.personas?.nombre} {doctor.personas?.apellido}</p>
+            <p className="text-tiny text-black/60 uppercase font-bold">Jornada: {doctor.personas?.idJornada?.jornada}</p>
+            <h4 className="text-black font-medium text-large">{doctor.personas?.idUsuario.map(usuario => usuario.correo).join(', ')}</h4>
+          </CardFooter>
+       </CardBody>
+     </Card>
         ))}
       </div>
+
       )}
     </div>
+
   )
 }

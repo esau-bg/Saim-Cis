@@ -73,7 +73,20 @@ declare global {
       diferencial: boolean
     }
 
-    type InfoMedico =
-    | (EspecializacionXPersonas & { personas: Personas })
-    | null
+    interface InfoMedico {
+      id_especializacion: string
+      id_persona: string
+      personas: {
+        nombre: string
+        apellido: string
+        idUsuario: Array<{
+          correo: string
+          avatar_url: string | null
+        }>
+        idJornada: {
+          jornada: string
+        } | null
+      } | null
+    }
+
 }
