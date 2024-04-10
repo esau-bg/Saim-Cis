@@ -23,6 +23,7 @@ declare global {
   type CitasInsert = DB['public']['Tables']['citas']['Insert']
   type CitasUpdate = DB['public']['Tables']['citas']['Update']
   type CitasDelete = DB['public']['Tables']['citas']['Delete']
+  type Jornadas = DB['public']['Tables']['jornadas']['Row']
 
   type UserType =
     | (Personas & { usuario: PersonasXUsuarios } & {
@@ -73,6 +74,6 @@ declare global {
     }
 
     type InfoMedico =
-    | (Personas & { especialidad: Especializaciones } & { jornada: Jornadas })
+    | (Personas & { jornada: Jornadas | null })
     | null
 }
