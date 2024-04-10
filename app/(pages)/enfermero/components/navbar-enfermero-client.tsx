@@ -12,7 +12,8 @@ import { Button } from '@/components/ui/button'
 
 const navigation = [
   { name: 'Perfil', href: '/enfermero', current: true },
-  { name: 'Pacientes', href: '/enfermero/pacientes', current: false }
+  { name: 'Pacientes', href: '/enfermero/pacientes', current: false },
+  { name: 'Doctores', href: '/enfermero/doctores', current: false }
 ]
 
 function classNames (...classes: string[]) {

@@ -12,6 +12,7 @@ declare global {
   type InfoDiagnosticos = DB['public']['Functions']['get_diagnosticos_by_expediente_and_filter_pagination']['Returns']
   type PersonasXUsuarios = DB['public']['Tables']['personas_x_usuarios']['Row']
   type Citas = DB['public']['Tables']['citas']['Row']
+  type CitasUpdate = DB['public']['Tables']['citas']['Update']
   type EstadoConsultas = DB['public']['Tables']['estado_consultas']['Row']
   type InfoConsultas = DB['public']['Functions']['get_consultas_by_estado_and_filter_pagination']['Returns']
   type DiagnosticoInsert = DB['public']['Tables']['diagnosticos']['Insert']
