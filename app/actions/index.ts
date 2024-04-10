@@ -494,6 +494,5 @@ export async function getDoctoresByEspecializacion ({ idEspecializacion }: { idE
     )
     .eq('id_especializacion', idEspecializacion)
 
-  console.log('data', data, 'error:', error)
   return { data, error }
 }

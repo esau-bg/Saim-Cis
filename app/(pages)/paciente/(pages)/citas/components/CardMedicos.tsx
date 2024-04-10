@@ -7,6 +7,7 @@ import AsyncSelect from 'react-select/async'
 import { Card, CardBody, CardFooter } from '@nextui-org/react'
 // import { type SingleValue, type MultiValue } from 'react-select'
 import { getDoctoresByEspecializacion, getEspecializacionesByDoctor } from '@/app/actions'
+import { usePathname, useRouter } from 'next/navigation'
 
 const multiValue: string =
   '!bg-sec-var-200 dark:!bg-sec-var-900 !rounded-md !text-white'
@@ -26,16 +27,28 @@ interface Especializacion {
 export default function cardMedicos () {
   const [show, setShow] = React.useState(false)
   const [doctores, setDoctores] = React.useState<InfoMedico[]>([])
-  // const router = useRouter()
+  const pathname = usePathname()
+  const router = useRouter()
+
+  const handleCardClick = (doctor: InfoMedico) => {
+    router.push(`${pathname}/${doctor.id_especializacion}`)
+    router.refresh()
+  }
+
   const handleOnChange = async (selectedOption: Especializacion | null) => {
     if (selectedOption) {
       const { data: doctoresData, error: errorDoctor } = await getDoctoresByEspecializacion({ idEspecializacion: selectedOption.value })
       if (!errorDoctor) {
         setDoctores(doctoresData ?? [])
         setShow(true)
-        console.log(doctoresData)
       }
+    } else {
+      setShow(false) // Desactivar el estado show si no se selecciona ninguna opción
     }
+  }
+
+  const handleMenuOpen = () => {
+    setShow(false) // Activar el estado show cuando se abre el menú
   }
 
   const promiseEspecializaciones = async () =>
@@ -59,7 +72,7 @@ export default function cardMedicos () {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="grid gap-2">
             <Label className='' htmlFor='rol'>
-              Rol
+              Seleccione una especialidad para posteriormente seleccionar un doctor
             </Label>
             <AsyncSelect
               cacheOptions
@@ -79,6 +92,7 @@ export default function cardMedicos () {
               }}
               noOptionsMessage={() => 'No se encontraron Especializaciones'}
               placeholder='Seleccione la Especializacion'
+              onMenuOpen={handleMenuOpen}
               onChange={handleOnChange}
               loadOptions={promiseEspecializaciones}
             />
@@ -90,20 +104,20 @@ export default function cardMedicos () {
       {show && (
       <div className="gap-2 grid grid-cols-2 sm:grid-cols-4">
         {doctores.map((doctor) => (
-       <Card isFooterBlurred shadow="sm" key={doctor.id_persona} isPressable onPress={() => { console.log(doctor.id_persona) }} >
-       <CardBody className="overflow-visible p-0">
-          <img
-            className="w-100 object-cover shadow-sm rounded-lg"
-            src={doctor.personas?.idUsuario.map(usuario => usuario.avatar_url).join(', ')}
-            alt={`Foto de perfil de ${doctor.personas?.idUsuario.map(usuario => usuario.correo).join(', ')}`}
-          />
-          <CardFooter className="!items-start flex-col absolute bg-white/30 bottom-0 border-t-1 border-zinc-100/50 z-10 justify-between">
-            <p className="text-tiny text-black/60 uppercase font-bold">{doctor.personas?.nombre} {doctor.personas?.apellido}</p>
-            <p className="text-tiny text-black/60 uppercase font-bold">Jornada: {doctor.personas?.idJornada?.jornada}</p>
-            <h4 className="text-black font-medium text-large">{doctor.personas?.idUsuario.map(usuario => usuario.correo).join(', ')}</h4>
-          </CardFooter>
-       </CardBody>
-     </Card>
+        <Card isFooterBlurred shadow="sm" key={doctor.id_persona} isPressable onPress={() => { handleCardClick(doctor) }} >
+          <CardBody className="overflow-visible p-0">
+             <img
+               className="w-100 object-cover shadow-sm rounded-lg aspect-square border-white dark:border-slate-900 bg-sec"
+               src={doctor.personas?.idUsuario.map(usuario => usuario.avatar_url ??
+                 'https://leplanb.lesmontagne.net/wp-content/uploads/sites/5/2017/06/default_avatar.png').join(', ')}
+             />
+             <CardFooter className="!items-start flex-col absolute bg-white/30 bottom-0 border-t-1 border-zinc-100/50 z-10 justify-between">
+               <p className="text-tiny text-black/60 uppercase font-bold">{doctor.personas?.nombre} {doctor.personas?.apellido}</p>
+               <p className="text-tiny text-black/60 uppercase font-bold">Jornada: {doctor.personas?.idJornada?.jornada}</p>
+               <h4 className="text-black font-medium text-large">{doctor.personas?.idUsuario.map(usuario => usuario.correo).join(', ')}</h4>
+             </CardFooter>
+          </CardBody>
+        </Card>
         ))}
       </div>
 
