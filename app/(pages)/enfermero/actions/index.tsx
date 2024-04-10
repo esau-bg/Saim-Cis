@@ -159,3 +159,30 @@ export async function getUserByCorreo ({ correo }: { correo: string }) {
 
   return { dataCorreo, errorCorreo }
 }
+
+export async function getCitasByDoctor ({ id_doctor: idDoctor }: { id_doctor: string }) {
+  const { data: citas, error: errorCitas } = await supabase
+    .from('citas')
+    .select('*, paciente:personas!citas_id_paciente_fkey(*), doctor:personas!citas_id_doctor_fkey(*)')
+    .eq('id_doctor', idDoctor)
+    .order('fecha_inicio', { ascending: true })
+
+  return { citas, errorCitas }
+}
+
+export async function updateCita ({
+  id,
+  data
+}: {
+  id: string
+  data: CitasUpdate
+}) {
+  const { data: cita, error: errorCita } = await supabase
+    .from('citas')
+    .update({ ...data })
+    .eq('id', id)
+    .select('*')
+    .single()
+
+  return { cita, errorCita }
+}

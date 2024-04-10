@@ -12,6 +12,7 @@ declare global {
   type InfoDiagnosticos = DB['public']['Functions']['get_diagnosticos_by_expediente_and_filter_pagination']['Returns']
   type PersonasXUsuarios = DB['public']['Tables']['personas_x_usuarios']['Row']
   type Citas = DB['public']['Tables']['citas']['Row']
+  type CitasUpdate = DB['public']['Tables']['citas']['Update']
   type EstadoConsultas = DB['public']['Tables']['estado_consultas']['Row']
   type InfoConsultas = DB['public']['Functions']['get_consultas_by_estado_and_filter_pagination']['Returns']
   type DiagnosticoInsert = DB['public']['Tables']['diagnosticos']['Insert']
@@ -22,6 +23,7 @@ declare global {
   type CitasInsert = DB['public']['Tables']['citas']['Insert']
   type CitasUpdate = DB['public']['Tables']['citas']['Update']
   type CitasDelete = DB['public']['Tables']['citas']['Delete']
+  type EspecializacionXPersonas = DB['public']['Tables']['especializacion_x_personas']['Row']
 
   type UserType =
     | (Personas & { usuario: PersonasXUsuarios } & {
@@ -69,6 +71,22 @@ declare global {
       observacion: string
       interno: boolean
       diferencial: boolean
+    }
+
+    interface InfoMedico {
+      id_especializacion: string
+      id_persona: string
+      personas: {
+        nombre: string
+        apellido: string
+        idUsuario: Array<{
+          correo: string
+          avatar_url: string | null
+        }>
+        idJornada: {
+          jornada: string
+        } | null
+      } | null
     }
 
 }

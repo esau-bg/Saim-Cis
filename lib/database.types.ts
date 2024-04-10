@@ -131,6 +131,7 @@ export interface Database {
           fecha_diagnostico: string
           id: string
           id_consulta: string | null
+          id_diagnosticador: string | null
           id_expediente: string
           interno: boolean
           observacion: string | null
@@ -141,6 +142,7 @@ export interface Database {
           fecha_diagnostico?: string
           id?: string
           id_consulta?: string | null
+          id_diagnosticador?: string | null
           id_expediente?: string
           interno: boolean
           observacion?: string | null
@@ -151,6 +153,7 @@ export interface Database {
           fecha_diagnostico?: string
           id?: string
           id_consulta?: string | null
+          id_diagnosticador?: string | null
           id_expediente?: string
           interno?: boolean
           observacion?: string | null
@@ -269,6 +272,30 @@ export interface Database {
           }
         ]
       }
+      jornadas: {
+        Row: {
+          descripcion: string | null
+          hora_final: string
+          hora_inicio: string
+          id: string
+          jornada: string
+        }
+        Insert: {
+          descripcion?: string | null
+          hora_final: string
+          hora_inicio: string
+          id?: string
+          jornada: string
+        }
+        Update: {
+          descripcion?: string | null
+          hora_final?: string
+          hora_inicio?: string
+          id?: string
+          jornada?: string
+        }
+        Relationships: []
+      }
       personas: {
         Row: {
           apellido: string
@@ -279,6 +306,7 @@ export interface Database {
           fecha_nacimiento: string
           genero: string
           id: string
+          id_jornada: string | null
           nombre: string
           rol: string | null
           telefono: string | null
@@ -292,6 +320,7 @@ export interface Database {
           fecha_nacimiento: string
           genero: string
           id?: string
+          id_jornada?: string | null
           nombre: string
           rol?: string | null
           telefono?: string | null
@@ -305,11 +334,20 @@ export interface Database {
           fecha_nacimiento?: string
           genero?: string
           id?: string
+          id_jornada?: string | null
           nombre?: string
           rol?: string | null
           telefono?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: 'public_personas_id_jornada_fkey'
+            columns: ['id_jornada']
+            isOneToOne: false
+            referencedRelation: 'jornadas'
+            referencedColumns: ['id']
+          }
+        ]
       }
       personas_x_usuarios: {
         Row: {
