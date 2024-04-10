@@ -1,9 +1,14 @@
 'use client'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useTransition } from 'react'
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
-import { ToastContainer } from 'react-toastify'
-// import { Icons } from '@/components/icons'
+import { toast, ToastContainer } from 'react-toastify'
+import { Icons } from '@/components/icons'
+import { createCitaByPaciente } from '@/app/(pages)/doctor/actions'
+// import { useRouter } from 'next/navigation'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import * as z from 'zod'
 import withDragAndDrop, {
 // type EventInteractionArgs
 } from 'react-big-calendar/lib/addons/dragAndDrop'
@@ -32,28 +37,97 @@ moment.locale('es')
 const localizer = momentLocalizer(moment)
 const DnDCalendar = withDragAndDrop(Calendar)
 
-export default function CitasPaciente ({ events }: { events: Events[] }) {
+const validationSchema = z.object({
+  descripcion: z.string(),
+  estado: z.string(),
+  fecha_final: z.string().min(1, { message: 'La fecha es obligatoria' }),
+  fecha_inicio: z.string(),
+  id_paciente: z.string(),
+  id_doctor: z.string(),
+  fecha_registro: z.string()
+})
+
+  type ValidationSchema = z.infer<typeof validationSchema>
+
+export default function SolicitarCitasPaciente ({ events }: { events: Events[] }) {
   // const [state, setState] = React.useState<Events[]>(events)
   const [isOpen, setIsOpen] = React.useState(false)
   const [eventSelected, setEventSelected] = React.useState<Events | null>(null)
-  const [myEvents, setMyEvents] = useState<Events[]>(events)
 
-  const handleSelectSlot = useCallback(
-    ({ start, end }: { start: Date, end: Date }) => {
-      const title = window.prompt('Nombre del nuevo evento')
-      if (title) {
-        const newEvent: Events = {
-          start,
-          end,
-          title
-        }
-        setMyEvents(prevEvents => [...prevEvents, newEvent])
+  const handleNewEvent = useCallback(() => {
+    setIsOpen(true)
+  }, [])
+
+  const handleCancel = useCallback(() => {
+    setIsOpen(false)
+  }, [])
+
+  const handleSelectSlot = useCallback(({ start, end }: { start: Date, end: Date }) => {
+    // Setear el evento seleccionado para el nuevo evento
+    setEventSelected({
+      start,
+      end,
+      title: '',
+      info: {
+        paciente: null,
+        doctor: null,
+        descripcion: '',
+        estado: '',
+        fecha_final: '',
+        fecha_inicio: '',
+        fecha_registro: '',
+        id: '',
+        id_doctor: '',
+        id_paciente: ''
       }
-    },
-    [setMyEvents]
-  )
+    })
+    // Mostrar el AlertDialog
+    handleNewEvent()
+  }, [handleNewEvent])
 
   const scrollToTime = new Date(1970, 1, 1, 6)
+
+  const [isPending, startTransition] = useTransition()
+
+  // const router = useRouter()
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset
+  } = useForm<ValidationSchema>({
+    resolver: zodResolver(validationSchema),
+    defaultValues: {
+      descripcion: eventSelected?.info?.descripcion ?? 'No disponible',
+      estado: '',
+      fecha_final: '',
+      fecha_inicio: '',
+      id_paciente: '',
+      id_doctor: '',
+      fecha_registro: ''
+    }
+  })
+
+  function onSubmit (data: z.infer<typeof validationSchema>) {
+    startTransition(async () => {
+      const { citasInsert, errorCitasInsert } = await createCitaByPaciente({
+        data
+      })
+
+      if (errorCitasInsert) {
+        toast.error('Error al crear la cita')
+        return
+      } else {
+        toast.success('La cita ha sido creada Exitosamente!')
+        reset()
+      }
+
+      if (!citasInsert) {
+        toast.error('Error al crear la cita')
+      }
+    })
+  }
 
   // const onEventResize = (args: EventInteractionArgs<object>) => {
   //   const { start, end } = args
@@ -115,7 +189,7 @@ export default function CitasPaciente ({ events }: { events: Events[] }) {
         defaultDate={moment().toDate()}
         defaultView='week'
         views={['month', 'week', 'day']}
-        events={myEvents}
+        events={events}
         localizer={localizer}
         onSelectSlot={handleSelectSlot}
         selectable
@@ -146,7 +220,7 @@ export default function CitasPaciente ({ events }: { events: Events[] }) {
               Información de la cita
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <form className='grid gap-3'>
+          <form onSubmit={handleSubmit(onSubmit)} className='grid gap-3'>
             <aside className='grid gap-3'>
               <div>
                 <Label className=' text-lg'>Informacion del paciente</Label>
@@ -166,7 +240,8 @@ export default function CitasPaciente ({ events }: { events: Events[] }) {
                     defaultValue={
                       `${eventSelected?.info?.paciente?.nombre ?? 'No disponible'} ${eventSelected?.info?.paciente?.apellido ?? 'No disponible'}`
                     }
-                    disabled
+                    disabled={isPending}
+                    tabIndex={0}
                   />
                 </div>
                 <div className='grid gap-2'>
@@ -229,6 +304,36 @@ export default function CitasPaciente ({ events }: { events: Events[] }) {
                   />
                 </div>
               </div>
+              <div className='grid grid-cols-1 sm:grid-cols-1 gap-4'>
+                <div className='grid gap-2'>
+                  <Label className='' htmlFor='descripcion'>
+                    Descripcion
+                  </Label>
+                  <Input
+                    placeholder='Nombre'
+                    type='text'
+                    autoCapitalize='none'
+                    autoComplete='descripcion'
+                    autoCorrect='off'
+                    autoFocus
+                    defaultValue={
+                      eventSelected?.info?.descripcion ?? 'No disponible'
+                    }
+                    disabled={isPending}
+                    tabIndex={0}
+                    className={
+                        errors.descripcion
+                          ? 'border-red-500  !placeholder-red-500 text-red-500'
+                          : ''
+                      }
+                      {...register('descripcion')}
+                  />
+                  {errors.descripcion && (
+                    <p className="text-xs italic text-red-500 mt-0">
+                    {errors.descripcion?.message}
+                     </p>)}
+                </div>
+              </div>
             </aside>
 
             <aside className='grid gap-3'>
@@ -275,25 +380,25 @@ export default function CitasPaciente ({ events }: { events: Events[] }) {
                   </Link>
               </Button> */}
               <div className='flex gap-3'>
-                <AlertDialogCancel className='bg-gray-600 text-white'>Cerrar</AlertDialogCancel>
+                <AlertDialogCancel className='bg-gray-600 text-white' onClick={handleCancel}>Cerrar</AlertDialogCancel>
                 <Button
-                // disabled={isPending}
+                disabled={isPending}
                 className='bg-sec-var-800'
                 >
-                {/* {isPending && (
+                {isPending && (
                   <Icons.spinner className="mr-2 h-4 w-4 animate-spin " />
-                )} */}
+                )}
                 Guardar
                 </Button>
-                <Button
-                // disabled={isPending}
+                {/* <Button
+                disabled={isPending}
                 className='bg-red-700'
                 >
-                {/* {isPending && (
+                {isPending && (
                   <Icons.spinner className="mr-2 h-4 w-4 animate-spin " />
-                )} */}
+                )}
                 Eliminar
-                </Button>
+                </Button> */}
               </div>
             </footer>
           </AlertDialogFooter>
