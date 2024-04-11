@@ -1,17 +1,11 @@
 'use client'
-import React, { useCallback, useState, useTransition } from 'react'
-import { Calendar, momentLocalizer } from 'react-big-calendar'
-import moment from 'moment'
-import { toast, ToastContainer } from 'react-toastify'
+import React, { useTransition } from 'react'
+import { toast } from 'react-toastify'
 import { Icons } from '@/components/icons'
-import { createCitaByPaciente } from '@/app/(pages)/doctor/actions'
 // import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
-import withDragAndDrop, {
-// type EventInteractionArgs
-} from 'react-big-calendar/lib/addons/dragAndDrop'
 import {
   AlertDialog,
   // AlertDialogAction,
@@ -23,149 +17,67 @@ import {
   AlertDialogTitle
 } from '@/components/ui/alert-dialog'
 
-import 'react-big-calendar/lib/addons/dragAndDrop/styles.css'
-import 'react-big-calendar/lib/css/react-big-calendar.css'
 import { formatFecha } from '@/app/actions'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 // import Link from 'next/link'
 
-import 'moment/locale/es'
-moment.locale('es')
-
-const localizer = momentLocalizer(moment)
-const DnDCalendar = withDragAndDrop(Calendar)
-
 const validationSchema = z.object({
   descripcion: z.string(),
   estado: z.string(),
-  fecha_final: z.string().min(1, { message: 'La fecha es obligatoria' }),
-  fecha_inicio: z.string(),
+  fecha_inicio: z.date().refine(date => !isNaN(date.getTime()), {
+    message: 'La fecha de inicio no es válida'
+  }),
+  fecha_fin: z.date().refine(date => !isNaN(date.getTime()), {
+    message: 'La fecha de finalización no es válida'
+  }),
   id_paciente: z.string(),
   id_doctor: z.string(),
   fecha_registro: z.string()
+}).refine(data => data.fecha_inicio < data.fecha_fin, {
+  message: 'La fecha de inicio debe ser anterior a la fecha de finalización',
+  path: ['fecha_inicio']
 })
 
   type ValidationSchema = z.infer<typeof validationSchema>
 
-export default function SolicitarCitasPaciente ({ events }: { events: Events[] }) {
-  // const [state, setState] = React.useState<Events[]>(events)
-  const [isOpen, setIsOpen] = React.useState(false)
-  const [eventSelected, setEventSelected] = React.useState<Events | null>(null)
-
-  const handleNewEvent = useCallback(() => {
-    setIsOpen(true)
-  }, [])
-
-  const handleCancel = useCallback(() => {
-    setIsOpen(false)
-  }, [])
-
-  const handleSelectSlot = useCallback(({ start, end }: { start: Date, end: Date }) => {
-    // Setear el evento seleccionado para el nuevo evento
-    setEventSelected({
-      start,
-      end,
-      title: '',
-      info: {
-        paciente: null,
-        doctor: null,
-        descripcion: '',
-        estado: '',
-        fecha_final: '',
-        fecha_inicio: '',
-        fecha_registro: '',
-        id: '',
-        id_doctor: '',
-        id_paciente: ''
-      }
-    })
-    // Mostrar el AlertDialog
-    handleNewEvent()
-  }, [handleNewEvent])
-
-  const scrollToTime = new Date(1970, 1, 1, 6)
-
+export default function SolicitarCitasPaciente ({
+  isOpen,
+  setIsOpen,
+  eventSelected
+}: {
+  eventSelected: Events | null
+  setIsOpen: (isOpen: boolean) => void
+  isOpen: boolean
+}) {
   const [isPending, startTransition] = useTransition()
 
   // const router = useRouter()
-
   const {
-    register,
     handleSubmit,
-    formState: { errors },
-    reset
+    setValue,
+    trigger,
+    getValues,
+    formState: { errors }
   } = useForm<ValidationSchema>({
-    resolver: zodResolver(validationSchema),
-    defaultValues: {
-      descripcion: eventSelected?.info?.descripcion ?? 'No disponible',
-      estado: '',
-      fecha_final: '',
-      fecha_inicio: '',
-      id_paciente: '',
-      id_doctor: '',
-      fecha_registro: ''
-    }
+    resolver: zodResolver(validationSchema)
   })
 
   function onSubmit (data: z.infer<typeof validationSchema>) {
+    if (errors.fecha_inicio ?? errors.fecha_fin) return
     startTransition(async () => {
-      const { citasInsert, errorCitasInsert } = await createCitaByPaciente({
-        data
-      })
-
-      if (errorCitasInsert) {
-        toast.error('Error al crear la cita')
+      // comprobar si hay cambios en las fechas
+      if (eventSelected?.start.toISOString() === data.fecha_inicio.toISOString() && eventSelected?.end.toISOString() === data.fecha_fin.toISOString()) {
+        toast.warn('No realizo ningun cambio en la cita')
+        setIsOpen(false)
         return
-      } else {
-        toast.success('La cita ha sido creada Exitosamente!')
-        reset()
       }
 
-      if (!citasInsert) {
-        toast.error('Error al crear la cita')
-      }
+      toast.success('Cita actualizada correctamente')
+      setIsOpen(false)
     })
   }
-
-  // const onEventResize = (args: EventInteractionArgs<object>) => {
-  //   const { start, end } = args
-
-  //   setState((state) => {
-  //     return state.map((event) => {
-  //       if (event.id === (args.event as Events).id) {
-  //         return { ...event, start: start as Date, end: end as Date }
-  //       } else {
-  //         return event
-  //       }
-  //     })
-  //   })
-  // }
-
-  // const onEventDrop = (args: EventInteractionArgs<object>) => {
-  //   const { start, end } = args
-
-  //   setState((prevState) => {
-  //     // Creamos una nueva copia de los eventos
-  //     const newEvents = [...prevState]
-
-  //     // Buscamos el evento que se ha movido y actualizamos sus fechas
-  //     const eventIndex = newEvents.findIndex(
-  //       (event) => event.id === (args.event as Events).id
-  //     )
-  //     if (eventIndex !== -1) {
-  //       newEvents[eventIndex] = {
-  //         ...newEvents[eventIndex],
-  //         start: start as Date,
-  //         end: end as Date
-  //       }
-  //     }
-
-  //     // Devolvemos los nuevos eventos como el nuevo estado
-  //     return newEvents
-  //   })
-  // }
 
   function toLocalISOString ({ date }: { date: Date }) {
     const offset = date.getTimezoneOffset()
@@ -173,48 +85,38 @@ export default function SolicitarCitasPaciente ({ events }: { events: Events[] }
     return date.toISOString().slice(0, -1)
   }
 
-  const [theme] = useState('dark')
+  const handleChangeStart = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue('fecha_inicio', new Date(e.target.value))
+    trigger('fecha_inicio')
+  }
+
+  const handleChangeEnd = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue('fecha_fin', new Date(e.target.value))
+    trigger('fecha_fin')
+  }
+
+  const handleClick = () => {
+    const fechaInicio = getValues('fecha_inicio')
+    const fechaFin = getValues('fecha_fin')
+    if (!fechaInicio) {
+      setValue('fecha_inicio', new Date(eventSelected?.start?.toISOString() ?? ''))
+      trigger('fecha_inicio')
+    }
+    if (!fechaFin) {
+      setValue('fecha_fin', new Date(eventSelected?.end?.toISOString() ?? ''))
+      trigger('fecha_fin')
+    }
+
+    onSubmit(getValues())
+  }
 
   return (
-    <div className='App flex justify-center py-6 dark:text-white'>
-      <DnDCalendar
-        messages={{
-          next: 'Siguiente',
-          previous: 'Anterior',
-          today: 'Hoy',
-          month: 'Mes',
-          week: 'Semana',
-          day: 'Día'
-        }}
-        defaultDate={moment().toDate()}
-        defaultView='week'
-        views={['month', 'week', 'day']}
-        events={events}
-        localizer={localizer}
-        onSelectSlot={handleSelectSlot}
-        selectable
-        scrollToTime={scrollToTime}
-        // onEventDrop={onEventDrop}
-        // onEventResize={onEventResize}
-
-        onDoubleClickEvent={(
-          event: object,
-          e: React.SyntheticEvent<HTMLElement, Event>
-        ) => {
-          setIsOpen(true)
-          setEventSelected(event as Events)
-        }}
-        style={{ height: '88vh', width: '100vh' }}
-        draggableAccessor={() => false}
-        resizableAccessor={() => false}
-        className={`rbc-calendar-${theme}`}
-      />
-
+    <>
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle className='capitalize'>
-              Cita: {eventSelected?.info?.descripcion}
+              Nueva Cita
             </AlertDialogTitle>
             <AlertDialogDescription>
               Información de la cita
@@ -310,15 +212,15 @@ export default function SolicitarCitasPaciente ({ events }: { events: Events[] }
                     Descripcion
                   </Label>
                   <Input
-                    placeholder='Nombre'
+                    placeholder='Ingrese una descripcion'
                     type='text'
                     autoCapitalize='none'
                     autoComplete='descripcion'
                     autoCorrect='off'
                     autoFocus
-                    defaultValue={
-                      eventSelected?.info?.descripcion ?? 'No disponible'
-                    }
+                    // defaultValue={
+                    //   eventSelected?.info?.descripcion ?? 'No disponible'
+                    // }
                     disabled={isPending}
                     tabIndex={0}
                     className={
@@ -326,7 +228,6 @@ export default function SolicitarCitasPaciente ({ events }: { events: Events[] }
                           ? 'border-red-500  !placeholder-red-500 text-red-500'
                           : ''
                       }
-                      {...register('descripcion')}
                   />
                   {errors.descripcion && (
                     <p className="text-xs italic text-red-500 mt-0">
@@ -349,11 +250,22 @@ export default function SolicitarCitasPaciente ({ events }: { events: Events[] }
                     type='datetime-local'
                     defaultValue={
                       eventSelected?.start
-                        ? toLocalISOString({ date: new Date(eventSelected?.start.toISOString()) })
+                        ? toLocalISOString({
+                          date: new Date(eventSelected?.start.toISOString())
+                        })
                         : new Date().toISOString().split('Z')[0]
                     }
+                    onChange={(e) => {
+                      handleChangeStart(e)
+                    }}
                   />
-
+                  {
+                      errors.fecha_inicio && (
+                          <p className='text-xs italic text-red-500 mt-0'>
+                          {errors.fecha_inicio?.message}
+                          </p>
+                      )
+                  }
                 </div>
                 <div className='grid gap-2'>
                   <Label className='' htmlFor='family-name'>
@@ -363,10 +275,22 @@ export default function SolicitarCitasPaciente ({ events }: { events: Events[] }
                     type='datetime-local'
                     defaultValue={
                       eventSelected?.end
-                        ? toLocalISOString({ date: new Date(eventSelected?.end.toISOString()) })
+                        ? toLocalISOString({
+                          date: new Date(eventSelected?.end.toISOString())
+                        })
                         : new Date().toISOString().split('Z')[0]
                     }
+                    onChange={(e) => {
+                      handleChangeEnd(e)
+                    }}
                   />
+                  {
+                      errors.fecha_fin && (
+                          <p className='text-xs italic text-red-500 mt-0'>
+                          {errors.fecha_fin?.message}
+                          </p>
+                      )
+                  }
                 </div>
               </div>
             </aside>
@@ -380,8 +304,9 @@ export default function SolicitarCitasPaciente ({ events }: { events: Events[] }
                   </Link>
               </Button> */}
               <div className='flex gap-3'>
-                <AlertDialogCancel className='bg-gray-600 text-white' onClick={handleCancel}>Cerrar</AlertDialogCancel>
+                <AlertDialogCancel className='bg-gray-600 text-white'>Cerrar</AlertDialogCancel>
                 <Button
+                onClick={handleClick}
                 disabled={isPending}
                 className='bg-sec-var-800'
                 >
@@ -405,18 +330,6 @@ export default function SolicitarCitasPaciente ({ events }: { events: Events[] }
         </AlertDialogContent>
       </AlertDialog>
 
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
-    </div>
+      </>
   )
 }

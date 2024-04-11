@@ -1,10 +1,10 @@
 import { getCitasByPaciente } from '@/app/(pages)/doctor/actions'
 import { getInfoPersona } from '@/app/actions'
-import CitasPaciente from './calendar'
+// import CitasPaciente from './calendar'
 import CardMedicos from './components/CardMedicos'
-import SolicitarCitasPaciente from './solicitar-cita'
+import CalendarioPaciente from './components/calendar'
 
-export default async function page () {
+export default async function CitasPacientePage () {
   const { usuario, errorUsuario } = await getInfoPersona()
 
   if (errorUsuario) {
@@ -36,8 +36,8 @@ export default async function page () {
   return (
       <div className="">
         <CardMedicos/>
-        <CitasPaciente events={events} />
-        <SolicitarCitasPaciente events={events} />
+        {/* <CitasPaciente events={events} /> */}
+        <CalendarioPaciente events={events} />
       </div>
   )
 }

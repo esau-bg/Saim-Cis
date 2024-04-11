@@ -21,7 +21,6 @@ declare global {
   type DataTableUsers = DB['public']['Functions']['get_personas_by_rol_and_filter_pagination']['Returns']
   type Roles = DB['public']['Tables']['roles']['Row']
   type CitasInsert = DB['public']['Tables']['citas']['Insert']
-  type CitasUpdate = DB['public']['Tables']['citas']['Update']
   type CitasDelete = DB['public']['Tables']['citas']['Delete']
   type EspecializacionXPersonas = DB['public']['Tables']['especializacion_x_personas']['Row']
 
