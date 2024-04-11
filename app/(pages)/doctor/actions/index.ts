@@ -7,6 +7,7 @@ export async function getCitasByDoctor ({ id_doctor }: { id_doctor: string }) {
     .from('citas')
     .select('*, doctor:personas!citas_id_doctor_fkey(*), paciente:personas!citas_id_paciente_fkey(*)')
     .eq('id_doctor', id_doctor)
+    .in('estado', ['pendiente'])
     .order('fecha_inicio', { ascending: true })
 
   return { citas, errorCitas }
@@ -51,12 +52,12 @@ export async function updateCitaByPaciente ({ data }: { data: CitasUpdate }) {
   return { citasUpdate, errorCitasUpdate }
 }
 
-export async function deleteCita (id: string) {
-  const { data: citasDelete, error: errorCitasDelete } = await supabase
+export async function citaCancel (id: string) {
+  const { data: citasCancel, error: errorCitasCancel } = await supabase
     .from('citas')
-    .delete()
+    .update({ estado: 'cancelada' })
     .eq('id', id)
-  return { citasDelete, errorCitasDelete }
+  return { citasCancel, errorCitasCancel }
 }
 
 export async function getCita ({ id_cita }: { id_cita: string }) {
@@ -174,13 +175,3 @@ export async function getDiagnosticosByExpedienteAndQuery ({
 
   return { diagnosticos, error }
 }
-
-/* export async function getDiagnosticsHistory ({ numExpediente }: { numExpediente: string }) {
-  const { data: diagnostics, error: errorDiagnostics } = await supabase
-    .from('diagnosticos')
-    .select('*')
-    .eq('id_expediente', numExpediente)
-    .order('fecha_diagnostico', { ascending: true })
-
-  return { diagnostics, errorDiagnostics }
-} */

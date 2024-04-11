@@ -21,7 +21,7 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 
 import 'moment/locale/es'
-import { deleteCita } from '../actions'
+import { citaCancel } from '../actions'
 moment.locale('es')
 
 const localizer = momentLocalizer(moment)
@@ -46,10 +46,14 @@ export default function CitasDoctor ({ events, infoMedico }: { events: Events[],
   }
 
   const eliminarCita = async (cita: string) => {
-    const { citasDelete, errorCitasDelete } = await deleteCita(cita)
+    const { citasCancel, errorCitasCancel } = await citaCancel(cita)
 
-    console.log(citasDelete)
-    console.log(errorCitasDelete)
+    if (errorCitasCancel) {
+      console.error('Error al cancelar la cita:', errorCitasCancel)
+    } else {
+      console.log(citasCancel)
+      window.location.reload()
+    }
   }
 
   return (
@@ -64,7 +68,7 @@ export default function CitasDoctor ({ events, infoMedico }: { events: Events[],
           day: 'Día'
         }}
         defaultDate={moment().toDate()}
-        defaultView='week'
+        defaultView='month'
         views={['month', 'week', 'day']}
         events={events}
         localizer={localizer}
@@ -224,7 +228,7 @@ export default function CitasDoctor ({ events, infoMedico }: { events: Events[],
                 <AlertDialogCancel className='bg-sky-500 hover:bg-sky-700 hover:text-white text-white' disabled>Guardar</AlertDialogCancel>
               </div>
               <div>
-              <AlertDialogAction disabled className='bg-rose-600 hover:bg-rose-800' onClick={() => { eliminarCita(eventSelected?.id ?? '') }
+              <AlertDialogAction className='bg-rose-600 hover:bg-rose-800' onClick={() => { eliminarCita(eventSelected?.id ?? '') }
                   }>Cancelar cita</AlertDialogAction>
               </div>
             </footer>
