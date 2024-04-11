@@ -417,6 +417,18 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
+      get_auth_user_by_email: {
+        Args: {
+          user_email: string
+        }
+        Returns: Json
+      }
+      get_auth_user_id_by_email: {
+        Args: {
+          user_email: string
+        }
+        Returns: string
+      }
       get_consultas_by_estado_and_filter_pagination: {
         Args: {
           estado_param: string
