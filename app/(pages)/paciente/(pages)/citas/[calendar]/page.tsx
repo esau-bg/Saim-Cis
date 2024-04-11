@@ -1,7 +1,8 @@
-import { getCitasByPaciente } from '@/app/(pages)/doctor/actions'
+import { getCitasByPaciente, getInfoDoctor } from '@/app/(pages)/doctor/actions'
 import { getInfoPersona } from '@/app/actions'
 // import CitasPaciente from './calendar'
 import CalendarioPaciente from '../components/calendar-citas'
+import { toast } from 'react-toastify'
 
 export default async function CitasPacienteCalendarPage ({
   params
@@ -11,6 +12,20 @@ export default async function CitasPacienteCalendarPage ({
   }
 }) {
   const idDoctor = params.calendar
+
+  const { InfoMedico, errorMedico } = await getInfoDoctor({ id_doctor: idDoctor })
+  if (errorMedico) {
+    toast.error('Error al Obtener el horario de Medico')
+  }
+
+  if (!InfoMedico) {
+    return (
+      <div>
+        <span>Error al obtener los datos del medico</span>
+      </div>
+    )
+  }
+
   const { usuario, errorUsuario } = await getInfoPersona()
 
   if (errorUsuario) {
