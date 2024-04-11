@@ -71,7 +71,7 @@ export default function cardMedicos () {
       <div className="grid gap-3">
           <div className="grid grid-cols-1 sm:grid-cols-1 gap-4">
             <div className="grid gap-2">
-            <Label className='' htmlFor='rol'>
+            <Label className='text-xl text-center' htmlFor='rol'>
               Seleccione una especialidad para posteriormente seleccionar un doctor
             </Label>
             <AsyncSelect
@@ -102,7 +102,7 @@ export default function cardMedicos () {
       </form>
 
       {show && (
-      <div className="gap-2 grid grid-cols-2 sm:grid-cols-5 p-6">
+      <div className="gap-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 p-6">
         {doctores.map((doctor) => (
         <Card isFooterBlurred shadow="sm" key={doctor.id_persona} isPressable onPress={() => { handleCardClick(doctor) }} >
           <CardBody className="overflow-visible p-1">
@@ -114,7 +114,7 @@ export default function cardMedicos () {
              <CardFooter className="!items-start flex-col absolute bg-white/30 bottom-0 border-t-1 border-zinc-100/50 z-10 justify-between">
                <p className="text-tiny text-black/60 uppercase font-bold">{doctor.personas?.nombre} {doctor.personas?.apellido}</p>
                <p className="text-tiny text-black/60 uppercase font-bold">Jornada: {doctor.personas?.idJornada?.jornada}</p>
-               <h4 className="text-black font-medium text-large">{doctor.personas?.idUsuario.map(usuario => usuario.correo).join(', ')}</h4>
+               <h4 className="text-black font-medium truncate">{doctor.personas?.idUsuario.map(usuario => usuario.correo).join(', ')}</h4>
              </CardFooter>
           </CardBody>
         </Card>

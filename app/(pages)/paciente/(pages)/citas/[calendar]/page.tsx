@@ -1,8 +1,8 @@
 import { getCitasByPaciente, getInfoDoctor } from '@/app/(pages)/doctor/actions'
 import { getInfoPersona } from '@/app/actions'
-// import CitasPaciente from './calendar'
 import CalendarioPaciente from '../components/calendar-citas'
 import { toast } from 'react-toastify'
+// import CitasPaciente from '../calendar'
 
 export default async function CitasPacienteCalendarPage ({
   params
