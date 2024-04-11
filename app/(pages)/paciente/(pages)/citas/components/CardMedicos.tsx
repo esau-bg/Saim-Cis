@@ -66,10 +66,10 @@ export default function cardMedicos () {
     })
 
   return (
-    <div className='grid gap-6 px-2 py-2'>
+    <div className='grid gap-6 px-2 py-2 mx-4 justify-items-center bg-slate-100'>
       <form>
       <div className="grid gap-3">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-1 gap-4">
             <div className="grid gap-2">
             <Label className='' htmlFor='rol'>
               Seleccione una especialidad para posteriormente seleccionar un doctor
@@ -102,10 +102,10 @@ export default function cardMedicos () {
       </form>
 
       {show && (
-      <div className="gap-2 grid grid-cols-2 sm:grid-cols-4">
+      <div className="gap-2 grid grid-cols-2 sm:grid-cols-5 p-6">
         {doctores.map((doctor) => (
         <Card isFooterBlurred shadow="sm" key={doctor.id_persona} isPressable onPress={() => { handleCardClick(doctor) }} >
-          <CardBody className="overflow-visible p-0">
+          <CardBody className="overflow-visible p-1">
              <img
                className="w-100 object-cover shadow-sm rounded-lg aspect-square border-white dark:border-slate-900 bg-sec"
                src={doctor.personas?.idUsuario.map(usuario => usuario.avatar_url ??

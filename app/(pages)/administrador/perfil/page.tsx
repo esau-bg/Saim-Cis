@@ -4,7 +4,6 @@ import ActualizarPerfil from '@/app/components/actualizar-usuario'
 export default async function PerfilAdministradorPage () {
   const { usuario, errorUsuario } = await getInfoPersona()
 
-  console.log(usuario)
   if (errorUsuario) {
     return (
       <div>

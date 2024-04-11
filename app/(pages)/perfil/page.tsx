@@ -5,7 +5,6 @@ import NavbarIndexClient from '@/components/navbar-index-client'
 export default async function PerfilPage () {
   const { usuario, errorUsuario } = await getInfoPersona()
 
-  console.log(usuario)
   if (errorUsuario) {
     return (
       <div>
@@ -16,7 +15,7 @@ export default async function PerfilPage () {
 
   return (
     <>
-      <NavbarIndexClient />
+      <NavbarIndexClient user={usuario ?? null} />
       <ActualizarPerfil usuario={usuario ?? null} />
     </>
   )
