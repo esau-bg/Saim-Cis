@@ -2,7 +2,7 @@ import { getCitasByPaciente } from '@/app/(pages)/doctor/actions'
 import { getInfoPersona } from '@/app/actions'
 // import CitasPaciente from './calendar'
 import CardMedicos from './components/CardMedicos'
-import CalendarioPaciente from './components/calendar'
+import CalendarioPaciente from './components/calendar-citas'
 
 export default async function CitasPacientePage () {
   const { usuario, errorUsuario } = await getInfoPersona()

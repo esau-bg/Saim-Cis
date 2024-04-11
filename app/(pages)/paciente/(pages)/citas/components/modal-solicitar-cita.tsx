@@ -69,7 +69,7 @@ export default function SolicitarCitasPaciente ({
     startTransition(async () => {
       // comprobar si hay cambios en las fechas
       if (eventSelected?.start.toISOString() === data.fecha_inicio.toISOString() && eventSelected?.end.toISOString() === data.fecha_fin.toISOString()) {
-        toast.warn('No realizo ningun cambio en la cita')
+        toast.warn('No se puede crear la cita')
         setIsOpen(false)
         return
       }
