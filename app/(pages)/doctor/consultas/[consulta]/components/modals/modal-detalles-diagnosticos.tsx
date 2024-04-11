@@ -105,8 +105,7 @@ export function ModalDetallesDiagnostico ({
                   <div className='grid gap-2'>
                     <Label htmlFor='interno' className='flex items-center space-x-2'>
                       <span>Atendido Internamente</span>
-      <Checkbox disabled checked={diagnostico?.interno} />
-
+                        <Checkbox disabled checked={diagnostico?.interno} />
                     </Label>
                   </div>
               </aside>

@@ -31,7 +31,7 @@ export default function cardMedicos () {
   const router = useRouter()
 
   const handleCardClick = (doctor: InfoMedico) => {
-    router.push(`${pathname}/${doctor.id_especializacion}`)
+    router.push(`${pathname}/${doctor.id_persona}`)
     router.refresh()
   }
 
