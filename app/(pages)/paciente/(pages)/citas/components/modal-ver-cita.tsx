@@ -16,8 +16,13 @@ import {
 import { formatFecha } from '@/app/actions'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-// import Link from 'next/link'
+
+import 'moment/locale/es'
+import { citaCancel } from '../actions'
+moment.locale('es')
+
+const localizer = momentLocalizer(moment)
+const DnDCalendar = withDragAndDrop(Calendar)
 
 export default function VerCitasPaciente ({
   isOpen,
@@ -34,8 +39,45 @@ export default function VerCitasPaciente ({
     return date.toISOString().slice(0, -1)
   }
 
+  const cancelarCita = async (cita: string) => {
+    const { citasCancel, errorCitasCancel } = await citaCancel(cita)
+
+    console.log(citasCancel, errorCitasCancel)
+  }
+
   return (
-    <>
+    <div className='App flex justify-center py-6 dark:text-white'>
+      <DnDCalendar
+        messages={{
+          next: 'Siguiente',
+          previous: 'Anterior',
+          today: 'Hoy',
+          month: 'Mes',
+          week: 'Semana',
+          day: 'Día'
+        }}
+        defaultDate={moment().toDate()}
+        defaultView='month'
+        views={['month', 'week', 'day']}
+        events={events}
+        localizer={localizer}
+        selectable
+        scrollToTime={scrollToTime}
+        min={minDate}
+        max={maxDate}
+
+        onDoubleClickEvent={(
+          event: object,
+          e: React.SyntheticEvent<HTMLElement, Event>
+        ) => {
+          setIsOpen(true)
+          setEventSelected(event as Events)
+        }}
+        style={{ height: '88vh', width: '100vh' }}
+        draggableAccessor={() => false}
+        resizableAccessor={() => false}
+      />
+
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -167,33 +209,14 @@ export default function VerCitasPaciente ({
             </aside>
           </form>
           <AlertDialogFooter>
-            <footer className='w-full flex justify-between '>
-
-              {/* <Button asChild variant={'link'}>
-                  <Link href={`calendario/${eventSelected?.info?.id}`}>
-                    Ver detalles
-                  </Link>
-              </Button> */}
-              <div className='flex gap-3'>
-                <AlertDialogCancel className='bg-gray-600 text-white'>Cerrar</AlertDialogCancel>
-                <Button
-                // disabled={isPending}
-                className='bg-sec-var-800'
-                >
-                {/* {isPending && (
-                  <Icons.spinner className="mr-2 h-4 w-4 animate-spin " />
-                )} */}
-                Guardar
-                </Button>
-                <Button
-                // disabled={isPending}
-                className='bg-red-700'
-                >
-                {/* {isPending && (
-                  <Icons.spinner className="mr-2 h-4 w-4 animate-spin " />
-                )} */}
-                Eliminar
-                </Button>
+            <footer className='w-full flex justify-between'>
+              <div className='flex gap-2'>
+                <AlertDialogCancel>Cerrar</AlertDialogCancel>
+                <AlertDialogCancel className='bg-sky-500 hover:bg-sky-700 hover:text-white text-white' disabled>Guardar</AlertDialogCancel>
+              </div>
+              <div>
+              <AlertDialogAction className='bg-rose-600 hover:bg-rose-800' onClick={() => { cancelarCita(eventSelected?.id ?? '') }
+                  }>Cancelar cita</AlertDialogAction>
               </div>
             </footer>
           </AlertDialogFooter>
