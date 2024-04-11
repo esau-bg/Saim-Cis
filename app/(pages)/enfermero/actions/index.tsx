@@ -81,11 +81,11 @@ export async function setRolePacienteUser ({
 export async function sendMailSingup ({
   email,
   passwordTemp,
-  persona
+  nombrePersona
 }: {
   email: string
   passwordTemp: string
-  persona: Personas
+  nombrePersona: string
 }) {
   const transporter = nodemailer.createTransport({
     host: 'smtp-mail.outlook.com',
@@ -100,10 +100,10 @@ export async function sendMailSingup ({
   const mailOptions = {
     from: `SAIM CIS ${process.env.NEXT_PUBLIC_EMAIL}`,
     to: email,
-    subject: `Bienvenido a SAIM CIS ${persona.nombre}! 🎉`,
+    subject: `Bienvenido a SAIM CIS ${nombrePersona}! 🎉`,
     text: `Su contraseña temporal es: ${passwordTemp}`,
     html: TemplateEmailPassTemp({
-      nombre: persona.nombre,
+      nombre: nombrePersona,
       tempPass: passwordTemp
     })
   }

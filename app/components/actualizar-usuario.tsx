@@ -174,7 +174,7 @@ export default function ActualizarPerfil ({ usuario }: { usuario: UserType }) {
                   htmlFor="cover-photo"
                   className="block font-medium dark:text-white text-gray-900"
                 >
-                  Fotografia de portada
+                  Fotografia de perfil
                 </Label>
 
                 {/* Dropzone necesario para realizar el Drag and drop */}

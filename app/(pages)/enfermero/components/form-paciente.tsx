@@ -100,6 +100,7 @@ export function EnfermeroPacienteForm () {
 
       if (dataCorreo && dataCorreo?.length > 0) {
         toast.error('El usuario ya está registrado en el sistema.')
+        return
       }
 
       // Crear persona
@@ -156,7 +157,7 @@ export function EnfermeroPacienteForm () {
       const emailResponse = await sendMailSingup({
         email: persona.correo ?? '',
         passwordTemp: randomCode,
-        persona
+        nombrePersona: persona.nombre
       })
 
       if (emailResponse.accepted.includes(persona.correo ?? '')) {
