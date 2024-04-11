@@ -88,4 +88,8 @@ declare global {
       } | null
     }
 
+    type InfoMedicoJornada =
+    | (Personas & { jornada: Jornadas | null })
+    | null
+
 }

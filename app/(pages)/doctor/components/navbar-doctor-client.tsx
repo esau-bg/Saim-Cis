@@ -12,7 +12,8 @@ import LogoSaimCis from '@/components/logo-saim-cis'
 
 const navigation = [
   { name: 'Perfil', href: '/doctor', current: true },
-  { name: 'Consultas', href: '/doctor/consultas', current: false }
+  { name: 'Consultas', href: '/doctor/consultas', current: false },
+  { name: 'Calendario', href: '/doctor/calendario', current: false }
 ]
 
 function classNames (...classes: string[]) {
