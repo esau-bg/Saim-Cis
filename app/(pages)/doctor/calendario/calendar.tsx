@@ -22,12 +22,13 @@ import { Input } from '@/components/ui/input'
 
 import 'moment/locale/es'
 import { citaCancel } from '../actions'
+import { toast, ToastContainer } from 'react-toastify'
 moment.locale('es')
 
 const localizer = momentLocalizer(moment)
 const DnDCalendar = withDragAndDrop(Calendar)
 
-export default function CitasDoctor ({ events, infoMedico }: { events: Events[], infoMedico: InfoMedico }) {
+export default function CitasDoctor ({ events, infoMedico }: { events: Events[], infoMedico: InfoMedicoJornada }) {
   const [isOpen, setIsOpen] = React.useState(false)
   const [eventSelected, setEventSelected] = React.useState<Events | null>(null)
 
@@ -48,11 +49,13 @@ export default function CitasDoctor ({ events, infoMedico }: { events: Events[],
   const eliminarCita = async (cita: string) => {
     const { citasCancel, errorCitasCancel } = await citaCancel(cita)
 
-    if (errorCitasCancel) {
-      console.error('Error al cancelar la cita:', errorCitasCancel)
-    } else {
-      console.log(citasCancel)
+    if (citasCancel) {
+      toast.success('La cita ha sido cancelada')
       window.location.reload()
+    }
+
+    if (errorCitasCancel) {
+      toast.error('Error al cancelar la cita')
     }
   }
 
@@ -227,8 +230,7 @@ export default function CitasDoctor ({ events, infoMedico }: { events: Events[],
           <AlertDialogFooter>
             <footer className='w-full flex justify-between'>
               <div className='flex gap-2'>
-                <AlertDialogCancel>Cerrar</AlertDialogCancel>
-                <AlertDialogCancel className='bg-sky-500 hover:bg-sky-700 hover:text-white text-white' disabled>Guardar</AlertDialogCancel>
+              <AlertDialogCancel className='bg-gray-500 hover:bg-gray-600 text-white hover:text-white focus:outline-none'>Cerrar</AlertDialogCancel>
               </div>
               <div>
               <AlertDialogAction className='bg-rose-600 hover:bg-rose-800' onClick={() => { eliminarCita(eventSelected?.id ?? '') }
@@ -238,6 +240,19 @@ export default function CitasDoctor ({ events, infoMedico }: { events: Events[],
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   )
 }

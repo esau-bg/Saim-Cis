@@ -69,7 +69,7 @@ export default function SolicitarCitasPaciente ({
     startTransition(async () => {
       // comprobar si hay cambios en las fechas
       if (eventSelected?.start.toISOString() === data.fecha_inicio.toISOString() && eventSelected?.end.toISOString() === data.fecha_fin.toISOString()) {
-        toast.warn('No se puede crear la cita')
+        toast.error('No se puede crear la cita')
         setIsOpen(false)
         return
       }
@@ -304,7 +304,7 @@ export default function SolicitarCitasPaciente ({
                   </Link>
               </Button> */}
               <div className='flex gap-3'>
-                <AlertDialogCancel className='bg-gray-600 text-white'>Cerrar</AlertDialogCancel>
+              <AlertDialogCancel className='bg-gray-500 hover:bg-gray-600 text-white hover:text-white focus:outline-none'>Cerrar</AlertDialogCancel>
                 <Button
                 onClick={handleClick}
                 disabled={isPending}

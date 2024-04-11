@@ -175,7 +175,7 @@ export default function VerCitasPaciente ({
                   </Link>
               </Button> */}
               <div className='flex gap-3'>
-                <AlertDialogCancel className='bg-gray-600 text-white'>Cerrar</AlertDialogCancel>
+              <AlertDialogCancel className='bg-gray-500 hover:bg-gray-600 text-white hover:text-white focus:outline-none'>Cerrar</AlertDialogCancel>
                 <Button
                 // disabled={isPending}
                 className='bg-sec-var-800'

@@ -57,6 +57,8 @@ export async function citaCancel (id: string) {
     .from('citas')
     .update({ estado: 'cancelada' })
     .eq('id', id)
+    .select()
+    .single()
   return { citasCancel, errorCitasCancel }
 }
 
