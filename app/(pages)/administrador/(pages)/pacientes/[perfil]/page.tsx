@@ -1,7 +1,7 @@
 import { getPerfil } from '@/app/actions'
 import ActualizarUsuarioPersona from '../../../components/actualizar-usuario-persona'
 
-export default async function PerfilPacientePage ({
+export default async function PerfilPacienteAdminPage ({
   params
 }: {
   params: { perfil: string }

@@ -1,7 +1,7 @@
 import { getInfoPersona } from '@/app/actions'
 import ActualizarPerfil from '@/app/components/actualizar-usuario'
 
-export default async function PerfilPacientePage () {
+export default async function PerfilEnfermeroPage () {
   const { usuario, errorUsuario } = await getInfoPersona()
 
   console.log(usuario)

@@ -1,7 +1,8 @@
 import { getInfoPersona } from '@/app/actions'
 import ActualizarPerfil from '@/app/components/actualizar-usuario'
+import NavbarIndexClient from '@/components/navbar-index-client'
 
-export default async function PerfilPacientePage () {
+export default async function PerfilPage () {
   const { usuario, errorUsuario } = await getInfoPersona()
 
   console.log(usuario)
@@ -15,6 +16,7 @@ export default async function PerfilPacientePage () {
 
   return (
     <>
+      <NavbarIndexClient />
       <ActualizarPerfil usuario={usuario ?? null} />
     </>
   )
