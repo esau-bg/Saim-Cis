@@ -24,7 +24,6 @@ import { Button } from '@/components/ui/button'
 // import Link from 'next/link'
 
 const validationSchema = z.object({
-  descripcion: z.string(),
   estado: z.string(),
   fecha_inicio: z.date().refine(date => !isNaN(date.getTime()), {
     message: 'La fecha de inicio no es válida'
@@ -34,7 +33,13 @@ const validationSchema = z.object({
   }),
   id_paciente: z.string(),
   id_doctor: z.string(),
-  fecha_registro: z.string()
+  fecha_registro: z.string(),
+  descripcion: z
+    .string({
+      required_error: 'La descripción es obligatoria'
+    })
+    .min(1, { message: 'La descripción es obligatoria' })
+    .max(20, { message: 'La descripción no debe exceder los 20 caracteres' })
 }).refine(data => data.fecha_inicio < data.fecha_fin, {
   message: 'La fecha de inicio debe ser anterior a la fecha de finalización',
   path: ['fecha_inicio']
@@ -46,12 +51,14 @@ export default function SolicitarCitasPaciente ({
   isOpen,
   setIsOpen,
   eventSelected,
-  infoDoctor
+  infoDoctor,
+  infoPaciente
 }: {
-  infoDoctor: InfoMedicoJornada | null
+  infoDoctor: InfoMedicoJornada
   eventSelected: Events | null
   setIsOpen: (isOpen: boolean) => void
   isOpen: boolean
+  infoPaciente: UserType
 }) {
   const [isPending, startTransition] = useTransition()
 
@@ -68,6 +75,11 @@ export default function SolicitarCitasPaciente ({
 
   function onSubmit (data: z.infer<typeof validationSchema>) {
     if (errors.fecha_inicio ?? errors.fecha_fin) return
+    if (data.descripcion === '' || data.descripcion === undefined) {
+      trigger('descripcion')
+      return
+    }
+
     startTransition(async () => {
       // comprobar si hay cambios en las fechas
       if (eventSelected?.start.toISOString() === data.fecha_inicio.toISOString() && eventSelected?.end.toISOString() === data.fecha_fin.toISOString()) {
@@ -76,6 +88,8 @@ export default function SolicitarCitasPaciente ({
         return
       }
 
+      console.log(data.descripcion)
+      console.log('data', data)
       toast.success('Cita actualizada correctamente')
       setIsOpen(false)
     })
@@ -112,6 +126,11 @@ export default function SolicitarCitasPaciente ({
     onSubmit(getValues())
   }
 
+  const changeDescription = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue('descripcion', e.target.value)
+    trigger('descripcion')
+  }
+
   return (
     <>
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
@@ -141,9 +160,7 @@ export default function SolicitarCitasPaciente ({
                     autoComplete='full-name'
                     autoCorrect='off'
                     autoFocus
-                    defaultValue={
-                      `${eventSelected?.info?.paciente?.nombre ?? 'No disponible'} ${eventSelected?.info?.paciente?.apellido ?? 'No disponible'}`
-                    }
+                    defaultValue={`${infoPaciente?.nombre} ${infoPaciente?.apellido}` ?? 'No disponible'}
                     disabled
                   />
                 </div>
@@ -159,7 +176,7 @@ export default function SolicitarCitasPaciente ({
                     autoCorrect='off'
                     autoFocus
                     defaultValue={
-                      `${infoDoctor?.nombre ?? 'No disponible'} ${infoDoctor?.apellido ?? 'No disponible'}`
+                      `${infoDoctor?.nombre} ${infoDoctor?.apellido}` ?? 'No disponible'
                     }
                     disabled
                   />
@@ -178,7 +195,7 @@ export default function SolicitarCitasPaciente ({
                     autoCorrect='off'
                     autoFocus
                     defaultValue={
-                      eventSelected?.info?.paciente?.genero ?? 'No disponible'
+                      infoPaciente?.genero ?? 'No disponible'
                     }
                     disabled
                   />
@@ -194,12 +211,17 @@ export default function SolicitarCitasPaciente ({
                     autoComplete='family-name'
                     autoCorrect='off'
                     defaultValue={
-                      eventSelected?.info?.paciente?.fecha_nacimiento
+                      infoPaciente?.fecha_nacimiento
                         ? formatFecha(
                           new Date(
-                            eventSelected?.info?.paciente?.fecha_nacimiento
+                            infoPaciente?.fecha_nacimiento
                           ),
-                          'es-HN'
+                          'es-HN',
+                          {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          }
                         )
                         : 'No disponible'
                     }
@@ -219,6 +241,7 @@ export default function SolicitarCitasPaciente ({
                     autoComplete='descripcion'
                     autoCorrect='off'
                     autoFocus
+                    onChange={(e) => { changeDescription(e) }}
                     // defaultValue={
                     //   eventSelected?.info?.descripcion ?? 'No disponible'
                     // }
@@ -309,7 +332,7 @@ export default function SolicitarCitasPaciente ({
                 <Button
                 onClick={handleClick}
                 disabled={isPending}
-                className='bg-sec-var-800'
+                className='bg-sec hover:bg-sec-var-600'
                 >
                 {isPending && (
                   <Icons.spinner className="mr-2 h-4 w-4 animate-spin " />

@@ -83,7 +83,7 @@ export default async function CitasPacienteCalendarPage ({
   return (
       <div className="">
         {/* <CitasPaciente events={events} /> */}
-        <CalendarioPaciente events={events} eventsDoctor={eventsDoctor} eventsCrear={eventsCrear} infoMedico={InfoMedico}/>
+        <CalendarioPaciente events={events} eventsDoctor={eventsDoctor} eventsCrear={eventsCrear} infoMedico={InfoMedico} paciente={usuario}/>
       </div>
   )
 }

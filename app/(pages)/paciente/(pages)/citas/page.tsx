@@ -18,7 +18,7 @@ export default async function CitasPacientePage () {
   }
 
   return (
-      <div className="">
+      <div >
         <CardMedicos/>
       </div>
   )
