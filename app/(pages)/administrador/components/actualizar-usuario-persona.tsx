@@ -43,7 +43,7 @@ const validationSchema = z.object({
       message: 'El telefono debe tener el formato dddd-dddd'
     }),
   id: z.string().min(1, { message: 'ID no disponible' }),
-  descripcion: z.string().min(1, { message: 'Agrega una descripcion' }),
+  descripcion: z.string().min(1, { message: 'Agrega una descripcion' })
 })
 
 type ValidationSchema = z.infer<typeof validationSchema>
