@@ -24,6 +24,7 @@ export default function CalendarioPaciente ({ events, eventsDoctor, eventsCrear,
   // const [state, setState] = React.useState<Events[]>(events)
   const [isOpen, setIsOpen] = React.useState(false)
   const [eventSelected, setEventSelected] = React.useState<Events | null>(null)
+  const [infoDoctor, setInfoDoctor] = React.useState<InfoMedicoJornada | null>(null)
   const [citaCreate] = React.useState<Events | null>(null)
 
   const now = new Date()
@@ -48,7 +49,22 @@ export default function CalendarioPaciente ({ events, eventsDoctor, eventsCrear,
       title: '',
       info: {
         paciente: null,
-        doctor: null,
+        doctor: infoDoctor ? {
+          ...infoDoctor // mantener las propiedades existentes
+        } : {
+          apellido: '',
+          correo: null,
+          creado: '',
+          direccion: null,
+          dni: '',
+          fecha_nacimiento: '',
+          genero: '',
+          id: '',
+          id_jornada: null,
+          nombre: '',
+          rol: null,
+          telefono: null
+        },
         descripcion: '',
         estado: '',
         fecha_final: '',
@@ -61,7 +77,7 @@ export default function CalendarioPaciente ({ events, eventsDoctor, eventsCrear,
     })
     // Mostrar el AlertDialog
     handleNewEvent()
-  }, [handleNewEvent])
+  }, [handleNewEvent, infoDoctor])
 
   const scrollToTime = new Date(1970, 1, 1, 6)
   const router = useRouter()
@@ -155,6 +171,7 @@ export default function CalendarioPaciente ({ events, eventsDoctor, eventsCrear,
         defaultDate={moment().toDate()}
         defaultView='week'
         views={['month', 'week', 'day']}
+        // events={[...eventsDoctor, ...eventsCrear, ...events]}
         events={eventsDoctor}
         localizer={localizer}
         onSelectSlot={handleSelectSlot}
@@ -171,6 +188,7 @@ export default function CalendarioPaciente ({ events, eventsDoctor, eventsCrear,
         ) => {
           setIsOpen(true)
           setEventSelected(event as Events)
+          setInfoDoctor(event as InfoMedicoJornada)
         }}
         style={{ height: '88vh', width: '100vh' }}
         draggableAccessor={() => false}
@@ -180,14 +198,15 @@ export default function CalendarioPaciente ({ events, eventsDoctor, eventsCrear,
       <SolicitarCitasPaciente
       isOpen={isOpen}
       setIsOpen={setIsOpen}
-      eventSelected={eventSelected}/>
+      eventSelected={eventSelected}
+      infoDoctor={infoDoctor}/>
 
     {/* <VerCitasPaciente
       isOpen={isOpen}
       setIsOpen={setIsOpen}
-      eventSelected={eventSelected}/> */}
+      eventSelected={eventSelected}/>
 
-      {/* <VerEventsDoctor isOpen={isOpen}
+      <VerEventsDoctor isOpen={isOpen}
       setIsOpen={setIsOpen}
       eventSelected={eventSelected} /> */}
 

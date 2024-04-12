@@ -45,8 +45,10 @@ const validationSchema = z.object({
 export default function SolicitarCitasPaciente ({
   isOpen,
   setIsOpen,
-  eventSelected
+  eventSelected,
+  infoDoctor
 }: {
+  infoDoctor: InfoMedicoJornada | null
   eventSelected: Events | null
   setIsOpen: (isOpen: boolean) => void
   isOpen: boolean
@@ -157,7 +159,7 @@ export default function SolicitarCitasPaciente ({
                     autoCorrect='off'
                     autoFocus
                     defaultValue={
-                      `${eventSelected?.info?.doctor?.nombre ?? 'No disponible'} ${eventSelected?.info?.doctor?.apellido ?? 'No disponible'}`
+                      `${infoDoctor?.nombre ?? 'No disponible'} ${infoDoctor?.apellido ?? 'No disponible'}`
                     }
                     disabled
                   />
