@@ -142,8 +142,7 @@ export default function SolicitarCitasPaciente ({
                     defaultValue={
                       `${eventSelected?.info?.paciente?.nombre ?? 'No disponible'} ${eventSelected?.info?.paciente?.apellido ?? 'No disponible'}`
                     }
-                    disabled={isPending}
-                    tabIndex={0}
+                    disabled
                   />
                 </div>
                 <div className='grid gap-2'>

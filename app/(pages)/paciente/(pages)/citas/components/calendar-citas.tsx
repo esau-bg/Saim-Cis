@@ -10,20 +10,27 @@ import withDragAndDrop, {
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 
+// import VerEventsDoctor from './ver-event-doctor'
+// import VerCitasPaciente from './modal-ver-cita'
 import SolicitarCitasPaciente from './modal-solicitar-cita'
 import { createCitaByPaciente } from '@/app/(pages)/doctor/actions'
 import 'moment/locale/es'
-// import VerCitasPaciente from './modal-ver-cita'
 moment.locale('es')
 
 const localizer = momentLocalizer(moment)
 const DnDCalendar = withDragAndDrop(Calendar)
 
-export default function CalendarioPaciente ({ events }: { events: Events[] }) {
+export default function CalendarioPaciente ({ events, eventsDoctor, eventsCrear, infoMedico }: { events: Events[], eventsDoctor: Events[], eventsCrear: Events[], infoMedico: InfoMedicoJornada }) {
   // const [state, setState] = React.useState<Events[]>(events)
   const [isOpen, setIsOpen] = React.useState(false)
   const [eventSelected, setEventSelected] = React.useState<Events | null>(null)
   const [citaCreate] = React.useState<Events | null>(null)
+
+  const now = new Date()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+
+  const minDate = infoMedico?.jornada?.hora_inicio ? new Date(now.getFullYear(), now.getMonth(), now.getDate(), parseInt(infoMedico?.jornada?.hora_inicio)) : new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0)
+  const maxDate = infoMedico?.jornada?.hora_final ? new Date(now.getFullYear(), now.getMonth(), now.getDate(), parseInt(infoMedico?.jornada?.hora_final)) : new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59)
 
   const handleNewEvent = useCallback(() => {
     setIsOpen(true)
@@ -148,11 +155,13 @@ export default function CalendarioPaciente ({ events }: { events: Events[] }) {
         defaultDate={moment().toDate()}
         defaultView='week'
         views={['month', 'week', 'day']}
-        events={events}
+        events={eventsDoctor}
         localizer={localizer}
         onSelectSlot={handleSelectSlot}
         selectable
         scrollToTime={scrollToTime}
+        min={minDate}
+        max={maxDate}
         // onEventDrop={onEventDrop}
         // onEventResize={onEventResize}
 
@@ -177,6 +186,10 @@ export default function CalendarioPaciente ({ events }: { events: Events[] }) {
       isOpen={isOpen}
       setIsOpen={setIsOpen}
       eventSelected={eventSelected}/> */}
+
+      {/* <VerEventsDoctor isOpen={isOpen}
+      setIsOpen={setIsOpen}
+      eventSelected={eventSelected} /> */}
 
       <ToastContainer
         position="top-right"

@@ -24,13 +24,13 @@ export async function getInfoDoctor ({ id_doctor }: { id_doctor: string }) {
 }
 
 export async function getCitasByPaciente ({ id_paciente }: { id_paciente: string }) {
-  const { data: citas, error: errorCitas } = await supabase
+  const { data: citasPaciente, error: errorCitasPaciente } = await supabase
     .from('citas')
     .select('*, paciente:personas!citas_id_paciente_fkey(*), doctor:personas!citas_id_doctor_fkey(*) ')
     .eq('id_paciente', id_paciente)
     .order('fecha_inicio', { ascending: true })
 
-  return { citas, errorCitas }
+  return { citasPaciente, errorCitasPaciente }
 }
 
 export async function createCitaByPaciente ({ data }: { data: CitasInsert }) {

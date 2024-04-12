@@ -1,4 +1,4 @@
-import { getCitasByPaciente, getInfoDoctor } from '@/app/(pages)/doctor/actions'
+import { getCitasByDoctor, getCitasByPaciente, getInfoDoctor } from '@/app/(pages)/doctor/actions'
 import { getInfoPersona } from '@/app/actions'
 import CalendarioPaciente from '../components/calendar-citas'
 import { toast } from 'react-toastify'
@@ -40,15 +40,41 @@ export default async function CitasPacienteCalendarPage ({
     return (<div>Loading...</div>)
   }
 
-  const { citas, errorCitas } = await getCitasByPaciente({ id_paciente: usuario.id })
+  // obtener citas que tiene asignadas un paciente
+  const { citasPaciente, errorCitasPaciente } = await getCitasByPaciente({ id_paciente: usuario.id })
+
+  if (errorCitasPaciente) return <div>Error</div>
+
+  if (!citasPaciente) return <div>Loading...</div>
+
+  // obtener citas que tiene asignadas un doctor
+  const { citas, errorCitas } = await getCitasByDoctor({
+    id_doctor: idDoctor
+  })
 
   if (errorCitas) return <div>Error</div>
 
   if (!citas) return <div>Loading...</div>
 
-  const events = citas.map((cita) => ({
+  const events = citasPaciente.map((cita) => ({
     id: cita.id,
     title: cita.paciente?.nombre ?? '',
+    start: new Date(cita.fecha_inicio),
+    end: new Date(cita.fecha_final),
+    info: cita
+  }))
+
+  const eventsDoctor = citas.map((cita) => ({
+    id: cita.id,
+    title: cita.paciente?.nombre ?? '',
+    start: new Date(cita.fecha_inicio),
+    end: new Date(cita.fecha_final),
+    info: cita
+  }))
+
+  const eventsCrear = citas.map((cita) => ({
+    id: '',
+    title: '',
     start: new Date(cita.fecha_inicio),
     end: new Date(cita.fecha_final),
     info: cita
@@ -57,7 +83,7 @@ export default async function CitasPacienteCalendarPage ({
   return (
       <div className="">
         {/* <CitasPaciente events={events} /> */}
-        <CalendarioPaciente events={events} />
+        <CalendarioPaciente events={events} eventsDoctor={eventsDoctor} eventsCrear={eventsCrear} infoMedico={InfoMedico}/>
       </div>
   )
 }
