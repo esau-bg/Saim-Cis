@@ -66,7 +66,7 @@ export default async function CitasPacienteCalendarPage ({
 
   const eventsDoctor = citas.map((cita) => ({
     id: cita.id,
-    title: cita.paciente?.nombre ?? '',
+    title: (cita.paciente?.nombre !== usuario.nombre) ? 'Reservado' : cita.paciente?.nombre ?? '',
     start: new Date(cita.fecha_inicio),
     end: new Date(cita.fecha_final),
     info: cita

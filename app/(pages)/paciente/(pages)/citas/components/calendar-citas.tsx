@@ -66,9 +66,65 @@ export default function CalendarioPaciente ({
       59
     )
 
-  const handleNewEvent = useCallback(() => {
+  const comprobacion = ({ start, end }: { start: Date, end: Date }) => {
+    // comprobamos que el nuevo evento no sea en el pasado
+    if (start < new Date()) {
+      toast.error('No puedes agendar una cita en el pasado')
+      return
+    }
+    // comprobar que el nuevo evento no traslape con los eventos existentes
+    const isOverlap = eventsDoctor.some(
+      (event) =>
+        (start >= event.start &&
+          start < event.end) ||
+        (end > event.start && end <= event.end)
+    )
+    if (isOverlap) {
+      toast.error('No puedes agendar una cita en un horario ocupado')
+      return
+    }
+
+    // comprobar que el nuevo evento no dure mas de 1 hora
+    if (end.getTime() - start.getTime() > 3600000) {
+      toast.error('No puedes agendar una cita que dure mas de 1 hora')
+      return
+    }
+    setEventSelected({
+      start,
+      end,
+      title: '',
+      info: {
+        paciente: null,
+        doctor: infoDoctor
+          ? {
+              ...infoDoctor // mantener las propiedades existentes
+            }
+          : {
+              apellido: '',
+              correo: null,
+              creado: '',
+              direccion: null,
+              dni: '',
+              fecha_nacimiento: '',
+              genero: '',
+              id: '',
+              id_jornada: null,
+              nombre: '',
+              rol: null,
+              telefono: null
+            },
+        descripcion: '',
+        estado: '',
+        fecha_final: '',
+        fecha_inicio: '',
+        fecha_registro: '',
+        id: '',
+        id_doctor: '',
+        id_paciente: ''
+      }
+    })
     setIsOpen(true)
-  }, [])
+  }
 
   //   const handleCancel = useCallback(() => {
   //     setIsOpen(false)
@@ -76,45 +132,9 @@ export default function CalendarioPaciente ({
 
   const handleSelectSlot = useCallback(
     ({ start, end }: { start: Date, end: Date }) => {
-      // Setear el evento seleccionado para el nuevo evento
-      setEventSelected({
-        start,
-        end,
-        title: '',
-        info: {
-          paciente: null,
-          doctor: infoDoctor
-            ? {
-                ...infoDoctor // mantener las propiedades existentes
-              }
-            : {
-                apellido: '',
-                correo: null,
-                creado: '',
-                direccion: null,
-                dni: '',
-                fecha_nacimiento: '',
-                genero: '',
-                id: '',
-                id_jornada: null,
-                nombre: '',
-                rol: null,
-                telefono: null
-              },
-          descripcion: '',
-          estado: '',
-          fecha_final: '',
-          fecha_inicio: '',
-          fecha_registro: '',
-          id: '',
-          id_doctor: '',
-          id_paciente: ''
-        }
-      })
-      // Mostrar el AlertDialog
-      handleNewEvent()
+      comprobacion({ start, end })
     },
-    [handleNewEvent, infoDoctor]
+    [eventSelected]
   )
 
   const scrollToTime = new Date(1970, 1, 1, 6)
@@ -241,14 +261,14 @@ export default function CalendarioPaciente ({
           // onEventDrop={onEventDrop}
           // onEventResize={onEventResize}
 
-          onDoubleClickEvent={(
-            event: object,
-            e: React.SyntheticEvent<HTMLElement, Event>
-          ) => {
-            setIsOpen(true)
-            setEventSelected(event as Events)
-            setInfoDoctor(event as InfoMedicoJornada)
-          }}
+          // onDoubleClickEvent={(
+          //   event: object,
+          //   e: React.SyntheticEvent<HTMLElement, Event>
+          // ) => {
+          //   setIsOpen(true)
+          //   setEventSelected(event as Events)
+          //   setInfoDoctor(event as InfoMedicoJornada)
+          // }}
           draggableAccessor={() => false}
           resizableAccessor={() => false}
           className={`rbc-calendar-${theme} w-full`}

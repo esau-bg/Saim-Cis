@@ -21,14 +21,15 @@ import { formatFecha } from '@/app/actions'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { createCitaByPaciente } from '../../../actions'
+import { useRouter } from 'next/navigation'
 // import Link from 'next/link'
 
 const validationSchema = z.object({
-  estado: z.string(),
   fecha_inicio: z.date().refine(date => !isNaN(date.getTime()), {
     message: 'La fecha de inicio no es válida'
   }),
-  fecha_fin: z.date().refine(date => !isNaN(date.getTime()), {
+  fecha_final: z.date().refine(date => !isNaN(date.getTime()), {
     message: 'La fecha de finalización no es válida'
   }),
   id_paciente: z.string(),
@@ -40,7 +41,10 @@ const validationSchema = z.object({
     })
     .min(1, { message: 'La descripción es obligatoria' })
     .max(20, { message: 'La descripción no debe exceder los 20 caracteres' })
-}).refine(data => data.fecha_inicio < data.fecha_fin, {
+    .nonempty({ message: 'La descripción no debe estar vacía' }),
+  estado: z.string()
+
+}).refine(data => data.fecha_inicio < data.fecha_final, {
   message: 'La fecha de inicio debe ser anterior a la fecha de finalización',
   path: ['fecha_inicio']
 })
@@ -61,6 +65,7 @@ export default function SolicitarCitasPaciente ({
   infoPaciente: UserType
 }) {
   const [isPending, startTransition] = useTransition()
+  const router = useRouter()
 
   // const router = useRouter()
   const {
@@ -70,28 +75,44 @@ export default function SolicitarCitasPaciente ({
     getValues,
     formState: { errors }
   } = useForm<ValidationSchema>({
-    resolver: zodResolver(validationSchema)
+    resolver: zodResolver(validationSchema),
+    defaultValues: {
+      estado: 'pendiente',
+      id_paciente: infoPaciente?.id ?? '',
+      id_doctor: infoDoctor?.id ?? ''
+    }
   })
 
   function onSubmit (data: z.infer<typeof validationSchema>) {
-    if (errors.fecha_inicio ?? errors.fecha_fin) return
-    if (data.descripcion === '' || data.descripcion === undefined) {
-      trigger('descripcion')
-      return
-    }
+    if (errors.fecha_inicio ?? errors.fecha_final ?? errors.descripcion) return
+    if (data.descripcion === '') return
 
     startTransition(async () => {
-      // comprobar si hay cambios en las fechas
-      if (eventSelected?.start.toISOString() === data.fecha_inicio.toISOString() && eventSelected?.end.toISOString() === data.fecha_fin.toISOString()) {
-        toast.error('No se puede crear la cita')
-        setIsOpen(false)
+      // comprobar si la cita no traslapa con otra
+
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      const { fecha_inicio, fecha_final, ...rest } = data
+      const formattedData = {
+        ...rest,
+        fecha_inicio: fecha_inicio.toISOString(),
+        fecha_final: fecha_final.toISOString()
+      }
+
+      const { citasInsert, errorCitasInsert } = await createCitaByPaciente({ data: formattedData })
+      console.log('citasInsert', citasInsert)
+      console.log('errorCitasInsert', errorCitasInsert)
+      if (errorCitasInsert) {
+        toast.error('Error al crear la cita')
         return
       }
 
-      console.log(data.descripcion)
-      console.log('data', data)
+      if (!citasInsert) {
+        toast.error('Error al crear la cita')
+        return
+      }
       toast.success('Cita actualizada correctamente')
       setIsOpen(false)
+      router.refresh()
     })
   }
 
@@ -107,20 +128,28 @@ export default function SolicitarCitasPaciente ({
   }
 
   const handleChangeEnd = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue('fecha_fin', new Date(e.target.value))
-    trigger('fecha_fin')
+    setValue('fecha_final', new Date(e.target.value))
+    trigger('fecha_final')
   }
 
   const handleClick = () => {
     const fechaInicio = getValues('fecha_inicio')
-    const fechaFin = getValues('fecha_fin')
+    const fechaFin = getValues('fecha_final')
+    const descripcion = getValues('descripcion')
     if (!fechaInicio) {
       setValue('fecha_inicio', new Date(eventSelected?.start?.toISOString() ?? ''))
       trigger('fecha_inicio')
     }
     if (!fechaFin) {
-      setValue('fecha_fin', new Date(eventSelected?.end?.toISOString() ?? ''))
-      trigger('fecha_fin')
+      setValue('fecha_final', new Date(eventSelected?.end?.toISOString() ?? ''))
+      trigger('fecha_final')
+    }
+
+    console.log('descripcion', descripcion)
+
+    if (!descripcion) {
+      setValue('descripcion', '')
+      trigger('descripcion')
     }
 
     onSubmit(getValues())
@@ -309,9 +338,9 @@ export default function SolicitarCitasPaciente ({
                     }}
                   />
                   {
-                      errors.fecha_fin && (
+                      errors.fecha_final && (
                           <p className='text-xs italic text-red-500 mt-0'>
-                          {errors.fecha_fin?.message}
+                          {errors.fecha_final?.message}
                           </p>
                       )
                   }
