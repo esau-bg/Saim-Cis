@@ -375,7 +375,7 @@ export async function updateAuthUserEmail ({ email, newEmail, newPasswordTemp }:
     return { userUpdated: null, errorUserUpdated: { message: 'El usuario no existe' } }
   }
   const { data: userUpdated, error: errorUserUpdated } = await adminAuthClient
-    .updateUserById(userId, {
+    .updateUserById(userId.id_usuario, {
       email: newEmail,
       password: newPasswordTemp
     })
@@ -384,7 +384,10 @@ export async function updateAuthUserEmail ({ email, newEmail, newPasswordTemp }:
 // obtenemos el id del usuario de la tabla auth.users por su correo electrónico
 export async function getAuthUserIdByEmail ({ email }: { email: string }) {
   const { data: userId, error: errorUserId } = await supabase
-    .rpc('get_auth_user_id_by_email', { user_email: email })
+    .from('personas_x_usuarios')
+    .select('id_usuario')
+    .eq('correo', email)
+    .single()
   console.log(userId, errorUserId)
   return { userId, errorUserId }
 }

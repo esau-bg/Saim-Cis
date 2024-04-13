@@ -16,7 +16,7 @@ export default async function PerfilPage () {
 
   return (
     <>
-      <NavbarIndexClient />
+      <NavbarIndexClient user={null}/>
       <ActualizarPerfil usuario={usuario ?? null} />
     </>
   )

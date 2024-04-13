@@ -1,7 +1,7 @@
 import { type Metadata } from 'next'
-import NavbarEnfermeroClient from './components/navbar-enfermero-client'
 import { getPermissionsAndUser } from '@/app/actions'
 import Permissions from '@/components/permissions'
+import { SidebarEnfermeroClient } from './components/sidebar-enfermero-client'
 
 export const metadata: Metadata = {
   title: 'Enfermero',
@@ -23,8 +23,12 @@ export default async function EnfermeroLayout ({
 
   return (
     <>
-      <NavbarEnfermeroClient user={usuario ?? null}/>
-      {children}
+      <SidebarEnfermeroClient user={usuario ?? null}/>
+      <div className='p-4 sm:ml-[3.35rem] ease-in-out transition duration-500'>
+        <div className='p-0 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-900 mt-14'>
+          {children}
+        </div>
+      </div>
     </>
   )
 }

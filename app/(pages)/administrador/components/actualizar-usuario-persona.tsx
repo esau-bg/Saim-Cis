@@ -101,6 +101,17 @@ export default function ActualizarUsuarioPersona ({ usuario }: { usuario: UserTy
 
   function onSubmit (data: z.infer<typeof validationSchema>) {
     startTransition(async () => {
+      if (acceptedFiles.length > 0) {
+        const { data: dataUpload, error } = await uploadAvatar({ file: acceptedFiles[0] }) // Tipar data, error
+
+        if (error) {
+          toast.error(`Error al subir la imagen: ${error.message}`)
+          return
+        }
+
+        // Actualiza el avatar_url con la url de la imagen subida
+        data.avatarUrl = dataUpload.secure_url
+      }
       if (!usuario || !usuario.id) {
         toast.error('Error: ID de usuario no disponible')
       }
@@ -486,7 +497,36 @@ export default function ActualizarUsuarioPersona ({ usuario }: { usuario: UserTy
                 </div>
               </div>
             </div>
+            <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+              <div className="col-span-full px-4">
+                <Label
+                  htmlFor="about"
+                  className="block font-medium text-gray-900 dark:text-white"
+                >
+                  Descripcion
+                </Label>
+                <div className="mt-2">
 
+                  <Input
+                    placeholder='Escribe algunas frases sobre ti...'
+                    disabled={isPending || !isEditing}
+                    className={
+                      errors.descripcion
+                        ? 'border-red-500  !placeholder-red-500 text-red-500'
+                        : ''
+                    }
+                    {...register('descripcion')}
+                  />
+                  {errors.descripcion && (
+                    <p className="italic text-red-500 mt-0">
+                      {errors.descripcion?.message}
+                    </p>
+                  )}
+                </div>
+
+              </div>
+
+            </div>
           </div>
 
           <div className="mt-6 flex items-center justify-end gap-x-6">
