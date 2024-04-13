@@ -44,6 +44,7 @@ const validationSchema = z.object({
     }),
   id: z.string().min(1, { message: 'ID no disponible' }),
   descripcion: z.string().min(1, { message: 'Agrega una descripcion' }),
+  avatarUrl: z.string().min(1, { message: 'Avatar no disponible' })
 })
 
 type ValidationSchema = z.infer<typeof validationSchema>
@@ -95,7 +96,8 @@ export default function ActualizarUsuarioPersona ({ usuario }: { usuario: UserTy
       telefono: usuario?.telefono ?? 'no hay telefono',
       direccion: usuario?.direccion ?? 'no hay direccion',
       id: usuario?.id ?? 'no hay id ',
-      descripcion: usuario?.usuario.descripcion ?? 'No hay descripcion'
+      descripcion: usuario?.usuario.descripcion ?? 'No hay descripcion',
+      avatarUrl: usuario?.usuario.avatar_url ?? 'No hay avatar'
     }
   })
 
@@ -159,6 +161,7 @@ export default function ActualizarUsuarioPersona ({ usuario }: { usuario: UserTy
         const { userUpdated, errorUserUpdated } = await updateAuthUserEmail({ email: usuario?.correo ?? '', newEmail: data.correo, newPasswordTemp: randomCode })
         if (errorUserUpdated) {
           toast.error(errorUserUpdated.message)
+          handleRecargar()
           return
         }
         if (userUpdated) {
@@ -524,6 +527,62 @@ export default function ActualizarUsuarioPersona ({ usuario }: { usuario: UserTy
                   )}
                 </div>
 
+                  {/* Dropzone necesario para realizar el Drag and drop */}
+                  {isEditing && (
+                    <div className="col-span-full px-4 mt-4">
+                      <Label
+                        htmlFor="cover-photo"
+                        className="block font-medium dark:text-white text-gray-900"
+                      >
+                        Fotografia de perfil
+                      </Label>
+                      <div
+                        {...getRootProps()}
+                        className={`mt-4 flex dark:text-gray-400 text-gray-600 flex-col justify-center items-center rounded-lg border border-dashed border-gray-900/25 dark:border-gray-100/25 px-6 py-10 transition-colors duration-500 ${getClassName()}`}
+                      >
+
+                          <input name='file' {...getInputProps()} />
+
+                        {
+                          acceptedFiles.length > 0 ? (
+                            <p>Imagen seleccionada: {acceptedFiles[0].name}</p>
+                          ) : (
+                            <>
+                              {isDragAccept && <p>Suelta la imagen</p>}
+                              {isDragReject && <p>Solo se permiten imágenes</p>}
+                              {!isDragActive && (
+                                <div className="text-center">
+                                  <PhotoIcon className="mx-auto h-12 w-12 text-neutral-400 dark:text-neutral-600" aria-hidden="true" />
+                                  <div className="mt-4 flex text-sm leading-6 text-gray-600">
+                                    <label
+                                      htmlFor="file-upload"
+                                      className="relative cursor-pointer rounded-md  font-semibold text-sec focus-within:outline-none focus-within:ring-2 focus-within:ring-sec focus-within:ring-offset-2 hover:text-sec"
+                                    >
+                                      <span>Subir un archivo</span>
+                                      <input id="file-upload" name="file-upload" type="file" className="sr-only" />
+                                    </label>
+                                    <p className="pl-1">o arrastra y suelta</p>
+                                  </div>
+                                  <p className="text-xs leading-5 text-gray-600">PNG, JPG hasta 10MB</p>
+                                </div>
+                              )}
+                            </>
+                          )
+                        }
+
+                        {/* Muestra la vista previa de la imagen seleccionada */}
+                        {acceptedFiles.length > 0 && (
+                          <div className="flex justify-center">
+                            <img
+                              src={URL.createObjectURL(acceptedFiles[0])}
+                              alt={`Imagen de ${usuario?.nombre}`}
+                              className="h-40 w-40 mt-2 mx-auto rounded-full aspect-square object-cover border-4 border-blue-500/50"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
               </div>
 
             </div>
