@@ -1,8 +1,7 @@
 'use server'
-import TemplateEmailPassTemp from '@/components/html-email'
+
 import { supabase } from '@/lib/supabase'
 import { adminAuthClient } from '@/lib/supabase/auth-admin'
-import nodemailer from 'nodemailer'
 
 interface CreatePersona {
   correo: string
@@ -87,28 +86,16 @@ export async function sendMailSingup ({
   passwordTemp: string
   nombrePersona: string
 }) {
-  const transporter = nodemailer.createTransport({
-    host: 'smtp-mail.outlook.com',
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.NEXT_PUBLIC_EMAIL,
-      pass: process.env.NEXT_PUBLIC_EMAIL_PASSWORD
-    }
+  // Utilizar resend para enviar el correo desde api server
+  const { data: emailResponse } = await fetch('/api/resend/send', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ email, nombrePersona, passwordTemp })
   })
-
-  const mailOptions = {
-    from: `SAIM CIS ${process.env.NEXT_PUBLIC_EMAIL}`,
-    to: email,
-    subject: `Bienvenido a SAIM CIS ${nombrePersona}! 🎉`,
-    text: `Su contraseña temporal es: ${passwordTemp}`,
-    html: TemplateEmailPassTemp({
-      nombre: nombrePersona,
-      tempPass: passwordTemp
-    })
-  }
-
-  const emailResponse = await transporter.sendMail(mailOptions)
+    .then(async (res) => await res.json())
+    .catch((error) => ({ error }))
 
   return emailResponse
 }
