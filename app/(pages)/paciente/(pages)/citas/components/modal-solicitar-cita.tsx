@@ -99,8 +99,7 @@ export default function SolicitarCitasPaciente ({
       }
 
       const { citasInsert, errorCitasInsert } = await createCitaByPaciente({ data: formattedData })
-      console.log('citasInsert', citasInsert)
-      console.log('errorCitasInsert', errorCitasInsert)
+
       if (errorCitasInsert) {
         toast.error('Error al crear la cita')
         return
@@ -144,8 +143,6 @@ export default function SolicitarCitasPaciente ({
       setValue('fecha_final', new Date(eventSelected?.end?.toISOString() ?? ''))
       trigger('fecha_final')
     }
-
-    console.log('descripcion', descripcion)
 
     if (!descripcion) {
       setValue('descripcion', '')
@@ -377,6 +374,7 @@ export default function SolicitarCitasPaciente ({
                 )}
                 Eliminar
                 </Button> */}
+
               </div>
             </footer>
           </AlertDialogFooter>

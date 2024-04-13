@@ -34,9 +34,7 @@ export default function CalendarioPaciente ({
   // const [state, setState] = React.useState<Events[]>(events)
   const [isOpen, setIsOpen] = React.useState(false)
   const [eventSelected, setEventSelected] = React.useState<Events | null>(null)
-  const [infoDoctor, setInfoDoctor] = React.useState<InfoMedicoJornada | null>(
-    null
-  )
+
   const [citaCreate] = React.useState<Events | null>(null)
 
   const now = new Date()
@@ -95,28 +93,11 @@ export default function CalendarioPaciente ({
       title: '',
       info: {
         paciente: null,
-        doctor: infoDoctor
-          ? {
-              ...infoDoctor // mantener las propiedades existentes
-            }
-          : {
-              apellido: '',
-              correo: null,
-              creado: '',
-              direccion: null,
-              dni: '',
-              fecha_nacimiento: '',
-              genero: '',
-              id: '',
-              id_jornada: null,
-              nombre: '',
-              rol: null,
-              telefono: null
-            },
+        doctor: null,
         descripcion: '',
         estado: '',
-        fecha_final: '',
-        fecha_inicio: '',
+        fecha_final: end.toISOString(),
+        fecha_inicio: start.toISOString(),
         fecha_registro: '',
         id: '',
         id_doctor: '',
@@ -202,14 +183,7 @@ export default function CalendarioPaciente ({
       router.refresh()
     }
 
-    // console.log(
-    //   'citaCreate',
-    //   new Date(citaCreate?.start ?? '').toLocaleTimeString(),
-    //   new Date(citaCreate?.end ?? '').toLocaleTimeString()
-    // )
     if (citaCreate) {
-      // console.log('citaCreate', citaCreate)
-      // console.log('citaCreate', citaCreate?.start ? moment(citaCreate.start).format('YYYY-MM-DDTHH:mm:ssZ') : '')
       createCitaAsync()
     }
   }, [citaCreate])
