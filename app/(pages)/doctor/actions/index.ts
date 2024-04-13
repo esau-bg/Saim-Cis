@@ -177,3 +177,15 @@ export async function getDiagnosticosByExpedienteAndQuery ({
 
   return { diagnosticos, error }
 }
+<<<<<<< Updated upstream
+=======
+
+export async function getPersonasByIdDiagnostico ({ idDiagnostico }: { idDiagnostico: string }) {
+  const { data: personasDiagnostico, error: errorpersonasDiagnostico } = await supabase
+    .from('diagnosticos')
+    .select('*, personas(nombre,apellido)')
+    .eq('id', idDiagnostico)
+
+  return { personasDiagnostico, errorpersonasDiagnostico }
+}
+>>>>>>> Stashed changes
