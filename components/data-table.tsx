@@ -18,7 +18,7 @@ export default async function DataTable ({
   citas?: boolean
 }) {
   // await new Promise((resolve) => setTimeout(resolve, 5000)) // Simulando una carga lenta
-  const offset = (currentPage - 1) * ITEMS_PER_PAGE
+  const offset = (Number(currentPage) - 1) * ITEMS_PER_PAGE
 
   const { users, error } = await getUsersByRoleAndQuery({
     rol,

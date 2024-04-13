@@ -27,6 +27,8 @@ export default function NavbarAdministradorClient ({ user }: { user: UserType })
   const pathname = usePathname()
   const router = useRouter()
 
+  if (!pathname) return null
+
   const handleRedirect = ({ href }: { href: string }) => {
     router.push(href)
     router.refresh()
