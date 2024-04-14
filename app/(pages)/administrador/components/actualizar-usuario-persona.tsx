@@ -61,7 +61,7 @@ export default function ActualizarUsuarioPersona ({ usuario }: { usuario: UserTy
     console.log('Archivo seleccionado: ', acceptedFiles[0])
   }
   const handleRecargar = () => {
-    window.location.reload()
+    router.refresh() // Recarga la página
   }
   const handleRedirect = () => {
     router.back() // Retrocede en el historial
@@ -100,7 +100,7 @@ export default function ActualizarUsuarioPersona ({ usuario }: { usuario: UserTy
       nombre: usuario?.nombre ?? 'No hay nombre',
       apellido: usuario?.apellido ?? 'No hay apellido',
       dni: usuario?.dni ?? 'No hay dni',
-      correo: usuario?.correo ?? 'No hay correo',
+      correo: usuario?.usuario.correo ?? 'No hay correo',
       fecha_nacimiento: usuario?.fecha_nacimiento ?? 'No hay fecha_nacimiento',
       genero: usuario?.genero ?? 'No hay genero',
       telefono: usuario?.telefono ?? 'No hay telefono',
@@ -128,7 +128,7 @@ export default function ActualizarUsuarioPersona ({ usuario }: { usuario: UserTy
         toast.error('Error: ID de usuario no disponible')
       }
       // Verificar si el correo ingresado es diferente al correo del usuario
-      if (data.correo !== usuario?.correo) {
+      if (data.correo !== usuario?.usuario.correo) {
         const { dataCorreo } = await getUserByCorreo({
           correo: data.correo
         })
@@ -168,7 +168,7 @@ export default function ActualizarUsuarioPersona ({ usuario }: { usuario: UserTy
           .toUpperCase()
 
         // enviamos los correos (actual y nuevo) y la contrasenia temporal para actualizar el usuario anterior
-        const { userUpdated, errorUserUpdated } = await updateAuthUserEmail({ email: usuario?.correo ?? '', newEmail: data.correo, newPasswordTemp: randomCode })
+        const { userUpdated, errorUserUpdated } = await updateAuthUserEmail({ email: usuario?.usuario.correo ?? '', newEmail: data.correo, newPasswordTemp: randomCode })
         if (errorUserUpdated) {
           toast.error(errorUserUpdated.message)
           handleRecargar()
@@ -393,7 +393,7 @@ export default function ActualizarUsuarioPersona ({ usuario }: { usuario: UserTy
                     id="email"
                     type="email"
                     autoComplete="email"
-                    defaultValue={usuario?.correo ?? 'N/A'}
+                    defaultValue={usuario?.usuario.correo ?? 'N/A'}
                     disabled={isPending || !isEditing}
                     className={
                       errors.correo

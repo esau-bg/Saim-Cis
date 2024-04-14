@@ -372,6 +372,7 @@ export async function updatePersona ({ data }: { data: PersonasUpdate & { descri
 }
 // actualizamos el correo del usuario de la tabla auth.users
 export async function updateAuthUserEmail ({ email, newEmail, newPasswordTemp }: { email: string, newEmail: string, newPasswordTemp: string }) {
+  console.log(email, newEmail, newPasswordTemp)
   const { userId, errorUserId } = await getAuthUserIdByEmail({ email })
   if (errorUserId) {
     return { userUpdated: userId, errorUserUpdated: errorUserId }
