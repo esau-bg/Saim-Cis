@@ -3,15 +3,22 @@
 import { calcularEdad } from '@/app/actions'
 import FormDiagnostic from './components/form-diagnostic'
 import { ModalEditarPreclinica } from './components/modal-editar-preclinica'
-import { PencilSquareIcon } from '@heroicons/react/20/solid'
+import { ArrowLeftCircleIcon, PencilSquareIcon } from '@heroicons/react/20/solid'
 import { Button } from '@/components/ui/button'
 // import { ModalHistorialDiagnostico } from './components/modals/modal-historial-diagnosticos'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { FolderOpenIcon } from '@heroicons/react/24/outline'
 
 export default function ConsultaClient ({ consulta }: { consulta: Consultas & { expedientes: Expedientes & { personas: Personas | null } | null } & { estado: EstadoConsultas | null } }) {
   const pathname = usePathname()
+  // Redireccionar hacia consultas
+  const router = useRouter()
+  // Funcion para redirijir hacia consultas y refrescar las consultas
+  const handleRedirect = () => {
+    router.push('/doctor/consultas')
+    router.refresh()
+  }
 
   return (
     <main className="relative container">
@@ -32,17 +39,17 @@ export default function ConsultaClient ({ consulta }: { consulta: Consultas & { 
           <div>
             <span className='font-semibold'>Fecha de nacimiento: </span>
             <span>
-  {consulta.expedientes?.personas?.fecha_nacimiento
-    ? `${new Date(consulta.expedientes?.personas?.fecha_nacimiento).toLocaleDateString(
-      'es-HN',
-      {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      }
-    )} (${calcularEdad(new Date(consulta.expedientes?.personas?.fecha_nacimiento))})`
-    : 'No disponible'}
-</span>
+              {consulta.expedientes?.personas?.fecha_nacimiento
+                ? `${new Date(consulta.expedientes?.personas?.fecha_nacimiento).toLocaleDateString(
+                  'es-HN',
+                  {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  }
+                )} (${calcularEdad(new Date(consulta.expedientes?.personas?.fecha_nacimiento))})`
+                : 'No disponible'}
+            </span>
           </div>
           <div>
             <span className='font-semibold'>Sexo: </span>
@@ -108,6 +115,16 @@ export default function ConsultaClient ({ consulta }: { consulta: Consultas & { 
         <div>
           <span className='font-semibold'>Sintomas: </span>
           <span className='capitalize'>{consulta.sintomas}</span>
+        </div>
+        <div className="my-2 flex justify-end items-center md:mt-6">
+          <Button
+            variant={'secondary'}
+            className="justify-start font-normal duration-500 hover:bg-sec hover:text-white"
+            onClick={handleRedirect}
+          >
+            Regresar
+            <ArrowLeftCircleIcon className="h-4 w-4 ml-1" />
+          </Button>
         </div>
       </div>
     </div>
