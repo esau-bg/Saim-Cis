@@ -15,6 +15,8 @@ import { getUserByCorreo, sendMailSingup } from '../../enfermero/actions'
 import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import { type DropzoneState, useDropzone } from 'react-dropzone'
 import { PhotoIcon } from '@heroicons/react/24/solid'
+import { ArrowLeftCircleIcon } from '@heroicons/react/20/solid'
+import { useRouter } from 'next/navigation'
 
 const validationSchema = z.object({
   nombre: z.string().min(1, { message: 'El nombre es obligatorio' }),
@@ -52,6 +54,7 @@ type ValidationSchema = z.infer<typeof validationSchema>
 export default function ActualizarUsuarioPersona ({ usuario }: { usuario: UserType }) {
   const [isPending, startTransition] = useTransition()
   const [isEditing, setIsEditing] = useState(false)
+  const router = useRouter()
   // Funcion que se ejecuta cuando se suelta el archivo en la dropzone
   const onDrop = async (acceptedFiles: File[]) => {
     // Verifica que se haya seleccionado al menos un archivo
@@ -59,6 +62,13 @@ export default function ActualizarUsuarioPersona ({ usuario }: { usuario: UserTy
   }
   const handleRecargar = () => {
     window.location.reload()
+  }
+  const handleRedirect = () => {
+    router.back() // Retrocede en el historial
+    // Espera 100 milisegundos antes de retroceder
+    setTimeout(() => {
+      router.refresh() // Recarga la páginarouter.refresh() // Recarga la página
+    }, 100)
   }
 
   // Configuracion de la dropzone como manejar los eventos de arrastrar y soltar asi como la configuracion de los tipos de imagen que acepta
@@ -209,6 +219,18 @@ export default function ActualizarUsuarioPersona ({ usuario }: { usuario: UserTy
 
   return (
     <div className="sm:px-2 md:px-8 rounded-sm max-w-5xl mx-auto">
+      <div className="mx-2 flex justify-end items-center pr-10">
+        <div className='ml-auto'>
+          <Button
+            variant={'secondary'}
+            className="justify-start font-normal duration-500 hover:bg-sec hover:text-white"
+            onClick={handleRedirect}
+          >
+            Regresar
+            <ArrowLeftCircleIcon className="h-4 w-4 ml-1" />
+          </Button>
+        </div>
+      </div>
       {/* <HeaderProfile usuario={usuario}/> */}
       <form
         onSubmit={handleSubmit(onSubmit)}
