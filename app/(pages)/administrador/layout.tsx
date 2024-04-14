@@ -25,8 +25,8 @@ export default async function AdministradorLayout ({
   return (
     <>
       <SidebarAdministradorClient user={usuario ?? null}/>
-      <div className='p-4 sm:ml-[3.35rem] ease-in-out transition duration-500'>
-        <div className='p-0 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-900 mt-14'>
+      <div className='px-2 py-4 sm:ml-[3.35rem] ease-in-out transition duration-500'>
+        <div className='mt-14'>
           {children}
         </div>
       </div>

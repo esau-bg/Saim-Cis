@@ -805,3 +805,107 @@ limit
     limit_param;
 
 END;
+
+
+
+
+create
+or replace function get_personas_by_rol_and_filter_pagination (
+  rol_param text,
+  filtro_param text,
+  offset_param int,
+  limit_param int
+) returns table (
+  id uuid,
+  creado timestamp with time zone,
+  nombre text,
+  apellido text,
+  fecha_nacimiento date,
+  dni text,
+  direccion text,
+  genero text,
+  telefono text,
+  correo text,
+  rol text,
+  nombre_rol text,
+  url_avatar text,
+  estado_usuario text,
+    id_jornada uuid
+) as $$ BEGIN RETURN QUERY
+select distinct
+    p.id,
+    p.creado,
+    p.nombre,
+    p.apellido,
+    p.fecha_nacimiento,
+    p.id_jornada,
+    p.dni,
+    p.direccion,
+    p.genero,
+    p.telefono,
+    p.correo,
+    p.rol,
+    r.nombre as nombre_rol,
+    u.avatar_url as url_avatar,
+    u.estado as estado_usuario
+from
+    personas p
+    join especializacion_x_personas exp on p.id = exp.id_persona
+    join especializaciones e on exp.id_especializacion = e.id
+    join roles r on e.id_rol = r.id
+    left join (
+        select
+            id_persona,
+            avatar_url,
+            estado
+        from
+            personas_x_usuarios
+    ) as u on p.id = u.id_persona
+WHERE
+    r.nombre = rol_param
+    and (
+        p.nombre ilike '%' || filtro_param || '%'
+        or p.apellido ilike '%' || filtro_param || '%'
+        or p.dni ilike '%' || filtro_param || '%'
+    )
+order by
+    p.nombre asc
+offset
+    offset_param
+limit
+    limit_param;
+
+END;
+ $$ language plpgsql;
+
+
+
+-- update_user_in_public_table_for_new_user
+ BEGIN
+    UPDATE personas_x_usuarios
+    SET correo = NEW.email
+    WHERE correo = OLD.email;
+
+    RETURN NEW;
+END;
+
+
+-- update_correo_persona_trigger
+CREATE TRIGGER update_correo_persona_trigger
+AFTER UPDATE   ON auth.users
+FOR EACH ROW
+EXECUTE FUNCTION public.update_user_in_public_table_for_new_user();
+
+
+
+BEGIN
+  UPDATE public.personas_x_usuarios
+  SET correo = NEW.email,
+      pass_temp = NEW.raw_user_meta_data->>'passwordTemp',
+      estado = 'pendiente'
+  WHERE correo = old.email;
+  RETURN NEW;
+END;
+
+
+

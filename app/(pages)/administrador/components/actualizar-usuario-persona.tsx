@@ -15,6 +15,7 @@ import { getUserByCorreo, sendMailSingup } from '../../enfermero/actions'
 import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import { type DropzoneState, useDropzone } from 'react-dropzone'
 import { PhotoIcon } from '@heroicons/react/24/solid'
+import { useRouter } from 'next/navigation'
 
 const validationSchema = z.object({
   nombre: z.string().min(1, { message: 'El nombre es obligatorio' }),
@@ -52,13 +53,14 @@ type ValidationSchema = z.infer<typeof validationSchema>
 export default function ActualizarUsuarioPersona ({ usuario }: { usuario: UserType }) {
   const [isPending, startTransition] = useTransition()
   const [isEditing, setIsEditing] = useState(false)
+  const router = useRouter()
   // Funcion que se ejecuta cuando se suelta el archivo en la dropzone
   const onDrop = async (acceptedFiles: File[]) => {
     // Verifica que se haya seleccionado al menos un archivo
     console.log('Archivo seleccionado: ', acceptedFiles[0])
   }
   const handleRecargar = () => {
-    window.location.reload()
+    router.refresh()
   }
 
   // Configuracion de la dropzone como manejar los eventos de arrastrar y soltar asi como la configuracion de los tipos de imagen que acepta
@@ -87,15 +89,15 @@ export default function ActualizarUsuarioPersona ({ usuario }: { usuario: UserTy
   } = useForm<ValidationSchema>({
     resolver: zodResolver(validationSchema),
     defaultValues: {
-      nombre: usuario?.nombre ?? 'no hay nombre',
-      apellido: usuario?.apellido ?? 'no hay apellido',
-      dni: usuario?.dni ?? 'no hay dni',
-      correo: usuario?.correo ?? 'no hay correo',
-      fecha_nacimiento: usuario?.fecha_nacimiento ?? 'no hay fecha_nacimiento',
-      genero: usuario?.genero ?? 'no hay genero',
-      telefono: usuario?.telefono ?? 'no hay telefono',
-      direccion: usuario?.direccion ?? 'no hay direccion',
-      id: usuario?.id ?? 'no hay id ',
+      nombre: usuario?.nombre ?? 'No hay nombre',
+      apellido: usuario?.apellido ?? 'No hay apellido',
+      dni: usuario?.dni ?? 'No hay dni',
+      correo: usuario?.correo ?? 'No hay correo',
+      fecha_nacimiento: usuario?.fecha_nacimiento ?? 'No hay fecha_nacimiento',
+      genero: usuario?.genero ?? 'No hay genero',
+      telefono: usuario?.telefono ?? 'No hay telefono',
+      direccion: usuario?.direccion ?? 'No hay direccion',
+      id: usuario?.id ?? 'No hay id ',
       descripcion: usuario?.usuario.descripcion ?? 'No hay descripcion',
       avatarUrl: usuario?.usuario.avatar_url ?? 'No hay avatar'
     }
@@ -172,14 +174,15 @@ export default function ActualizarUsuarioPersona ({ usuario }: { usuario: UserTy
             nombrePersona: data.nombre
           })
 
-          if (emailResponse.accepted.includes(data.correo ?? '')) {
-            // Email was sent successfully
-            toast.success('Correo electrónico enviado exitosamente')
-            window.location.reload()
-          } else {
-            // Email was not sent successfully
-            toast.error('Error al enviar el correo electrónico')
-          }
+          console.log('Email response: ', emailResponse)
+          // if (emailResponse.accepted.includes(data.correo ?? '')) {
+          //   // Email was sent successfully
+          //   toast.success('Correo electrónico enviado exitosamente')
+          //   handleRecargar()
+          // } else {
+          //   // Email was not sent successfully
+          //   toast.error('Error al enviar el correo electrónico')
+          // }
         }
       }
       const { errorPersonaUpdate } = await updatePersona({ data })
