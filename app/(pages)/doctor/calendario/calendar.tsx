@@ -62,7 +62,27 @@ export default function CitasDoctor ({ events, infoMedico }: { events: Events[],
   const [theme] = useState('dark')
 
   return (
-    <div className='App flex justify-center py-6 dark:text-white'>
+    <div className='flex flex-col p-6 gap-4 md:mx-8 lg:mx-8 xl:mx-8'>
+      <div className='flex justify-between'>
+        <div className='flex flex-col'>
+          <h1 className='text-2xl font-medium text-sec'>
+            Doc. {infoMedico?.nombre}{' '}
+            {infoMedico?.apellido}
+          </h1>
+          <p className='text-slate-500'>
+            Selecciona una cita para poder cancelarla.
+          </p>
+        </div>
+        <div className='flex flex-col'>
+          <h2 className=' font-medium'>Horario de atención:</h2>
+          <p className='text-slate-500'>
+            {infoMedico?.jornada?.hora_inicio} -{' '}
+            {infoMedico?.jornada?.hora_final}
+          </p>
+        </div>
+      </div>
+      <hr />
+    <div className='App h-[70vh] flex justify-center'>
       <DnDCalendar
         messages={{
           next: 'Siguiente',
@@ -89,10 +109,9 @@ export default function CitasDoctor ({ events, infoMedico }: { events: Events[],
           setIsOpen(true)
           setEventSelected(event as Events)
         }}
-        style={{ height: '88vh', width: '100vh' }}
         draggableAccessor={() => false}
         resizableAccessor={() => false}
-        className={`rbc-calendar-${theme}`}
+        className={`rbc-calendar-${theme} w-full max-w-5xl`}
       />
 
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
@@ -240,7 +259,7 @@ export default function CitasDoctor ({ events, infoMedico }: { events: Events[],
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
+      </div>
       <ToastContainer
         position="top-right"
         autoClose={3000}

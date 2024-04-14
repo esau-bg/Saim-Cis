@@ -191,7 +191,7 @@ export default function CalendarioPaciente ({
   const [theme] = useState('dark')
 
   return (
-    <div className='flex flex-col p-6 gap-4 '>
+    <div className='flex flex-col p-6 gap-4 md:mx-8 lg:mx-8 xl:mx-8'>
       <div className='flex justify-between'>
         <div className='flex flex-col'>
           <h1 className='text-2xl font-medium text-sec'>
@@ -245,7 +245,7 @@ export default function CalendarioPaciente ({
           // }}
           draggableAccessor={() => false}
           resizableAccessor={() => false}
-          className={`rbc-calendar-${theme} w-full`}
+          className={`rbc-calendar-${theme} w-full max-w-5xl`}
         />
 
         {/* <VerCitasPaciente
