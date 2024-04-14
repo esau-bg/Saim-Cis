@@ -342,6 +342,11 @@ export async function updatePersonasXUsuarios ({ id, avatarUrl, descripcion }: {
 
 export async function updatePersona ({ data }: { data: PersonasUpdate & { descripcion?: string, avatarUrl?: string } }) {
   const { id, descripcion, avatarUrl, ...rest } = data
+  let avatarUrlAux = avatarUrl
+  // Validando que se subio una imagen, de no ser asi se coloca como indefinido
+  if (avatarUrl === 'No hay avatar') {
+    avatarUrlAux = undefined
+  }
 
   const { data: personaUpdate, error: errorPersonaUpdate } = await supabase
     .from('personas')
@@ -355,7 +360,7 @@ export async function updatePersona ({ data }: { data: PersonasUpdate & { descri
   if (personaUpdate) {
     const { data: personaUpdate, error: errorPersonaUpdate } = await supabase
       .from('personas_x_usuarios')
-      .update({ descripcion, avatar_url: avatarUrl })
+      .update({ descripcion, avatar_url: avatarUrlAux })
       .eq('id_persona', id ?? '')
       .select('*')
       .single()
