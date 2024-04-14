@@ -177,15 +177,12 @@ export async function getDiagnosticosByExpedienteAndQuery ({
 
   return { diagnosticos, error }
 }
-<<<<<<< Updated upstream
-=======
 
-export async function getPersonasByIdDiagnostico ({ idDiagnostico }: { idDiagnostico: string }) {
-  const { data: personasDiagnostico, error: errorpersonasDiagnostico } = await supabase
+export async function getConsultaByIdDiagnostico ({ idDiagnostico }: { idDiagnostico: string }) {
+  const { data: consultaDiagnostico, error: errorConsultaDiagnostico } = await supabase
     .from('diagnosticos')
-    .select('*, personas(nombre,apellido)')
+    .select('id, id_diagnosticador: personas(*), consultas(*)')
     .eq('id', idDiagnostico)
 
-  return { personasDiagnostico, errorpersonasDiagnostico }
+  return { consultaDiagnostico, errorConsultaDiagnostico }
 }
->>>>>>> Stashed changes

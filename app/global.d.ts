@@ -92,4 +92,35 @@ declare global {
     | (Personas & { jornada: Jornadas | null })
     | null
 
+    interface consultaDiagnostico {
+      id: string
+      id_diagnosticador: {
+        apellido: string
+        correo: string | null
+        creado: string
+        direccion: string | null
+        dni: string
+        fecha_nacimiento: string
+        genero: string
+        id: string
+        id_jornada: string | null
+        nombre: string
+        rol: string | null
+        telefono: string | null
+      } | null
+      consultas: {
+        estatura: number | null
+        fecha_consulta: string
+        id: string
+        id_cita: string | null
+        id_estado_consulta: string
+        id_expediente: string
+        peso: number | null
+        presion_arterial: string | null
+        saturacion_oxigeno: string | null
+        sintomas: string | null
+        temperatura: number | null
+      } | null
+
+    }
 }
