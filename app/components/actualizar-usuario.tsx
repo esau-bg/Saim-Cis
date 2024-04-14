@@ -36,7 +36,6 @@ export default function ActualizarPerfil ({ usuario }: { usuario: UserType }) {
   const router = useRouter()
   const handleRedirect = () => {
     router.back() // Retrocede en el historial
-
     // Espera 100 milisegundos antes de retroceder
     setTimeout(() => {
       router.refresh() // Recarga la páginarouter.refresh() // Recarga la página
@@ -130,16 +129,19 @@ export default function ActualizarPerfil ({ usuario }: { usuario: UserType }) {
   }
 
   return (
-        <><div className="mx-2 flex justify-start items-center">
-      <Button
-        variant={'secondary'}
-        className="justify-start font-normal duration-500 hover:bg-sec hover:text-white"
-        onClick={handleRedirect}
-      >
-        Regresar
-        <ArrowLeftCircleIcon className="h-4 w-4 ml-1" />
-      </Button>
-    </div><div className="sm:px-2 md:px-8 rounded-sm max-w-5xl mx-auto">
+    <div className="sm:px-2 md:px-8 rounded-sm max-w-5xl mx-auto">
+        <div className="mx-2 flex justify-end items-center pr-10">
+          <div className='ml-auto'>
+            <Button
+              variant={'secondary'}
+              className="justify-start font-normal duration-500 hover:bg-sec hover:text-white"
+              onClick={handleRedirect}
+            >
+              Regresar
+              <ArrowLeftCircleIcon className="h-4 w-4 ml-1" />
+            </Button>
+          </div>
+        </div>
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="w-full container mx-auto py-2 grid sm:grid-cols-1"
@@ -421,6 +423,7 @@ export default function ActualizarPerfil ({ usuario }: { usuario: UserType }) {
           draggable
           pauseOnHover
           theme="light" />
-      </div></>
+      </div>
+
   )
 }
