@@ -134,7 +134,7 @@ export function ModalDetallesDiagnostico ({
 
             <div className='flex items-center justify-end mt-0'>
               <Label htmlFor='diferencial' className='flex items-center space-x-2'>
-                <span>Es Diferencial?</span>
+                <Label>Es Diferencial?</Label>
                 <Checkbox
                   checked={diagnostico?.diferencial}
                   disabled // Cambia el color del checkbox si lo deseas
@@ -185,7 +185,7 @@ export function ModalDetallesDiagnostico ({
 
             <div className='flex gap-3'>
               <div className='flex gap-2 items-center'>
-                <span>Atendido Internamente</span>
+                <Label>Atendido Internamente</Label>
                 <Checkbox disabled checked={diagnostico?.interno} />
               </div>
             </div>
