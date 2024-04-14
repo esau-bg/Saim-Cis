@@ -40,9 +40,6 @@ export interface Database {
           id_doctor?: string
           id_paciente?: string
         }
-        Delete: {
-          id: string
-        }
         Relationships: [
           {
             foreignKeyName: 'citas_id_doctor_fkey'
@@ -164,6 +161,13 @@ export interface Database {
             columns: ['id_consulta']
             isOneToOne: false
             referencedRelation: 'consultas'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'public_diagnosticos_id_diagnosticador_fkey'
+            columns: ['id_diagnosticador']
+            isOneToOne: false
+            referencedRelation: 'personas'
             referencedColumns: ['id']
           },
           {
