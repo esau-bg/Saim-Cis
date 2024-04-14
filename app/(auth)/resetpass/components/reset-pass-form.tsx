@@ -119,7 +119,7 @@ export function ResetPassForm () {
             )}
           </div>
 
-          <Button disabled={isPending}>
+          <Button className="hover:bg-sec-var-600 bg-sec text-white transition-colors duration-700" disabled={isPending}>
             {isPending && (
               <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
             )}

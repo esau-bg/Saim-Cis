@@ -591,7 +591,7 @@ export default function ActualizarUsuarioPersona ({ usuario }: { usuario: UserTy
           <div className="mt-6 flex items-center justify-end gap-x-6">
             <Button
               type="button"
-              variant="secondary"
+              className='bg-slate-500 hover:bg-slate-600 text-white hover:text-white focus:outline-none'
               onClick={handleRecargar}
             >
               Cancelar
