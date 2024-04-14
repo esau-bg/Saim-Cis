@@ -136,8 +136,8 @@ export function FormPreclinica ({ id }: { id: string }) {
   return (
     <div className="grid gap-6">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="grid gap-3">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex flex-col ">
               <Label className="mb-2" htmlFor="Peso">
                 Peso (kg)

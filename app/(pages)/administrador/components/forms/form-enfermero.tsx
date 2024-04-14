@@ -157,9 +157,9 @@ export function AdministradorEnfermeroForm () {
   return (
     <div className="grid gap-6">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="grid gap-3">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="grid gap-2">
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col gap-2">
               <Label className="" htmlFor="first-name">
                 Nombres
               </Label>
@@ -170,7 +170,7 @@ export function AdministradorEnfermeroForm () {
                 autoComplete="first-name"
                 autoCorrect="off"
                 disabled={isPending}
-                tabIndex={0}
+                // tabIndex={0}
                 autoFocus
                 className={
                   errors.nombre
@@ -185,7 +185,7 @@ export function AdministradorEnfermeroForm () {
                 </p>
               )}
             </div>
-            <div className="grid gap-2">
+            <div className="flex flex-col gap-2">
               <Label className="" htmlFor="family-name">
                 Apellidos
               </Label>
@@ -196,7 +196,7 @@ export function AdministradorEnfermeroForm () {
                 autoComplete="family-name"
                 autoCorrect="off"
                 disabled={isPending}
-                tabIndex={1}
+                // tabIndex={1}
                 className={
                   errors.apellido
                     ? 'border-red-500  !placeholder-red-500 text-red-500'
@@ -212,7 +212,7 @@ export function AdministradorEnfermeroForm () {
             </div>
           </div>
 
-          <div className="grid gap-1">
+          <div className="flex flex-col gap-1">
             <Label className="" htmlFor="DNI">
               DNI
             </Label>
@@ -223,7 +223,7 @@ export function AdministradorEnfermeroForm () {
               autoComplete="dni"
               autoCorrect="off"
               disabled={isPending}
-              tabIndex={2}
+              // tabIndex={2}
               className={
                 errors.dni
                   ? 'border-red-500  !placeholder-red-500 text-red-500'
@@ -238,7 +238,7 @@ export function AdministradorEnfermeroForm () {
             )}
           </div>
 
-          <div className="grid gap-1">
+          <div className="flex flex-col gap-1">
             <Label className="" htmlFor="email">
               Correo electrónico
             </Label>
@@ -249,7 +249,7 @@ export function AdministradorEnfermeroForm () {
               autoComplete="email"
               autoCorrect="off"
               disabled={isPending}
-              tabIndex={3}
+              // tabIndex={3}
               className={
                 errors.correo
                   ? 'border-red-500  !placeholder-red-500 text-red-500'
@@ -264,7 +264,7 @@ export function AdministradorEnfermeroForm () {
             )}
           </div>
 
-          <div className="grid gap-1">
+          <div className="flex flex-col gap-1">
             <Label className="" htmlFor="fecha_nacimiento">
               Fecha de nacimiento
             </Label>
@@ -286,7 +286,7 @@ export function AdministradorEnfermeroForm () {
             )}
           </div>
 
-          <div className="grid gap-1">
+          <div className="flex flex-col gap-1">
             <Label className="" htmlFor="address">
               Direccion
             </Label>
@@ -309,7 +309,7 @@ export function AdministradorEnfermeroForm () {
             )}
           </div>
 
-          <div className="grid gap-1">
+          <div className="flex flex-col gap-1">
             <Label className="" htmlFor="genero">
               Genero
             </Label>
@@ -332,7 +332,7 @@ export function AdministradorEnfermeroForm () {
             )}
           </div>
 
-          <div className="grid gap-1">
+          <div className="flex flex-col gap-1">
             <Label className="" htmlFor="phone">
               Telefono
             </Label>
