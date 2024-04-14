@@ -6,12 +6,14 @@ import { logoutUser } from '@/lib/actions'
 import { usePathname, useRouter } from 'next/navigation'
 import { CiLogout } from 'react-icons/ci'
 import { LiaNotesMedicalSolid } from 'react-icons/lia'
+import { IoCalendarNumberOutline } from 'react-icons/io5'
 import Link from 'next/link'
 import { ModeToggle } from '../../../../components/theme-toggle'
 
 const navigation = [
   { name: 'Perfil', href: '/doctor', current: true, icono: UserCircleIcon },
-  { name: 'Consultas', href: '/doctor/consultas', current: false, icono: LiaNotesMedicalSolid }
+  { name: 'Consultas', href: '/doctor/consultas', current: false, icono: LiaNotesMedicalSolid },
+  { name: 'Calendario', href: '/doctor/calendario', current: false, icono: IoCalendarNumberOutline }
 ]
 
 function classNames (...classes: string[]) {
@@ -133,10 +135,10 @@ export function SidebarDoctorClient ({ user }: { user: UserType }) {
                             <Link
                               href={`/${rol.rol.toLowerCase()}`}
                               className={classNames(
-                                rol.rol.toLowerCase() === pathname.split('/')[1] ? 'bg-neutral-200 dark:bg-slate-800 pointer-events-none' : '',
+                                rol.rol.toLowerCase() === pathname?.split('/')[1] ? 'bg-neutral-200 dark:bg-slate-800 pointer-events-none' : '',
                                 'block px-4 py-2 text-sm text-gray-900 dark:text-gray-100 w-full text-start hover:bg-neutral-200 dark:hover:bg-slate-800'
                               )}
-                              aria-current={rol.rol.toLowerCase() === pathname.split('/')[1] ? 'page' : undefined}
+                              aria-current={rol.rol.toLowerCase() === pathname?.split('/')[1] ? 'page' : undefined}
                             >
                               Perfil de {rol.rol}
                             </Link>

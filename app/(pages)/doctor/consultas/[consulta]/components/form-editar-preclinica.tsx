@@ -95,13 +95,12 @@ export function FormEditarPreclinica ({ consulta }: { consulta: Consultas | null
   return (
     <div className="grid gap-6">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="grid gap-3">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="flex flex-col ">
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col">
               <Label className="mb-2" htmlFor="Peso">
                 Peso (kg)
               </Label>
-
               <Input
                 placeholder="kg.gg"
                 type="text"
@@ -153,7 +152,7 @@ export function FormEditarPreclinica ({ consulta }: { consulta: Consultas | null
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-2">
+          <div className="flex flex-col sm:flex-row gap-4 md:gap-2">
             <div className="flex flex-col">
               <Label className="mb-2" htmlFor="Presion">
                 Presión Arterial (mmHg)
@@ -230,7 +229,7 @@ export function FormEditarPreclinica ({ consulta }: { consulta: Consultas | null
                 {errors.sintomas?.message}
               </p>
             )}
-        </div>
+          </div>
 
           <Button
             disabled={isPending}

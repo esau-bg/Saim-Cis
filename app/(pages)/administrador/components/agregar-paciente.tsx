@@ -7,7 +7,7 @@ export function AgregarPaciente () {
     <>
       <button
         data-hs-overlay="#hs-modal-agregar-paciente"
-        className="h-10 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg transition-colors duration-200 border border-blue-600 text-blue-600 hover:bg-blue-500 hover:border-blue-500 hover:text-white disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+        className="h-10 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg transition-colors duration-200 border border-blue-600 text-blue-600 hover:bg-sec-var-600 hover:border-blue-500 hover:text-white disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
       >
         <span className="hidden md:block">Agregar Paciente</span>{' '}
         <PlusIcon className="h-5 md:ml-4" />

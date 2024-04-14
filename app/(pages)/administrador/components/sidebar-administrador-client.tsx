@@ -139,10 +139,10 @@ export function SidebarAdministradorClient ({ user }: { user: UserType }) {
                             <Link
                               href={`/${rol.rol.toLowerCase()}`}
                               className={classNames(
-                                rol.rol.toLowerCase() === pathname.split('/')[1] ? 'bg-neutral-200 dark:bg-slate-800 pointer-events-none' : '',
+                                rol.rol.toLowerCase() === pathname?.split('/')[1] ? 'bg-neutral-200 dark:bg-slate-800 pointer-events-none' : '',
                                 'block px-4 py-2 text-sm text-gray-900 dark:text-gray-100 w-full text-start hover:bg-neutral-200 dark:hover:bg-slate-800'
                               )}
-                              aria-current={rol.rol.toLowerCase() === pathname.split('/')[1] ? 'page' : undefined}
+                              aria-current={rol.rol.toLowerCase() === pathname?.split('/')[1] ? 'page' : undefined}
                             >
                               Perfil de {rol.rol}
                             </Link>

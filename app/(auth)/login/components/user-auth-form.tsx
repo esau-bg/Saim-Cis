@@ -99,7 +99,7 @@ export function UserAuthForm () {
               </p>
             )}
           </div>
-          <Button className="bg-sec-var-600 hover:bg-sec-var-500 text-white transition-colors duration-700" disabled={isPending}>
+          <Button className="hover:bg-sec-var-600 bg-sec text-white transition-colors duration-700" disabled={isPending}>
             {isPending && (
               <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
             )}
