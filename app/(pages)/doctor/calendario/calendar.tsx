@@ -252,7 +252,7 @@ export default function CitasDoctor ({ events, infoMedico }: { events: Events[],
               <AlertDialogCancel className='bg-gray-500 hover:bg-gray-600 text-white hover:text-white focus:outline-none'>Cerrar</AlertDialogCancel>
               </div>
               <div>
-              <AlertDialogAction className='bg-rose-600 hover:bg-rose-800' onClick={() => { eliminarCita(eventSelected?.id ?? '') }
+              <AlertDialogAction className='bg-rose-600 hover:bg-rose-800 dark:text-white' onClick={() => { eliminarCita(eventSelected?.id ?? '') }
                   }>Cancelar cita</AlertDialogAction>
               </div>
             </footer>

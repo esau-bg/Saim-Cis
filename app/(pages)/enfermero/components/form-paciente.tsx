@@ -174,9 +174,9 @@ export function EnfermeroPacienteForm () {
   return (
     <div className="grid gap-6">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="grid gap-3">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="grid gap-2">
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col gap-2">
               <Label className="" htmlFor="first-name">
                 Nombres
               </Label>
@@ -200,7 +200,7 @@ export function EnfermeroPacienteForm () {
                 </p>
               )}
             </div>
-            <div className="grid gap-2">
+            <div className="flex flex-col gap-2">
               <Label className="" htmlFor="family-name">
                 Apellidos
               </Label>
@@ -226,7 +226,7 @@ export function EnfermeroPacienteForm () {
             </div>
           </div>
 
-          <div className="grid gap-1">
+          <div className="flex flex-col gap-1">
             <Label className="" htmlFor="DNI">
               DNI
             </Label>
@@ -251,7 +251,7 @@ export function EnfermeroPacienteForm () {
             )}
           </div>
 
-          <div className="grid gap-1">
+          <div className="flex flex-col gap-1">
             <Label className="" htmlFor="email">
               Correo electrónico
             </Label>
@@ -276,7 +276,7 @@ export function EnfermeroPacienteForm () {
             )}
           </div>
 
-          <div className="grid gap-1">
+          <div className="flex flex-col gap-1">
             <Label className="" htmlFor="fecha_nacimiento">
               Fecha de nacimiento
             </Label>
@@ -298,7 +298,7 @@ export function EnfermeroPacienteForm () {
             )}
           </div>
 
-          <div className="grid gap-1">
+          <div className="flex flex-col gap-1">
             <Label className="" htmlFor="address">
               Direccion
             </Label>
@@ -321,7 +321,7 @@ export function EnfermeroPacienteForm () {
             )}
           </div>
 
-          <div className="grid gap-1">
+          <div className="flex flex-col gap-1">
             <Label className="" htmlFor="genero">
               Genero
             </Label>
@@ -344,7 +344,7 @@ export function EnfermeroPacienteForm () {
             )}
           </div>
 
-          <div className="grid gap-1">
+          <div className="flex flex-col gap-1">
             <Label className="" htmlFor="phone">
               Telefono
             </Label>
