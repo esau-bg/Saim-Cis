@@ -51,20 +51,19 @@ export function ModalDetallesDiagnostico ({
       </div>
       <DialogContent>
       <main className="relative container">
-        <aside className='border-b py-4'>
+        <aside className='p-0'>
           {consultas.map((consulta, index) => (
             <div key={index} className='border-b py-4'>
               <div className='flex flex-col items-center'>
                 <Label className='text-lg p-0'>Informacion de los Diagnosticos</Label>
               </div>
               <div className="flex flex-col gap-2 my-2">
+                <div className='flex flex-col'>
+                  <Label className=''>Detalles de la consulta:</Label>
+                </div>
                 <div className='flex justify-between'>
                   <Label className=''>Peso:</Label>
                   <Label className=''>{consulta.consultas?.peso} kg/g</Label>
-                </div>
-                <div className='flex justify-between'>
-                  <Label className=''>Estatura:</Label>
-                  <Label className=''>{consulta.consultas?.estatura} metros</Label>
                 </div>
                 <div className='flex justify-between'>
                   <Label className=''>Temperatura:</Label>
@@ -81,37 +80,12 @@ export function ModalDetallesDiagnostico ({
               </div>
               <div className="flex flex-col gap-2 my-2">
                 <div className='flex justify-between'>
-                  <Label className=''>Fecha de la consulta:</Label>
-                  <Label>
-                    {consulta.consultas?.fecha_consulta
-                      ? new Date(consulta?.consultas?.fecha_consulta).toLocaleDateString(
-                        'es-HN',
-                        {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        }
-                      )
-                      : 'No disponible'}
-                  </Label>
-                </div>
-                <div className='flex justify-between'>
-                <Label className=''>Sintomas:</Label>
-                  <Label className='capitalize'>{consulta.consultas?.sintomas}</Label>
-                </div>
-              </div>
-              <div className="flex flex-col gap-2 my-2">
-                <div className='flex justify-between'>
                   <Label className=''>DNI del Doctor: </Label>
                   <Label className=''>{consulta.id_diagnosticador?.dni ?? 'N/A'}</Label>
                 </div>
                 <div className='flex justify-between'>
                   <Label className=''>Nombre del Doctor: </Label>
                   <Label>{consulta.id_diagnosticador?.nombre} {consulta.id_diagnosticador?.apellido}</Label>
-                </div>
-                <div className='flex justify-between'>
-                  <Label className=''>Sexo: </Label>
-                  <Label className=''>{consulta.id_diagnosticador?.genero ?? 'N/A'}</Label>
                 </div>
               </div>
 
@@ -123,6 +97,9 @@ export function ModalDetallesDiagnostico ({
       <DialogHeader>
         <DialogTitle>
           <form className='flex flex-col gap-4'>
+            <div className='flex flex-col'>
+              <Label className=''>Detalles del diagnostico:</Label>
+            </div>
             <div className='flex flex-col gap-2'>
               <Label className='' htmlFor='Enfermedades'>
                 Enfermedades
