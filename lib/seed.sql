@@ -756,3 +756,52 @@ begin return (
 );
 
 end;
+
+
+
+
+BEGIN RETURN QUERY
+select distinct
+    p.id,
+    p.creado,
+    p.nombre,
+    p.apellido,
+    p.fecha_nacimiento,
+    p.id_jornada as id_jornada,
+    p.dni,
+    p.direccion,
+    p.genero,
+    p.telefono,
+    p.correo,
+    p.rol,
+    r.nombre as nombre_rol,
+    u.avatar_url as url_avatar,
+    u.estado as estado_usuario
+from
+    personas p
+    join especializacion_x_personas exp on p.id = exp.id_persona
+    join especializaciones e on exp.id_especializacion = e.id
+    join roles r on e.id_rol = r.id
+    left join (
+        select
+            id_persona,
+            avatar_url,
+            estado
+        from
+            personas_x_usuarios
+    ) as u on p.id = u.id_persona
+WHERE
+    r.nombre = rol_param
+    and (
+        p.nombre ilike '%' || filtro_param || '%'
+        or p.apellido ilike '%' || filtro_param || '%'
+        or p.dni ilike '%' || filtro_param || '%'
+    )
+order by
+    p.nombre asc
+offset
+    offset_param
+limit
+    limit_param;
+
+END;
