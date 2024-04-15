@@ -31,6 +31,6 @@ export async function POST (request: NextRequest): Promise<NextResponse> {
 
     return NextResponse.json({ message: 'Correo enviado con exito' }, { status: 200 })
   } catch (error) {
-    return new NextResponse('Something went wrong!', { status: 503 })
+    return NextResponse.json({ message: 'Something went wrong!', error }, { status: 503 })
   }
 }
