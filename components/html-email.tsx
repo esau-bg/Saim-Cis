@@ -205,8 +205,8 @@ export default function TemplateEmailPassTemp ({ nombre, tempPass }: { nombre: s
                   font-family: 'Inter', Roboto, 'Open Sans', sans-serif;
                   line-height: 1.75;
                 "
-                href="#"
-                >https://saimcis.com/login</a
+                href="https://saimcis.vercel.app/login"
+                >https://saimcis.vercel.app/login</a
               ><span
                 style="
                   color: #475569;
@@ -238,8 +238,17 @@ export default function TemplateEmailPassTemp ({ nombre, tempPass }: { nombre: s
               "
             >
               Si tiene alguna pregunta, no dude en responder a este correo
-              electrónico o ponerse en contacto con nuestro equipo de soporte en el
-              123
+              electrónico o ponerse en contacto con nosotros en
+              <a
+                style="
+                  color: #3b82f6;
+                  font-size: 1rem;
+                  font-weight: 400;
+                  font-family: 'Inter', Roboto, 'Open Sans', sans-serif;
+                  line-height: 1.75;
+                "
+                href="mailto:saim.cis@outlook.com"
+              >
             </p>
           </div>
           <div

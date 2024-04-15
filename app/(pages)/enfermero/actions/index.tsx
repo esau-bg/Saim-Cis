@@ -1,7 +1,9 @@
 'use server'
 
+import TemplateEmailPassTemp from '@/components/html-email'
 import { supabase } from '@/lib/supabase'
 import { adminAuthClient } from '@/lib/supabase/auth-admin'
+import sgMail from '@sendgrid/mail'
 
 interface CreatePersona {
   correo: string
@@ -84,25 +86,45 @@ export async function sendMailSingup ({
   email: string
   passwordTemp: string
   nombrePersona: string
-}): Promise<{ dataEmail?: any, errorEmail?: any }> {
-  try {
-    const response = await fetch('http://localhost:3005/api/send-email', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ email, nombrePersona, passwordTemp })
+}) {
+  sgMail.setApiKey(process.env.NEXT_PUBLIC_SENDGRID_API_KEY ?? '')
+
+  const msg = {
+    to: email, // Change to your recipient
+    from: 'saim.cis@outlook.com', // Change to your verified sender
+    subject: `Bienvenido a SAIM CIS ${nombrePersona}! 🎉`,
+    text: `Bienvenido a SAIM CIS ${nombrePersona}! 🎉 \n\n su contraseña temporal es: ${passwordTemp}`,
+    html: TemplateEmailPassTemp({ nombre: nombrePersona, tempPass: passwordTemp })
+  }
+
+  return await sgMail
+    .send(msg)
+    .then(() => {
+      return { dataEmail: { message: 'Correo enviado exitosamente' }, errorEmail: null }
+    })
+    .catch((error) => {
+      console.error(error)
+      return { dataEmail: null, errorEmail: error.message }
     })
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
+  // try {
+  //   const response = await fetch('http://localhost:3005/api/send-email', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json'
+  //     },
+  //     body: JSON.stringify({ email, nombrePersona, passwordTemp })
+  //   })
 
-    const dataEmail = await response.json()
-    return { dataEmail, errorEmail: null }
-  } catch (errorEmail) {
-    return { dataEmail: null, errorEmail }
-  }
+  //   if (!response.ok) {
+  //     throw new Error(`HTTP error! status: ${response.status}`)
+  //   }
+
+  //   const dataEmail = await response.json()
+  //   return { dataEmail, errorEmail: null }
+  // } catch (errorEmail) {
+  //   return { dataEmail: null, errorEmail }
+  // }
 }
 export async function signUpWithEmailAndTempPass ({
   email,

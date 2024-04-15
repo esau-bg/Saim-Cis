@@ -387,7 +387,6 @@ export async function updateAuthUserEmail ({ email, newEmail, newPasswordTemp }:
       user_metadata: { passwordTemp: newPasswordTemp }
     })
 
-  console.log(userUpdated, errorUserUpdated)
   return { userUpdated, errorUserUpdated }
 }
 // obtenemos el id del usuario de la tabla auth.users por su correo electrónico
