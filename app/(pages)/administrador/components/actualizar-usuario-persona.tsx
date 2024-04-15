@@ -127,72 +127,78 @@ export default function ActualizarUsuarioPersona ({ usuario }: { usuario: UserTy
       if (!usuario || !usuario.id) {
         toast.error('Error: ID de usuario no disponible')
       }
+
       // Verificar si el correo ingresado es diferente al correo del usuario
       if (data.correo !== usuario?.usuario.correo) {
         const { dataCorreo } = await getUserByCorreo({
           correo: data.correo
         })
+
         // comprobamos que el nuevo correo no exista en la base de datos
         if (dataCorreo && dataCorreo?.length > 0) {
           toast.error('El correo ingresado ya está registrado en el sistema.')
           handleRecargar()
           return
         }
-        // Mensaje de confirmacion previo a actualizar el correo
-        const result = await new Promise((resolve) => {
-          const confirmation = (
-            <div>
-              <p>¿Estás seguro de que deseas actualizar el correo electrónico?</p>
-              <div className='flex justify-around mr-3'>
-                <button className="bg-green-600 hover:bg-green-700 text-white font-light text-sm py-1 px-3 rounded" onClick={() => { resolve(true) }}>Confirmar</button>
-                <button className="bg-red-600 hover:bg-red-700 text-white font-light text-sm py-1 px-3 rounded" onClick={() => { resolve(false) }}>Cancelar</button>
-              </div>
-            </div>
-          )
-          toast.info(() => confirmation, {
-            autoClose: false,
-            closeOnClick: true,
-            closeButton: false
-          })
+      }
+      // Mensaje de confirmacion previo a actualizar el correo
+      const result = await new Promise((resolve) => {
+        const confirmation = (
+        <div>
+          <p>¿Estás seguro de que deseas actualizar el correo electrónico?</p>
+          <div className='flex justify-around mr-3'>
+            <button className="bg-green-600 hover:bg-green-700 text-white font-light text-sm py-1 px-3 rounded" onClick={() => { resolve(true) }}>Confirmar</button>
+            <button className="bg-red-600 hover:bg-red-700 text-white font-light text-sm py-1 px-3 rounded" onClick={() => { resolve(false) }}>Cancelar</button>
+          </div>
+        </div>
+        )
+        toast.info(() => confirmation, {
+          autoClose: false,
+          closeOnClick: true,
+          closeButton: false
+        })
+      })
+
+      if (!result) {
+        toast.error('Operación cancelada')
+        handleRecargar()
+        return
+      }
+      // Crear un codigo de 6 digitos y letras como contraseña temporal
+      const randomCode = Math.random()
+        .toString(36)
+        .substring(2, 8)
+        .toUpperCase()
+
+      // enviamos los correos (actual y nuevo) y la contrasenia temporal para actualizar el usuario anterior
+      const { userUpdated, errorUserUpdated } = await updateAuthUserEmail({ email: usuario?.usuario.correo ?? '', newEmail: data.correo, newPasswordTemp: randomCode })
+      if (errorUserUpdated) {
+        toast.error(errorUserUpdated.message)
+        handleRecargar()
+        return
+      }
+
+      if (userUpdated) {
+        toast.success('El correo electrónico ha sido actualizado correctamente')
+
+        const { data: datamail, error: errormail } = await sendMailSingup({
+          email: data.correo ?? '',
+          nombrePersona: data.nombre,
+          passwordTemp: 'Hola1234'
         })
 
-        if (!result) {
-          toast.error('Operación cancelada')
-          handleRecargar()
+        console.log(datamail, errormail)
+        if (errormail) {
+          toast.error('Error al enviar el correo electrónico')
           return
         }
-        // Crear un codigo de 6 digitos y letras como contraseña temporal
-        const randomCode = Math.random()
-          .toString(36)
-          .substring(2, 8)
-          .toUpperCase()
 
-        // enviamos los correos (actual y nuevo) y la contrasenia temporal para actualizar el usuario anterior
-        const { userUpdated, errorUserUpdated } = await updateAuthUserEmail({ email: usuario?.usuario.correo ?? '', newEmail: data.correo, newPasswordTemp: randomCode })
-        if (errorUserUpdated) {
-          toast.error(errorUserUpdated.message)
+        if (datamail) {
+          toast.success('Correo electrónico enviado exitosamente')
           handleRecargar()
-          return
-        }
-        if (userUpdated) {
-          toast.success('El correo electrónico ha sido actualizado correctamente')
-          // const emailResponse = await sendMailSingup({
-          //   email: data.correo ?? '',
-          //   passwordTemp: randomCode,
-          //   nombrePersona: data.nombre
-          // })
-
-          // console.log('Email response: ', emailResponse)
-          // if (emailResponse.accepted.includes(data.correo ?? '')) {
-          //   // Email was sent successfully
-          //   toast.success('Correo electrónico enviado exitosamente')
-          //   handleRecargar()
-          // } else {
-          //   // Email was not sent successfully
-          //   toast.error('Error al enviar el correo electrónico')
-          // }
         }
       }
+
       const { errorPersonaUpdate } = await updatePersona({ data })
 
       if (errorPersonaUpdate) {

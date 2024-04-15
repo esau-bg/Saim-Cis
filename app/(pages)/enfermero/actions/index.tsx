@@ -76,7 +76,6 @@ export async function setRolePacienteUser ({
 
   return { data, error }
 }
-
 export async function sendMailSingup ({
   email,
   passwordTemp,
@@ -85,21 +84,26 @@ export async function sendMailSingup ({
   email: string
   passwordTemp: string
   nombrePersona: string
-}) {
-  // Utilizar resend para enviar el correo desde api server
-  const { data: emailResponse } = await fetch('/api/resend/send', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ email, nombrePersona, passwordTemp })
-  })
-    .then(async (res) => await res.json())
-    .catch((error) => ({ error }))
+}): Promise<{ data?: any, error?: any }> {
+  try {
+    const response = await fetch('http://localhost:3005/api/send-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email, nombrePersona, passwordTemp })
+    })
 
-  return emailResponse
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    const data = await response.json()
+    return { data, error: null }
+  } catch (error) {
+    return { data: null, error }
+  }
 }
-
 export async function signUpWithEmailAndTempPass ({
   email,
   passwordTemp,
