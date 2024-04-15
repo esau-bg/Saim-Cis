@@ -20,7 +20,7 @@ import {
   signUpWithEmailAndTempPass
 } from '../actions'
 import { useRouter } from 'next/navigation'
-import { sendMailSingup } from '../actions/email'
+import { sendMailSingup } from '@/app/(pages)/enfermero/actions'
 
 const validationSchema = z.object({
   correo: z
@@ -56,6 +56,9 @@ export function AdministradorAdministradorForm () {
   const [isPending, startTransition] = useTransition()
 
   const router = useRouter()
+  const handleRecargar = () => {
+    router.refresh()
+  }
 
   const {
     register,
@@ -137,19 +140,20 @@ export function AdministradorAdministradorForm () {
         toast.success('Usuario creado exitosamente')
       }
 
-      const emailResponse = await sendMailSingup({
-        email: persona.correo ?? '',
-        passwordTemp: randomCode,
-        persona
+      const { dataEmail, errorEmail } = await sendMailSingup({
+        email: data.correo ?? '',
+        nombrePersona: data.nombre,
+        passwordTemp: randomCode
       })
 
-      if (emailResponse.accepted.includes(persona.correo ?? '')) {
-        // Email was sent successfully
-        toast.success('Correo electrónico enviado exitosamente')
-        router.refresh()
-      } else {
-        // Email was not sent successfully
+      if (errorEmail) {
         toast.error('Error al enviar el correo electrónico')
+        return
+      }
+
+      if (dataEmail) {
+        toast.success('Correo electrónico enviado exitosamente')
+        handleRecargar()
       }
     })
   }

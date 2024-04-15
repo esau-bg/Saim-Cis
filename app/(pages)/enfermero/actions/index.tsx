@@ -84,7 +84,7 @@ export async function sendMailSingup ({
   email: string
   passwordTemp: string
   nombrePersona: string
-}): Promise<{ data?: any, error?: any }> {
+}): Promise<{ dataEmail?: any, errorEmail?: any }> {
   try {
     const response = await fetch('http://localhost:3005/api/send-email', {
       method: 'POST',
@@ -98,10 +98,10 @@ export async function sendMailSingup ({
       throw new Error(`HTTP error! status: ${response.status}`)
     }
 
-    const data = await response.json()
-    return { data, error: null }
-  } catch (error) {
-    return { data: null, error }
+    const dataEmail = await response.json()
+    return { dataEmail, errorEmail: null }
+  } catch (errorEmail) {
+    return { dataEmail: null, errorEmail }
   }
 }
 export async function signUpWithEmailAndTempPass ({

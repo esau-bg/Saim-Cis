@@ -3,7 +3,7 @@ import NavbarIndex from '@/components/navbar-index'
 import SaimServicios from './saim-servicios'
 // import NavbarIndexClient from '@/components/navbar-index-client'
 
-export default function PageServicios ({ user }: { user: UserType }) {
+export default function PageServicios () {
   return (
     <>
     <NavbarIndex />

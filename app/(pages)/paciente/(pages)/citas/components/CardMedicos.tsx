@@ -5,11 +5,12 @@ import classNames from 'classnames'
 import { Label } from '@/components/ui/label'
 import AsyncSelect from 'react-select/async'
 // import { type SingleValue, type MultiValue } from 'react-select'
-import { getDoctoresByEspecializacion, getEspecializacionesByDoctor } from '@/app/actions'
+// import { getDoctoresByEspecializacion } from '@/app/actions'
 import { usePathname, useRouter } from 'next/navigation'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
-import { type SingleValue } from 'react-select'
+// import { type SingleValue } from 'react-select'
 import LogoSaimCis from '@/components/logo-saim-cis'
+import { getEspecializacionesByRol } from '@/app/(pages)/administrador/components/actions'
 
 const multiValue: string =
   '!bg-sec-var-200 dark:!bg-sec-var-900 !rounded-md !text-white'
@@ -21,14 +22,14 @@ const control: string =
 const option: string =
   '!text-gray-900 dark:!text-gray-100 !bg-white dark:!bg-slate-800 hover:!bg-sec-var-200 dark:hover:!bg-sec-var-900 hover:!text-sec-var-900 dark:hover:!text-sec-var-100 !cursor-pointer '
 const menu: string = ' !rounded-md !bg-background dark:!bg-slate-800'
-interface Especializacion {
-  value: string
-  label: string
-}
+// interface Especializacion {
+//   value: string
+//   label: string
+// }
 
 export default function cardMedicos () {
-  const [show, setShow] = React.useState(false)
-  const [doctores, setDoctores] = React.useState<InfoMedico[]>([])
+  const [show] = React.useState(false)
+  const [doctores] = React.useState<InfoMedico[]>([])
   const [doctorSelected, setDoctorSelected] = React.useState<InfoMedico | null>(null)
   const [isPending, startTransition] = React.useTransition()
   const pathname = usePathname()
@@ -41,28 +42,30 @@ export default function cardMedicos () {
     })
   }
 
-  const handleOnChange = async (selectedOption: Especializacion | null) => {
-    if (selectedOption) {
-      const { data: doctoresData, error: errorDoctor } = await getDoctoresByEspecializacion({ idEspecializacion: selectedOption.value })
-      if (!errorDoctor) {
-        setDoctores(doctoresData ?? [])
-        setShow(true)
-      }
-    } else {
-      setShow(false) // Desactivar el estado show si no se selecciona ninguna opción
-    }
-  }
+  // const handleOnChange = (
+  //   newValue: SingleValue<Especializacion >
+  // ) => {
+  //   if (newValue) {
+  //     startTransition(() => {
+  //       getDoctoresByEspecializacion({ idEspecializacion: newValue.value }).then(({ data }) => {
+  //         setDoctores(data ?? [])
+  //         setShow(true)
+  //       })
+  //     })
+  //   } else {
+  //     setShow(false)
+  //   }
+  // }
 
-  const promiseEspecializaciones = async () =>
+  const promiseOptions = async () =>
     await new Promise<Especializaciones[]>((resolve) => {
       setTimeout(async () => {
-        const { data } = await getEspecializacionesByDoctor()
-        const formattedData =
-          data?.map((item) => ({
-            ...item,
-            value: item.id,
-            label: item.nombre
-          })) ?? []
+        const { data } = await getEspecializacionesByRol({ rol: 'doctor' })
+        const formattedData = data?.map(item => ({
+          ...item,
+          value: item.id,
+          label: item.nombre
+        })) ?? []
         resolve(formattedData)
       }, 1000)
     })
@@ -112,8 +115,8 @@ export default function cardMedicos () {
               }}
               noOptionsMessage={() => 'No se encontraron Especializaciones'}
               placeholder='Seleccione la Especializacion'
-              onChange={async (selectedOption: SingleValue<Especializacion> | null) => { await handleOnChange(selectedOption) }}
-              loadOptions={promiseEspecializaciones}
+              // onChange={handleOnChange}
+              loadOptions={promiseOptions}
             />
           </div>
         </div>

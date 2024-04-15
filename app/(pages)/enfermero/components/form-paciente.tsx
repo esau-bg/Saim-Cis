@@ -20,6 +20,7 @@ import {
   signUpWithEmailAndTempPass,
   sendMailSingup
 } from '../actions'
+import { useRouter } from 'next/navigation'
 
 const validationSchema = z.object({
   correo: z
@@ -53,7 +54,10 @@ type ValidationSchema = z.infer<typeof validationSchema>
 
 export function EnfermeroPacienteForm () {
   const [isPending, startTransition] = useTransition()
-
+  const router = useRouter()
+  const handleRecargar = () => {
+    router.refresh() // Recarga la página
+  }
   const {
     register,
     handleSubmit,
@@ -154,19 +158,20 @@ export function EnfermeroPacienteForm () {
         toast.success('Usuario creado exitosamente')
       }
 
-      const emailResponse = await sendMailSingup({
-        email: persona.correo ?? '',
-        passwordTemp: randomCode,
-        nombrePersona: persona.nombre
+      const { dataEmail, errorEmail } = await sendMailSingup({
+        email: data.correo ?? '',
+        nombrePersona: data.nombre,
+        passwordTemp: randomCode
       })
 
-      if (emailResponse.accepted.includes(persona.correo ?? '')) {
-        // Email was sent successfully
-        toast.success('Correo electrónico enviado exitosamente')
-        window.location.reload()
-      } else {
-        // Email was not sent successfully
+      if (errorEmail) {
         toast.error('Error al enviar el correo electrónico')
+        return
+      }
+
+      if (dataEmail) {
+        toast.success('Correo electrónico enviado exitosamente')
+        handleRecargar()
       }
     })
   }

@@ -181,19 +181,18 @@ export default function ActualizarUsuarioPersona ({ usuario }: { usuario: UserTy
       if (userUpdated) {
         toast.success('El correo electrónico ha sido actualizado correctamente')
 
-        const { data: datamail, error: errormail } = await sendMailSingup({
+        const { dataEmail, errorEmail } = await sendMailSingup({
           email: data.correo ?? '',
           nombrePersona: data.nombre,
-          passwordTemp: 'Hola1234'
+          passwordTemp: randomCode
         })
 
-        console.log(datamail, errormail)
-        if (errormail) {
+        if (errorEmail) {
           toast.error('Error al enviar el correo electrónico')
           return
         }
 
-        if (datamail) {
+        if (dataEmail) {
           toast.success('Correo electrónico enviado exitosamente')
           handleRecargar()
         }
