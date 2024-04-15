@@ -87,7 +87,7 @@ export async function sendMailSingup ({
   passwordTemp: string
   nombrePersona: string
 }) {
-  sgMail.setApiKey(process.env.NEXT_PUBLIC_SENDGRID_API_KEY ?? '')
+  sgMail.setApiKey(`SG.${process.env.SENDGRID_API_KEY}`)
 
   const msg = {
     to: email, // Change to your recipient
