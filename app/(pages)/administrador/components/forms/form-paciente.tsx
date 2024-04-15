@@ -99,6 +99,7 @@ export function AdministradorPacienteForm () {
       const { persona, errorPersona } = await createPersona({ data })
       if (errorPersona) {
         toast.error(errorPersona.message)
+        return
       }
 
       if (!persona) {
@@ -157,9 +158,9 @@ export function AdministradorPacienteForm () {
   return (
     <div className="grid gap-6">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="grid gap-3">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="grid gap-2">
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col gap-2">
               <Label className="" htmlFor="first-name">
                 Nombres
               </Label>
@@ -185,7 +186,7 @@ export function AdministradorPacienteForm () {
                 </p>
               )}
             </div>
-            <div className="grid gap-2">
+            <div className="flex flex-col gap-2">
               <Label className="" htmlFor="family-name">
                 Apellidos
               </Label>
@@ -196,7 +197,7 @@ export function AdministradorPacienteForm () {
                 autoComplete="family-name"
                 autoCorrect="off"
                 disabled={isPending}
-                tabIndex={1}
+                // tabIndex={1}
                 className={
                   errors.apellido
                     ? 'border-red-500  !placeholder-red-500 text-red-500'
@@ -212,7 +213,7 @@ export function AdministradorPacienteForm () {
             </div>
           </div>
 
-          <div className="grid gap-1">
+          <div className="flex flex-col gap-1">
             <Label className="" htmlFor="DNI">
               DNI
             </Label>
@@ -223,7 +224,7 @@ export function AdministradorPacienteForm () {
               autoComplete="dni"
               autoCorrect="off"
               disabled={isPending}
-              tabIndex={2}
+              // tabIndex={2}
               className={
                 errors.dni
                   ? 'border-red-500  !placeholder-red-500 text-red-500'
@@ -238,7 +239,7 @@ export function AdministradorPacienteForm () {
             )}
           </div>
 
-          <div className="grid gap-1">
+          <div className="flex flex-col gap-1">
             <Label className="" htmlFor="email">
               Correo electrónico
             </Label>
@@ -249,7 +250,7 @@ export function AdministradorPacienteForm () {
               autoComplete="email"
               autoCorrect="off"
               disabled={isPending}
-              tabIndex={3}
+              // tabIndex={3}
               className={
                 errors.correo
                   ? 'border-red-500  !placeholder-red-500 text-red-500'
@@ -264,7 +265,7 @@ export function AdministradorPacienteForm () {
             )}
           </div>
 
-          <div className="grid gap-1">
+          <div className="flex flex-col gap-1">
             <Label className="" htmlFor="fecha_nacimiento">
               Fecha de nacimiento
             </Label>
@@ -286,9 +287,9 @@ export function AdministradorPacienteForm () {
             )}
           </div>
 
-          <div className="grid gap-1">
+          <div className="flex flex-col gap-1">
             <Label className="" htmlFor="address">
-              Direccion
+              Dirección
             </Label>
             <Input
               type="text"
@@ -309,17 +310,16 @@ export function AdministradorPacienteForm () {
             )}
           </div>
 
-          <div className="grid gap-1">
+          <div className="flex flex-col gap-1">
             <Label className="" htmlFor="genero">
-              Genero
+              Género
             </Label>
             <select
               disabled={isPending}
-              className={`p-3 block w-full border border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600 ${
-                errors.genero
+              className={`p-3 block w-full border border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600 ${errors.genero
                   ? 'border-red-500  !placeholder-red-500 text-red-500'
                   : ''
-              }`}
+                }`}
               {...register('genero')}
             >
               <option>Masculino</option>
@@ -332,19 +332,18 @@ export function AdministradorPacienteForm () {
             )}
           </div>
 
-          <div className="grid gap-1">
+          <div className="flex flex-col gap-1">
             <Label className="" htmlFor="phone">
-              Telefono
+              Teléfono
             </Label>
             <div className="relative">
               <Input
                 type="text"
                 id="hs-inline-leading-select-label"
-                className={`ps-28 ${
-                  errors.telefono
+                className={`ps-28 ${errors.telefono
                     ? 'border-red-500  !placeholder-red-500 text-red-500'
                     : ''
-                }`}
+                  }`}
                 placeholder="0000-0000"
                 disabled={isPending}
                 {...register('telefono')}
@@ -354,7 +353,7 @@ export function AdministradorPacienteForm () {
                   htmlFor="hs-inline-leading-select-country"
                   className="sr-only"
                 >
-                  Pais
+                  País
                 </label>
                 <select
                   id="hs-inline-leading-select-country"
@@ -362,7 +361,7 @@ export function AdministradorPacienteForm () {
                 >
                   <option>HN (+504)</option>
                   {/* <option>MX (+52)</option>
-                    <option>US (+1)</option> */}
+              <option>US (+1)</option> */}
                 </select>
               </div>
             </div>
@@ -384,20 +383,21 @@ export function AdministradorPacienteForm () {
             Registrar paciente
           </Button>
         </div>
+
       </form>
 
-                <ToastContainer
-                  position="top-right"
-                  autoClose={3000}
-                  hideProgressBar
-                  newestOnTop={false}
-                  closeOnClick
-                  rtl={false}
-                  pauseOnFocusLoss
-                  draggable
-                  pauseOnHover
-                  theme="light"
-                />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
 
     </div>
   )

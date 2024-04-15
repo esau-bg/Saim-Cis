@@ -17,13 +17,13 @@ export default async function page () {
     return (<div>Loading...</div>)
   }
 
-  const { citas, errorCitas } = await getCitasByPaciente({ id_paciente: usuario.id })
+  const { citasPaciente, errorCitasPaciente } = await getCitasByPaciente({ id_paciente: usuario.id })
 
-  if (errorCitas) return <div>Error</div>
+  if (errorCitasPaciente) return <div>Error</div>
 
-  if (!citas) return <div>Loading...</div>
+  if (!citasPaciente) return <div>Loading...</div>
 
-  const events = citas.map((cita) => ({
+  const events = citasPaciente.map((cita) => ({
     id: cita.id,
     title: cita.paciente?.nombre ?? '',
     start: new Date(cita.fecha_inicio),

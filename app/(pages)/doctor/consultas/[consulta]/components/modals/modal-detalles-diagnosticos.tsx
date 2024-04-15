@@ -13,6 +13,8 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import Tags from '@/components/tags'
 import { Checkbox } from '@/components/ui/checkbox'
+import { getConsultaByIdDiagnostico } from '@/app/(pages)/doctor/actions'
+import React, { useEffect } from 'react'
 
 export function ModalDetallesDiagnostico ({
   diagnostico
@@ -21,7 +23,23 @@ export function ModalDetallesDiagnostico ({
 }
 
 ) {
+  const [consultas, setConsultas] = React.useState<consultaDiagnostico[]>([])
+  useEffect(() => {
+    const fetchConsultas = async () => {
+      const { consultaDiagnostico, errorConsultaDiagnostico } = await getConsultaByIdDiagnostico({ idDiagnostico: diagnostico.id_diagnostico })
+
+      if (!errorConsultaDiagnostico) {
+        setConsultas(consultaDiagnostico ?? [])
+      } else {
+        // Manejar el error aquí, por ejemplo, mostrar un mensaje de error
+        console.error('Error al obtener consultas:', errorConsultaDiagnostico)
+      }
+    }
+
+    fetchConsultas()
+  }, [diagnostico.id_diagnostico])
   return (
+
     <Dialog >
       <div className="flex justify-end">
         <DialogTrigger asChild>
@@ -29,90 +47,129 @@ export function ModalDetallesDiagnostico ({
             Ver Detalles
             <PlusIcon className="h-4 w-4 ml-1" />
           </Button>
-      </DialogTrigger>
+        </DialogTrigger>
       </div>
       <DialogContent>
-        <DialogHeader>
-          <DialogTitle>
-            <form className='grid gap-4'>
-              <aside className='grid gap-4'>
-                <div>
-                  <Label className=' text-lg'>Informacion de los Diagnosticos</Label>
+      <main className="relative container">
+        <aside className='p-0'>
+          {consultas.map((consulta, index) => (
+            <div key={index} className='border-b py-4'>
+              <div className='flex flex-col items-center'>
+                <Label className='text-lg p-0'>Informacion de los Diagnosticos</Label>
+              </div>
+              <div className="flex flex-col gap-2 my-2">
+                <div className='flex flex-col'>
+                  <Label className=''>Detalles de la consulta:</Label>
                 </div>
-                <div className='grid gap-2'>
-                    <Label className='' htmlFor='Enfermedades'>
-                      Enfermedades
-                    </Label>
-                    <div className='rounded-md border p-2 border-gray-100 dark:border-gray-900 '>
-
-                    <Tags input={diagnostico?.enfermedades} />
-                    </div>
-                  </div>
-
-                  <div className='flex w-full justify-end -mt-2'>
-                    <Label htmlFor='diferencial' className='flex items-center space-x-2'>
-                      <span>Es Diferencial?</span>
-                      <Checkbox
-                        checked={diagnostico?.diferencial}
-                        disabled // Cambia el color del checkbox si lo deseas
-                      />
-                    </Label>
-                  </div>
-                <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-
-                  <div className='grid gap-2'>
-                    <Label className='' htmlFor='family-name'>
-                      Observacion
-                    </Label>
-                    <Input
-                      placeholder='Obersevaciones'
-                      type='text'
-                      autoCapitalize='none'
-                      autoComplete='family-name'
-                      autoCorrect='off'
-                      defaultValue={`${diagnostico?.observacion}`}
-                      disabled
-                    />
-                  </div>
-                  <div className='grid gap-2'>
-                    <Label className='' htmlFor='Fecha-Diagnostico'>
-                      Fecha de Diagnostico
-                    </Label>
-                    <Input
-                      placeholder='Fecha-Diagnostico'
-                      type='text'
-                      autoCapitalize='none'
-                      autoComplete='first-name'
-                      autoCorrect='off'
-                      autoFocus
-                      defaultValue={diagnostico.fecha_diagnostico
-                        ? new Date(diagnostico.fecha_diagnostico).toLocaleDateString(
-                          'es-ES',
-                          {
-                            year: 'numeric',
-                            month: 'long',
-                            day: '2-digit'
-                          }
-                        )
-                        : 'No disponible'}
-                      disabled
-                    />
-                  </div>
+                <div className='flex justify-between'>
+                  <Label className=''>Peso:</Label>
+                  <Label className=''>{consulta.consultas?.peso} kg/g</Label>
                 </div>
-              </aside>
+                <div className='flex justify-between'>
+                  <Label className=''>Temperatura:</Label>
+                  <Label className=''>{consulta.consultas?.temperatura} °C</Label>
+                </div>
+                <div className='flex justify-between'>
+                  <Label className=''>Presion Arterial:</Label>
+                  <Label className=''>{consulta.consultas?.presion_arterial} mm Hg</Label>
+                </div>
+                <div className='flex justify-between'>
+                  <Label className=''>Saturación en Oxigeno:</Label>
+                  <Label className=''>{consulta.consultas?.saturacion_oxigeno}%</Label>
+                </div>
+              </div>
+              <div className="flex flex-col gap-2 my-2">
+                <div className='flex justify-between'>
+                  <Label className=''>DNI del Doctor: </Label>
+                  <Label className=''>{consulta.id_diagnosticador?.dni ?? 'N/A'}</Label>
+                </div>
+                <div className='flex justify-between'>
+                  <Label className=''>Nombre del Doctor: </Label>
+                  <Label>{consulta.id_diagnosticador?.nombre} {consulta.id_diagnosticador?.apellido}</Label>
+                </div>
+              </div>
 
-              <aside className='grid gap-3'>
-                  <div className='grid gap-2'>
-                    <Label htmlFor='interno' className='flex items-center space-x-2'>
-                      <span>Atendido Internamente</span>
-      <Checkbox disabled checked={diagnostico?.interno} />
+            </div>
+          ))}
+        </aside>
+      </main>
 
-                    </Label>
-                  </div>
-              </aside>
-            </form>
-          </DialogTitle>
-        </DialogHeader>
+      <DialogHeader>
+        <DialogTitle>
+          <form className='flex flex-col gap-4'>
+            <div className='flex flex-col'>
+              <Label className=''>Detalles del diagnostico:</Label>
+            </div>
+            <div className='flex flex-col gap-2'>
+              <Label className='' htmlFor='Enfermedades'>
+                Enfermedades
+              </Label>
+              <div className='rounded-md border p-2 border-gray-100 dark:border-gray-900 '>
+                <Tags input={diagnostico?.enfermedades} />
+              </div>
+            </div>
+
+            <div className='flex items-center justify-end mt-0'>
+              <Label htmlFor='diferencial' className='flex items-center space-x-2'>
+                <Label>Es Diferencial?</Label>
+                <Checkbox
+                  checked={diagnostico?.diferencial}
+                  disabled // Cambia el color del checkbox si lo deseas
+                />
+              </Label>
+            </div>
+
+            <div className='flex flex-col gap-4 sm:flex-row sm:gap-4'>
+              <div className='flex flex-col gap-2'>
+                <Label className='' htmlFor='family-name'>
+                  Observacion
+                </Label>
+                <Input
+                  placeholder='Observaciones'
+                  type='text'
+                  autoCapitalize='none'
+                  autoComplete='family-name'
+                  autoCorrect='off'
+                  defaultValue={`${diagnostico?.observacion}`}
+                  disabled
+                />
+              </div>
+              <div className='flex flex-col gap-2'>
+                <Label className='' htmlFor='Fecha-Diagnostico'>
+                  Fecha de Diagnostico
+                </Label>
+                <Input
+                  placeholder='Fecha-Diagnostico'
+                  type='text'
+                  autoCapitalize='none'
+                  autoComplete='first-name'
+                  autoCorrect='off'
+                  autoFocus
+                  defaultValue={diagnostico.fecha_diagnostico
+                    ? new Date(diagnostico.fecha_diagnostico).toLocaleDateString(
+                      'es-ES',
+                      {
+                        year: 'numeric',
+                        month: 'long',
+                        day: '2-digit'
+                      }
+                    )
+                    : 'No disponible'}
+                  disabled
+                />
+              </div>
+            </div>
+
+            <div className='flex gap-3'>
+              <div className='flex gap-2 items-center'>
+                <Label>Atendido Internamente</Label>
+                <Checkbox disabled checked={diagnostico?.interno} />
+              </div>
+            </div>
+          </form>
+        </DialogTitle>
+      </DialogHeader>
+
       </DialogContent>
     </Dialog>
 

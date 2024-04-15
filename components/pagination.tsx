@@ -1,20 +1,21 @@
 'use client'
 
-import { generatePagination } from '@/lib/utils'
+import { cn, generatePagination } from '@/lib/utils'
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import Link from 'next/link'
 
-import { usePathname, useSearchParams } from 'next/navigation'
+import { usePathname, useSearchParams, useRouter } from 'next/navigation'
+import { Button } from './ui/button'
 
 export default function Pagination ({ totalPages }: { totalPages: number }) {
   totalPages = Math.ceil(totalPages / 6)
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const currentPage = Number(searchParams.get('page')) || 1
+  const currentPage = Number(searchParams?.get('page')) || 1
 
   const createPageURL = (pageNumber: number | string) => {
-    const params = new URLSearchParams(searchParams)
+    const params = new URLSearchParams(searchParams ?? '')
     params.set('page', pageNumber.toString())
     return `${pathname}?${params.toString()}`
   }
@@ -22,14 +23,14 @@ export default function Pagination ({ totalPages }: { totalPages: number }) {
   const allPages = generatePagination(currentPage, totalPages)
 
   return (
-    <div className="inline-flex">
+    <div className='inline-flex'>
       <PaginationArrow
-        direction="left"
+        direction='left'
         href={createPageURL(currentPage - 1)}
         isDisabled={currentPage <= 1}
       />
 
-      <div className="flex -space-x-px">
+      <div className='flex -space-x-px'>
         {allPages.map((page, index) => {
           let position: 'first' | 'last' | 'single' | 'middle' | undefined
 
@@ -51,7 +52,7 @@ export default function Pagination ({ totalPages }: { totalPages: number }) {
       </div>
 
       <PaginationArrow
-        direction="right"
+        direction='right'
         href={createPageURL(currentPage + 1)}
         isDisabled={currentPage >= totalPages}
       />
@@ -81,12 +82,25 @@ function PaginationNumber ({
     }
   )
 
+  const router = useRouter()
+  const handleRedirect = ({ href }: { href: string }) => {
+    router.push(href)
+    router.refresh()
+  }
+
   return isActive || position === 'middle' ? (
     <div className={className}>{page}</div>
   ) : (
-    <Link href={href} className={className}>
+    <Button
+      variant='ghost'
+      onClick={() => {
+        handleRedirect({ href })
+      }}
+
+      className={cn(' rounded-none', className)}
+    >
       {page}
-    </Link>
+    </Button>
   )
 }
 
@@ -111,9 +125,9 @@ function PaginationArrow ({
 
   const icon =
     direction === 'left' ? (
-      <ArrowLeftIcon className="w-4" />
+      <ArrowLeftIcon className='w-4' />
     ) : (
-      <ArrowRightIcon className="w-4" />
+      <ArrowRightIcon className='w-4' />
     )
 
   return isDisabled ? (

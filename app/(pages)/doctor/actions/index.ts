@@ -2,24 +2,64 @@
 import { supabase } from '@/lib/supabase'
 import { getIDEstadoConsultaByEstado } from '@/app/actions'
 
-export async function getCitasByPaciente ({ id_paciente }: { id_paciente: string }) {
+export async function getCitasByDoctor ({ id_doctor }: { id_doctor: string }) {
   const { data: citas, error: errorCitas } = await supabase
     .from('citas')
-    .select('*, paciente:personas!citas_id_paciente_fkey(*), doctor:personas!citas_id_doctor_fkey(*) ')
-    .eq('id_paciente', id_paciente)
+    .select('*, doctor:personas!citas_id_doctor_fkey(*), paciente:personas!citas_id_paciente_fkey(*)')
+    .eq('id_doctor', id_doctor)
+    .in('estado', ['Pendiente', 'pendiente'])
     .order('fecha_inicio', { ascending: true })
 
   return { citas, errorCitas }
 }
 
-export async function getCitasByDoctor ({ id_doctor }: { id_doctor: string }) {
-  const { data: citas, error: errorCitas } = await supabase
+export async function getInfoDoctor ({ id_doctor }: { id_doctor: string }) {
+  const { data: InfoMedico, error: errorMedico } = await supabase
+    .from('personas')
+    .select('*, jornada:jornadas(*)')
+    .eq('id', id_doctor)
+    .single()
+
+  return { InfoMedico, errorMedico }
+}
+
+export async function getCitasByPaciente ({ id_paciente }: { id_paciente: string }) {
+  const { data: citasPaciente, error: errorCitasPaciente } = await supabase
     .from('citas')
-    .select('*, paciente:personas!citas_id_paciente_fkey(*)')
-    .eq('id_doctor', id_doctor)
+    .select('*, paciente:personas!citas_id_paciente_fkey(*), doctor:personas!citas_id_doctor_fkey(*) ')
+    .eq('id_paciente', id_paciente)
     .order('fecha_inicio', { ascending: true })
 
-  return { citas, errorCitas }
+  return { citasPaciente, errorCitasPaciente }
+}
+
+export async function createCitaByPaciente ({ data }: { data: CitasInsert }) {
+  const { data: citasInsert, error: errorCitasInsert } = await supabase
+    .from('citas')
+    .insert({ ...data })
+    .select('*, paciente:personas!citas_id_paciente_fkey(*), doctor:personas!citas_id_doctor_fkey(*) ')
+    .single()
+  return { citasInsert, errorCitasInsert }
+}
+
+export async function updateCitaByPaciente ({ data }: { data: CitasUpdate }) {
+  const { data: citasUpdate, error: errorCitasUpdate } = await supabase
+    .from('citas')
+    .update({ ...data })
+    .eq('id', data.id ?? '')
+    .select('*, paciente:personas!citas_id_paciente_fkey(*), doctor:personas!citas_id_doctor_fkey(*) ')
+    .single()
+  return { citasUpdate, errorCitasUpdate }
+}
+
+export async function citaCancel (id: string) {
+  const { data: citasCancel, error: errorCitasCancel } = await supabase
+    .from('citas')
+    .update({ estado: 'cancelada' })
+    .eq('id', id)
+    .select()
+    .single()
+  return { citasCancel, errorCitasCancel }
 }
 
 export async function getCita ({ id_cita }: { id_cita: string }) {
@@ -138,12 +178,11 @@ export async function getDiagnosticosByExpedienteAndQuery ({
   return { diagnosticos, error }
 }
 
-/* export async function getDiagnosticsHistory ({ numExpediente }: { numExpediente: string }) {
-  const { data: diagnostics, error: errorDiagnostics } = await supabase
+export async function getConsultaByIdDiagnostico ({ idDiagnostico }: { idDiagnostico: string }) {
+  const { data: consultaDiagnostico, error: errorConsultaDiagnostico } = await supabase
     .from('diagnosticos')
-    .select('*')
-    .eq('id_expediente', numExpediente)
-    .order('fecha_diagnostico', { ascending: true })
+    .select('id, id_diagnosticador: personas(*), consultas(*)')
+    .eq('id', idDiagnostico)
 
-  return { diagnostics, errorDiagnostics }
-} */
+  return { consultaDiagnostico, errorConsultaDiagnostico }
+}

@@ -6,16 +6,18 @@ import { useState } from 'react'
 import ButtonMoreDataTable from './button-more-data-table'
 import { Button } from './ui/button'
 import { ModalPreclinica } from './modals/modal-preclinica'
-import { EllipsisVerticalIcon, LinkIcon } from '@heroicons/react/20/solid'
+import { CalendarDaysIcon, EllipsisVerticalIcon, LinkIcon } from '@heroicons/react/20/solid'
 import { AlertModalDeleteUser } from './modals/modal-eliminar'
 import { ModalAgregarRolEspecializacion } from './modals/modal-agregar-rol-especializacion'
 
 export default function DataTableClient ({
   users,
-  permissons
+  permissons,
+  citas
 }: {
   users: DataTableUsers
   permissons?: boolean
+  citas?: boolean
 }) {
   const [personaSeleccionada, setPersonaSeleccionada] =
     useState<Personas | null>(null)
@@ -164,9 +166,7 @@ export default function DataTableClient ({
                                 setPersonaSeleccionada(usuario)
                               }}
                             >
-
-                              <EllipsisVerticalIcon className="h-5 w-5 text-gray-500" />
-
+                              <EllipsisVerticalIcon className='h-5 w-5 text-gray-500' />
                             </Button>
                           }
                         >
@@ -182,15 +182,30 @@ export default function DataTableClient ({
                           </Button>
                           <ModalPreclinica persona={personaSeleccionada} />
 
-                          {
-                            permissons && (
-                              <>
-                              <ModalAgregarRolEspecializacion persona={personaSeleccionada} />
+                          {permissons && (
+                            <>
+                              <ModalAgregarRolEspecializacion
+                                persona={personaSeleccionada}
+                              />
 
-                              <AlertModalDeleteUser persona={personaSeleccionada} />
-                              </>
-                            )
-                          }
+                              <AlertModalDeleteUser
+                                persona={personaSeleccionada}
+                              />
+                            </>
+                          )}
+
+                          {citas && (
+                            <Button
+                              asChild
+                              variant={'ghost'}
+                              className='justify-start font-normal'
+                            >
+                              <Link href={`${pathname}/${usuario.id}/citas`}>
+                                <CalendarDaysIcon className='h-4 w-4 mr-1' />
+                                Ver Citas
+                              </Link>
+                            </Button>
+                          )}
                         </ButtonMoreDataTable>
                       </td>
                     </tr>

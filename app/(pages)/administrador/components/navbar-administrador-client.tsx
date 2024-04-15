@@ -27,6 +27,8 @@ export default function NavbarAdministradorClient ({ user }: { user: UserType })
   const pathname = usePathname()
   const router = useRouter()
 
+  if (!pathname) return null
+
   const handleRedirect = ({ href }: { href: string }) => {
     router.push(href)
     router.refresh()
@@ -153,7 +155,7 @@ export default function NavbarAdministradorClient ({ user }: { user: UserType })
                         <Menu.Item>
                           {({ active }) => (
                             <Link
-                              href="/perfil"
+                              href="/administrador/perfil"
                               className={classNames(
                                 active ? 'bg-gray-100 dark:bg-gray-800' : '',
                                 'block px-4 py-2 text-sm text-gray-900 dark:text-gray-100 w-full text-start'

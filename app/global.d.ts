@@ -12,6 +12,7 @@ declare global {
   type InfoDiagnosticos = DB['public']['Functions']['get_diagnosticos_by_expediente_and_filter_pagination']['Returns']
   type PersonasXUsuarios = DB['public']['Tables']['personas_x_usuarios']['Row']
   type Citas = DB['public']['Tables']['citas']['Row']
+  type CitasUpdate = DB['public']['Tables']['citas']['Update']
   type EstadoConsultas = DB['public']['Tables']['estado_consultas']['Row']
   type InfoConsultas = DB['public']['Functions']['get_consultas_by_estado_and_filter_pagination']['Returns']
   type DiagnosticoInsert = DB['public']['Tables']['diagnosticos']['Insert']
@@ -19,6 +20,9 @@ declare global {
   type Especializaciones = DB['public']['Tables']['especializaciones']['Row']
   type DataTableUsers = DB['public']['Functions']['get_personas_by_rol_and_filter_pagination']['Returns']
   type Roles = DB['public']['Tables']['roles']['Row']
+  type CitasInsert = DB['public']['Tables']['citas']['Insert']
+  type CitasDelete = DB['public']['Tables']['citas']['Delete']
+  type EspecializacionXPersonas = DB['public']['Tables']['especializacion_x_personas']['Row']
 
   type UserType =
     | (Personas & { usuario: PersonasXUsuarios } & {
@@ -68,4 +72,77 @@ declare global {
       diferencial: boolean
     }
 
+    interface InfoMedico {
+      id_especializacion: string
+      id_persona: string
+      personas: {
+        nombre: string
+        apellido: string
+        idUsuario: Array<{
+          correo: string
+          avatar_url: string | null
+        }>
+        idJornada: {
+          jornada: string
+        } | null
+      } | null
+    }
+
+    type InfoMedicoJornada =
+    | (Personas & { jornada: Jornadas | null })
+    | null
+
+    interface consultaDiagnostico {
+      id: string
+      id_diagnosticador: {
+        apellido: string
+        correo: string | null
+        creado: string
+        direccion: string | null
+        dni: string
+        fecha_nacimiento: string
+        genero: string
+        id: string
+        id_jornada: string | null
+        nombre: string
+        rol: string | null
+        telefono: string | null
+      } | null
+      consultas: {
+        estatura: number | null
+        fecha_consulta: string
+        id: string
+        id_cita: string | null
+        id_estado_consulta: string
+        id_expediente: string
+        peso: number | null
+        presion_arterial: string | null
+        saturacion_oxigeno: string | null
+        sintomas: string | null
+        temperatura: number | null
+      } | null
+
+    }
+
+    interface InfoDoctor {
+      id_especializacion: string
+      id_persona: string
+      personas: {
+        nombre: string
+        apellido: string
+        idUsuario: Array<{
+          correo: string
+          avatar_url: string | null
+        }>
+        idJornada: {
+          jornada: string
+        } | null
+      } | null
+      especializaciones: {
+        nombre: string
+        idRoles: {
+          nombre: string
+        } | null
+      } | null
+    }
 }

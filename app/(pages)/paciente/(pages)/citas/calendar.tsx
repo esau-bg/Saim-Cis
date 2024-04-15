@@ -1,13 +1,15 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
+import { ToastContainer } from 'react-toastify'
+// import { Icons } from '@/components/icons'
 import withDragAndDrop, {
 // type EventInteractionArgs
 } from 'react-big-calendar/lib/addons/dragAndDrop'
 import {
   AlertDialog,
-  AlertDialogAction,
+  // AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -21,7 +23,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css'
 import { formatFecha } from '@/app/actions'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-// import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 // import Link from 'next/link'
 
 import 'moment/locale/es'
@@ -34,6 +36,24 @@ export default function CitasPaciente ({ events }: { events: Events[] }) {
   // const [state, setState] = React.useState<Events[]>(events)
   const [isOpen, setIsOpen] = React.useState(false)
   const [eventSelected, setEventSelected] = React.useState<Events | null>(null)
+  const [myEvents, setMyEvents] = useState<Events[]>(events)
+
+  const handleSelectSlot = useCallback(
+    ({ start, end }: { start: Date, end: Date }) => {
+      const title = window.prompt('Nombre del nuevo evento')
+      if (title) {
+        const newEvent: Events = {
+          start,
+          end,
+          title
+        }
+        setMyEvents(prevEvents => [...prevEvents, newEvent])
+      }
+    },
+    [setMyEvents]
+  )
+
+  const scrollToTime = new Date(1970, 1, 1, 6)
 
   // const onEventResize = (args: EventInteractionArgs<object>) => {
   //   const { start, end } = args
@@ -95,8 +115,11 @@ export default function CitasPaciente ({ events }: { events: Events[] }) {
         defaultDate={moment().toDate()}
         defaultView='week'
         views={['month', 'week', 'day']}
-        events={events}
+        events={myEvents}
         localizer={localizer}
+        onSelectSlot={handleSelectSlot}
+        selectable
+        scrollToTime={scrollToTime}
         // onEventDrop={onEventDrop}
         // onEventResize={onEventResize}
 
@@ -251,14 +274,44 @@ export default function CitasPaciente ({ events }: { events: Events[] }) {
                     Ver detalles
                   </Link>
               </Button> */}
-              <div className='flex gap-2'>
-                <AlertDialogCancel>Cerrar</AlertDialogCancel>
-                <AlertDialogAction disabled>Guardar</AlertDialogAction>
+              <div className='flex gap-3'>
+                <AlertDialogCancel className='bg-gray-600 text-white'>Cerrar</AlertDialogCancel>
+                <Button
+                // disabled={isPending}
+                className='bg-sec-var-800'
+                >
+                {/* {isPending && (
+                  <Icons.spinner className="mr-2 h-4 w-4 animate-spin " />
+                )} */}
+                Guardar
+                </Button>
+                <Button
+                // disabled={isPending}
+                className='bg-red-700'
+                >
+                {/* {isPending && (
+                  <Icons.spinner className="mr-2 h-4 w-4 animate-spin " />
+                )} */}
+                Eliminar
+                </Button>
               </div>
             </footer>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   )
 }

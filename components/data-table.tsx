@@ -8,15 +8,17 @@ export default async function DataTable ({
   query,
   currentPage,
   rol,
-  permissons
+  permissons,
+  citas
 }: {
   query: string
   currentPage: number
   rol: RolesPermissons
   permissons?: boolean
+  citas?: boolean
 }) {
   // await new Promise((resolve) => setTimeout(resolve, 5000)) // Simulando una carga lenta
-  const offset = (currentPage - 1) * ITEMS_PER_PAGE
+  const offset = (Number(currentPage) - 1) * ITEMS_PER_PAGE
 
   const { users, error } = await getUsersByRoleAndQuery({
     rol,
@@ -37,5 +39,5 @@ export default async function DataTable ({
       </div>
     )
   }
-  return <DataTableClient users={users} permissons= {permissons} />
+  return <DataTableClient users={users} permissons= {permissons} citas={citas} />
 }

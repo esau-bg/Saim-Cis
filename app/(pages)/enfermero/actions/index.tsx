@@ -1,8 +1,7 @@
 'use server'
-import TemplateEmailPassTemp from '@/components/html-email'
+
 import { supabase } from '@/lib/supabase'
 import { adminAuthClient } from '@/lib/supabase/auth-admin'
-import nodemailer from 'nodemailer'
 
 interface CreatePersona {
   correo: string
@@ -77,42 +76,34 @@ export async function setRolePacienteUser ({
 
   return { data, error }
 }
-
 export async function sendMailSingup ({
   email,
   passwordTemp,
-  persona
+  nombrePersona
 }: {
   email: string
   passwordTemp: string
-  persona: Personas
-}) {
-  const transporter = nodemailer.createTransport({
-    host: 'smtp-mail.outlook.com',
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.NEXT_PUBLIC_EMAIL,
-      pass: process.env.NEXT_PUBLIC_EMAIL_PASSWORD
-    }
-  })
-
-  const mailOptions = {
-    from: `SAIM CIS ${process.env.NEXT_PUBLIC_EMAIL}`,
-    to: email,
-    subject: `Bienvenido a SAIM CIS ${persona.nombre}! 🎉`,
-    text: `Su contraseña temporal es: ${passwordTemp}`,
-    html: TemplateEmailPassTemp({
-      nombre: persona.nombre,
-      tempPass: passwordTemp
+  nombrePersona: string
+}): Promise<{ data?: any, error?: any }> {
+  try {
+    const response = await fetch('http://localhost:3005/api/send-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email, nombrePersona, passwordTemp })
     })
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    const data = await response.json()
+    return { data, error: null }
+  } catch (error) {
+    return { data: null, error }
   }
-
-  const emailResponse = await transporter.sendMail(mailOptions)
-
-  return emailResponse
 }
-
 export async function signUpWithEmailAndTempPass ({
   email,
   passwordTemp,
@@ -158,4 +149,31 @@ export async function getUserByCorreo ({ correo }: { correo: string }) {
     .eq('correo', correo)
 
   return { dataCorreo, errorCorreo }
+}
+
+export async function getCitasByDoctor ({ id_doctor: idDoctor }: { id_doctor: string }) {
+  const { data: citas, error: errorCitas } = await supabase
+    .from('citas')
+    .select('*, paciente:personas!citas_id_paciente_fkey(*), doctor:personas!citas_id_doctor_fkey(*)')
+    .eq('id_doctor', idDoctor)
+    .order('fecha_inicio', { ascending: true })
+
+  return { citas, errorCitas }
+}
+
+export async function updateCita ({
+  id,
+  data
+}: {
+  id: string
+  data: CitasUpdate
+}) {
+  const { data: cita, error: errorCita } = await supabase
+    .from('citas')
+    .update({ ...data })
+    .eq('id', id)
+    .select('*')
+    .single()
+
+  return { cita, errorCita }
 }

@@ -11,9 +11,9 @@ import { usePathname, useRouter } from 'next/navigation'
 
 const navigation = [
   { name: 'Inicio', href: '/', current: true },
-  { name: 'Nosotros', href: '#nosotros', current: false },
-  { name: 'Servicios', href: '#servicios', current: false },
-  { name: 'Doctores', href: '#doctores', current: false },
+  { name: 'Nosotros', href: '/nosotros', current: false },
+  { name: 'Servicios', href: '/servicios', current: false },
+  { name: 'Doctores', href: '/doctores', current: false },
   { name: 'Contacto', href: '#contacto', current: false }
 ]
 
@@ -144,7 +144,7 @@ export default function NavbarIndexClient ({ user }: { user: UserType }) {
                           </span>
                         </Menu.Item>
                         )}
-<Menu.Item>
+                        <Menu.Item>
                           {({ active }) => (
                             <Link
                               href="/perfil"

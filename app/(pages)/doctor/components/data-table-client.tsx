@@ -156,7 +156,6 @@ export default function DataTableClient ({ consultas }: { consultas: InfoConsult
                               >
                                   <span className="hidden md:block">Atender</span>{' '}
                                   <PencilSquareIcon className="h-5 md:ml-4" />
-
                               </button>
                             {/* <div className="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden min-w-60 bg-white shadow-md rounded-lg p-2 mt-2 dark:bg-gray-800 dark:border dark:border-gray-700" aria-labelledby="hs-dropdown-custom-icon-trigger">
                               <button data-hs-overlay="#hs-modal-preclinica" className="flex w-full items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700" >

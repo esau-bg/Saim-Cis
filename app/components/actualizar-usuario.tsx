@@ -14,6 +14,7 @@ import { Icons } from '@/components/icons'
 import { useRouter } from 'next/navigation'
 import { updatePersona, uploadAvatar } from '../actions'
 import { PhotoIcon } from '@heroicons/react/24/solid'
+import { ArrowLeftCircleIcon } from '@heroicons/react/20/solid'
 
 const validationSchema = z.object({
   direccion: z.string().min(1, { message: 'La dirección es obligatoria' }),
@@ -33,6 +34,13 @@ type ValidationSchema = z.infer<typeof validationSchema>
 export default function ActualizarPerfil ({ usuario }: { usuario: UserType }) {
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
+  const handleRedirect = () => {
+    router.back() // Retrocede en el historial
+    // Espera 100 milisegundos antes de retroceder
+    setTimeout(() => {
+      router.refresh() // Recarga la páginarouter.refresh() // Recarga la página
+    }, 100)
+  }
 
   // Funcion que se ejecuta cuando se suelta el archivo en la dropzone
   const onDrop = async (acceptedFiles: File[]) => {
@@ -122,69 +130,77 @@ export default function ActualizarPerfil ({ usuario }: { usuario: UserType }) {
 
   return (
     <div className="sm:px-2 md:px-8 rounded-sm max-w-5xl mx-auto">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="w-full container mx-auto py-6 grid sm:grid-cols-1"
-      >
-        <div className="space-y-12">
-          <div className="border-b border-gray-900/10 pb-6">
-            <h2 className=" font-medium text-2xl text-gray-900 dark:text-white px-4">
-              Perfil
-            </h2>
-            <div>
-              <h4 className='text-lg text-gray-900 dark:text-white px-4'>
-              ¡Hola <strong>{usuario?.nombre}</strong>!
-              </h4>
-            <p className="px-4 text-gray-600 dark:text-white">
-            Actualiza tu perfil para que los demas usuarios puedan conocerte mejor.
-            </p>
-
-            </div>
-
-            <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-              <div className="col-span-full px-4">
-                <Label
-                  htmlFor="about"
-                  className="block font-medium text-gray-900 dark:text-white"
-                >
-                  Descripcion
-                </Label>
-                <div className="mt-2">
-
-                  <Input
-                    placeholder='Escribe algunas frases sobre ti...'
-                    className={
-                      errors.descripcion
-                        ? 'border-red-500  !placeholder-red-500 text-red-500'
-                        : ''
-                    }
-                    {...register('descripcion')}
-                  />
-                  {errors.descripcion && (
-                    <p className="italic text-red-500 mt-0">
-                      {errors.descripcion?.message}
-                    </p>
-                  )}
-                </div>
+        <div className="mx-2 flex justify-end items-center pr-10">
+          <div className='ml-auto'>
+            <Button
+              variant={'secondary'}
+              className="justify-start font-normal duration-500 hover:bg-sec hover:text-white"
+              onClick={handleRedirect}
+            >
+              Regresar
+              <ArrowLeftCircleIcon className="h-4 w-4 ml-1" />
+            </Button>
+          </div>
+        </div>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="w-full container mx-auto py-2 grid sm:grid-cols-1"
+        >
+          <div className="space-y-12">
+            <div className="border-b border-gray-900/10 pb-6">
+              <h2 className=" font-medium text-2xl text-gray-900 dark:text-white px-4">
+                Perfil
+              </h2>
+              <div>
+                <h4 className='text-lg text-gray-900 dark:text-white px-4'>
+                  ¡Hola <strong>{usuario?.nombre}</strong>!
+                </h4>
+                <p className="px-4 text-gray-600 dark:text-white">
+                  Actualiza tu perfil para que los demas usuarios puedan conocerte mejor.
+                </p>
 
               </div>
 
-              <div className="col-span-full px-4">
-                <Label
-                  htmlFor="cover-photo"
-                  className="block font-medium dark:text-white text-gray-900"
-                >
-                  Fotografia de portada
-                </Label>
+              <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                <div className="col-span-full px-4">
+                  <Label
+                    htmlFor="about"
+                    className="block font-medium text-gray-900 dark:text-white"
+                  >
+                    Descripcion
+                  </Label>
+                  <div className="mt-2">
 
-                {/* Dropzone necesario para realizar el Drag and drop */}
-                <div
-                  {...getRootProps()}
-                  className={`mt-4 flex dark:text-gray-400 text-gray-600 flex-col justify-center items-center rounded-lg border border-dashed border-gray-900/25 dark:border-gray-100/25 px-6 py-10 transition-colors duration-500 ${getClassName()}`}
-                >
-                  <input name='file' {...getInputProps()} />
-                  {
-                    acceptedFiles.length > 0 ? (
+                    <Input
+                      placeholder='Escribe algunas frases sobre ti...'
+                      className={errors.descripcion
+                        ? 'border-red-500  !placeholder-red-500 text-red-500'
+                        : ''}
+                      {...register('descripcion')} />
+                    {errors.descripcion && (
+                      <p className="italic text-red-500 mt-0">
+                        {errors.descripcion?.message}
+                      </p>
+                    )}
+                  </div>
+
+                </div>
+
+                <div className="col-span-full px-4">
+                  <Label
+                    htmlFor="cover-photo"
+                    className="block font-medium dark:text-white text-gray-900"
+                  >
+                    Fotografia de perfil
+                  </Label>
+
+                  {/* Dropzone necesario para realizar el Drag and drop */}
+                  <div
+                    {...getRootProps()}
+                    className={`mt-4 flex dark:text-gray-400 text-gray-600 flex-col justify-center items-center rounded-lg border border-dashed border-gray-900/25 dark:border-gray-100/25 px-6 py-10 transition-colors duration-500 ${getClassName()}`}
+                  >
+                    <input name='file' {...getInputProps()} />
+                    {acceptedFiles.length > 0 ? (
                       <p>Imagen seleccionada: {acceptedFiles[0].name}</p>
                     ) : (
                       <>
@@ -207,219 +223,207 @@ export default function ActualizarPerfil ({ usuario }: { usuario: UserType }) {
                           </div>
                         )}
                       </>
-                    )
-                  }
+                    )}
 
-                  {/* Muestra la vista previa de la imagen seleccionada */}
-                  {acceptedFiles.length > 0 && (
-                    <div className="flex justify-center">
-                      <img
-                        src={URL.createObjectURL(acceptedFiles[0])}
-                        alt={`Imagen de ${usuario?.nombre}`}
-                        className="h-40 w-40 mt-2 mx-auto rounded-full aspect-square object-cover border-4 border-blue-500/50"
-                      />
-                    </div>
-                  )}
+                    {/* Muestra la vista previa de la imagen seleccionada */}
+                    {acceptedFiles.length > 0 && (
+                      <div className="flex justify-center">
+                        <img
+                          src={URL.createObjectURL(acceptedFiles[0])}
+                          alt={`Imagen de ${usuario?.nombre}`}
+                          className="h-40 w-40 mt-2 mx-auto rounded-full aspect-square object-cover border-4 border-blue-500/50" />
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div className="border-b border-gray-900/10 pb-12">
-            <h2 className="font-semibold dark:text-white text-gray-900 px-4">
-              Informacion Personal
-            </h2>
-            <p className="mt-1 text-gray-600 px-4">
-              Utilice una dirección permanente donde pueda recibir correo.
-            </p>
+            <div className="border-b border-gray-900/10 pb-12">
+              <h2 className="font-semibold dark:text-white text-gray-900 px-4">
+                Informacion Personal
+              </h2>
+              <p className="mt-1 text-gray-600 px-4">
+                Utilice una dirección permanente donde pueda recibir correo.
+              </p>
 
-            <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-              <div className="sm:col-span-3 px-4">
-                <Label
-                  htmlFor="full-name"
-                  className="block font-medium dark:text-white text-gray-900"
-                >
-                  Nombre Completo
-                </Label>
-                <div className="mt-2">
-                  <Input
-                    type="text"
-                    autoComplete="name"
-                    className="block w-full rounded-md border-0 py-1.5 dark:bg-transparent dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                    defaultValue={`${usuario?.nombre} ${usuario?.apellido}`}
-                    disabled
-                  />
-                </div>
-              </div>
-
-              <div className="sm:col-span-3 px-4">
-                <Label
-                  htmlFor="dni"
-                  className="block font-medium dark:text-white text-gray-900"
-                >
-                  DNI
-                </Label>
-                <div className="mt-2">
-                  <Input
-                    type="text"
-                    name="dni"
-                    id="dni"
-                    autoComplete="dni"
-                    className="block w-full rounded-md border-0 py-1.5 dark:bg-transparent dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                    value={usuario?.dni}
-                    disabled
-                  />
-                </div>
-              </div>
-
-              <div className="sm:col-span-3 px-4">
-                <Label
-                  htmlFor="email"
-                  className="block font-medium dark:text-white text-gray-900"
-                >
-                  Correo Electronico
-                </Label>
-                <div className="mt-2">
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    className="block w-full rounded-md border-0 py-1.5 dark:bg-transparent dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                    value={usuario?.correo ?? 'N/A'}
-                    disabled
-                  />
-                </div>
-              </div>
-
-              <div className="sm:col-span-3 px-4">
-                <Label
-                  htmlFor="birthdate"
-                  className="block font-medium dark:text-white text-gray-900"
-                >
-                  Fecha Nacimiento
-                </Label>
-                <div className="mt-2">
-                  <Input
-                    type="text"
-                    autoComplete="birthdate"
-                    className="block w-full rounded-md border-0 py-1.5 dark:bg-transparent dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                    defaultValue={usuario?.fecha_nacimiento}
-                    disabled
-                  />
-                </div>
-              </div>
-
-              <div className="sm:col-span-3 px-4">
-                <Label
-                  htmlFor="country"
-                  className="block font-medium dark:text-white text-gray-900"
-                >
-                  Genero
-                </Label>
-                <div className="mt-2">
-                  <select
-                    id="genero"
-                    name="genero"
-                    autoComplete="genero-name"
-                    className="block w-full rounded-md border-0 py-1.5 dark:bg-transparent dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs"
-                    value={usuario?.genero}
-                    disabled
+              <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                <div className="sm:col-span-3 px-4">
+                  <Label
+                    htmlFor="full-name"
+                    className="block font-medium dark:text-white text-gray-900"
                   >
-                    <option>Masculino</option>
-                    <option>Femenino</option>
-                  </select>
+                    Nombre Completo
+                  </Label>
+                  <div className="mt-2">
+                    <Input
+                      type="text"
+                      autoComplete="name"
+                      className="block w-full rounded-md border-0 py-1.5 dark:bg-transparent dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                      defaultValue={`${usuario?.nombre} ${usuario?.apellido}`}
+                      disabled />
+                  </div>
                 </div>
-              </div>
 
-              <div className="sm:col-span-3 px-4">
-                <Label
-                  htmlFor="phone"
-                  className="block font-medium dark:text-white text-gray-900"
-                >
-                  Telefono
-                </Label>
-                <div className="mt-2">
-                  <Input
-                    type="text"
-                    autoComplete="phone"
-                    className={
-                      errors.telefono
-                        ? 'border-red-500  !placeholder-red-500 text-red-500'
-                        : ''
-                    }
-                    disabled={isPending}
-                    {...register('telefono')}
-                  />
-                  {errors.telefono && (
-                    <p className="italic text-red-500 mt-0">
-                      {errors.telefono?.message}
-                    </p>
-                  )}
+                <div className="sm:col-span-3 px-4">
+                  <Label
+                    htmlFor="dni"
+                    className="block font-medium dark:text-white text-gray-900"
+                  >
+                    DNI
+                  </Label>
+                  <div className="mt-2">
+                    <Input
+                      type="text"
+                      name="dni"
+                      id="dni"
+                      autoComplete="dni"
+                      className="block w-full rounded-md border-0 py-1.5 dark:bg-transparent dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                      value={usuario?.dni}
+                      disabled />
+                  </div>
                 </div>
-              </div>
 
-              <div className="col-span-full px-4">
-                <Label
-                  htmlFor="street-address"
-                  className="block font-medium dark:text-white text-gray-900"
-                >
-                  Dirrecion
-                </Label>
-                <div className="mt-2">
-                  <Input
-                    type="text"
-                    autoComplete="street-address"
-                    className={
-                      errors.direccion
+                <div className="sm:col-span-3 px-4">
+                  <Label
+                    htmlFor="email"
+                    className="block font-medium dark:text-white text-gray-900"
+                  >
+                    Correo Electronico
+                  </Label>
+                  <div className="mt-2">
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      autoComplete="email"
+                      className="block w-full rounded-md border-0 py-1.5 dark:bg-transparent dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                      value={usuario?.correo ?? 'N/A'}
+                      disabled />
+                  </div>
+                </div>
+
+                <div className="sm:col-span-3 px-4">
+                  <Label
+                    htmlFor="birthdate"
+                    className="block font-medium dark:text-white text-gray-900"
+                  >
+                    Fecha Nacimiento
+                  </Label>
+                  <div className="mt-2">
+                    <Input
+                      type="text"
+                      autoComplete="birthdate"
+                      className="block w-full rounded-md border-0 py-1.5 dark:bg-transparent dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                      defaultValue={usuario?.fecha_nacimiento}
+                      disabled />
+                  </div>
+                </div>
+
+                <div className="sm:col-span-3 px-4">
+                  <Label
+                    htmlFor="country"
+                    className="block font-medium dark:text-white text-gray-900"
+                  >
+                    Genero
+                  </Label>
+                  <div className="mt-2">
+                    <select
+                      id="genero"
+                      name="genero"
+                      autoComplete="genero-name"
+                      className="block w-full rounded-md border-0 py-1.5 dark:bg-transparent dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs"
+                      value={usuario?.genero}
+                      disabled
+                    >
+                      <option>Masculino</option>
+                      <option>Femenino</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="sm:col-span-3 px-4">
+                  <Label
+                    htmlFor="phone"
+                    className="block font-medium dark:text-white text-gray-900"
+                  >
+                    Telefono
+                  </Label>
+                  <div className="mt-2">
+                    <Input
+                      type="text"
+                      autoComplete="phone"
+                      className={errors.telefono
                         ? 'border-red-500  !placeholder-red-500 text-red-500'
-                        : ''
-                    }
-                    disabled={isPending}
-                    {...register('direccion')}
-                  />
-                  {errors.direccion && (
-                    <p className=" italic text-red-500 mt-0">
-                      {errors.direccion?.message}
-                    </p>
-                  )}
+                        : ''}
+                      disabled={isPending}
+                      {...register('telefono')} />
+                    {errors.telefono && (
+                      <p className="italic text-red-500 mt-0">
+                        {errors.telefono?.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="col-span-full px-4">
+                  <Label
+                    htmlFor="street-address"
+                    className="block font-medium dark:text-white text-gray-900"
+                  >
+                    Dirrecion
+                  </Label>
+                  <div className="mt-2">
+                    <Input
+                      type="text"
+                      autoComplete="street-address"
+                      className={errors.direccion
+                        ? 'border-red-500  !placeholder-red-500 text-red-500'
+                        : ''}
+                      disabled={isPending}
+                      {...register('direccion')} />
+                    {errors.direccion && (
+                      <p className=" italic text-red-500 mt-0">
+                        {errors.direccion?.message}
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div className="mt-6 flex items-center justify-end gap-x-6">
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={back}
-            >
-              Cancelar
-            </Button>
-            <Button
-              disabled={isPending}
-              className="py-3 px-4 inline-flex bg-sec text-white items-center gap-x-2 font-semibold rounded-lg transition-colors duration-200  hover:bg-sec-var-600 hover:border-sec hover:text-white disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-            >
-              {isPending && (
-                <Icons.spinner className="mr-2 h-4 w-4 animate-spin " />
-              )}
-              Actualizar
-            </Button>
+            <div className="mt-6 flex items-center justify-end gap-x-6">
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={back}
+              >
+                Cancelar
+              </Button>
+              <Button
+                disabled={isPending}
+                className="py-3 px-4 inline-flex bg-sec text-white items-center gap-x-2 font-semibold rounded-lg transition-colors duration-200  hover:bg-sec-var-600 hover:border-sec hover:text-white disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+              >
+                {isPending && (
+                  <Icons.spinner className="mr-2 h-4 w-4 animate-spin " />
+                )}
+                Actualizar
+              </Button>
+            </div>
           </div>
-        </div>
-      </form>
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
-    </div>
+        </form>
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light" />
+      </div>
+
   )
 }

@@ -54,7 +54,7 @@ export interface Database {
             isOneToOne: false
             referencedRelation: 'personas'
             referencedColumns: ['id']
-          }
+          },
         ]
       }
       consultas: {
@@ -118,7 +118,7 @@ export interface Database {
             isOneToOne: false
             referencedRelation: 'estado_consultas'
             referencedColumns: ['id']
-          }
+          },
         ]
       }
       diagnosticos: {
@@ -128,6 +128,7 @@ export interface Database {
           fecha_diagnostico: string
           id: string
           id_consulta: string | null
+          id_diagnosticador: string | null
           id_expediente: string
           interno: boolean
           observacion: string | null
@@ -138,6 +139,7 @@ export interface Database {
           fecha_diagnostico?: string
           id?: string
           id_consulta?: string | null
+          id_diagnosticador?: string | null
           id_expediente?: string
           interno: boolean
           observacion?: string | null
@@ -148,6 +150,7 @@ export interface Database {
           fecha_diagnostico?: string
           id?: string
           id_consulta?: string | null
+          id_diagnosticador?: string | null
           id_expediente?: string
           interno?: boolean
           observacion?: string | null
@@ -161,12 +164,19 @@ export interface Database {
             referencedColumns: ['id']
           },
           {
+            foreignKeyName: 'public_diagnosticos_id_diagnosticador_fkey'
+            columns: ['id_diagnosticador']
+            isOneToOne: false
+            referencedRelation: 'personas'
+            referencedColumns: ['id']
+          },
+          {
             foreignKeyName: 'public_diagnosticos_id_expediente_fkey'
             columns: ['id_expediente']
             isOneToOne: false
             referencedRelation: 'expedientes'
             referencedColumns: ['id']
-          }
+          },
         ]
       }
       especializacion_x_personas: {
@@ -196,7 +206,7 @@ export interface Database {
             isOneToOne: false
             referencedRelation: 'personas'
             referencedColumns: ['id']
-          }
+          },
         ]
       }
       especializaciones: {
@@ -222,7 +232,7 @@ export interface Database {
             isOneToOne: false
             referencedRelation: 'roles'
             referencedColumns: ['id']
-          }
+          },
         ]
       }
       estado_consultas: {
@@ -263,8 +273,32 @@ export interface Database {
             isOneToOne: false
             referencedRelation: 'personas'
             referencedColumns: ['id']
-          }
+          },
         ]
+      }
+      jornadas: {
+        Row: {
+          descripcion: string | null
+          hora_final: string
+          hora_inicio: string
+          id: string
+          jornada: string
+        }
+        Insert: {
+          descripcion?: string | null
+          hora_final: string
+          hora_inicio: string
+          id?: string
+          jornada: string
+        }
+        Update: {
+          descripcion?: string | null
+          hora_final?: string
+          hora_inicio?: string
+          id?: string
+          jornada?: string
+        }
+        Relationships: []
       }
       personas: {
         Row: {
@@ -276,6 +310,7 @@ export interface Database {
           fecha_nacimiento: string
           genero: string
           id: string
+          id_jornada: string | null
           nombre: string
           rol: string | null
           telefono: string | null
@@ -289,6 +324,7 @@ export interface Database {
           fecha_nacimiento: string
           genero: string
           id?: string
+          id_jornada?: string | null
           nombre: string
           rol?: string | null
           telefono?: string | null
@@ -302,11 +338,20 @@ export interface Database {
           fecha_nacimiento?: string
           genero?: string
           id?: string
+          id_jornada?: string | null
           nombre?: string
           rol?: string | null
           telefono?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: 'public_personas_id_jornada_fkey'
+            columns: ['id_jornada']
+            isOneToOne: false
+            referencedRelation: 'jornadas'
+            referencedColumns: ['id']
+          },
+        ]
       }
       personas_x_usuarios: {
         Row: {
@@ -353,7 +398,7 @@ export interface Database {
             isOneToOne: false
             referencedRelation: 'users'
             referencedColumns: ['id']
-          }
+          },
         ]
       }
       roles: {
@@ -376,6 +421,18 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
+      get_auth_user_by_email: {
+        Args: {
+          user_email: string
+        }
+        Returns: Json
+      }
+      get_auth_user_id_by_email: {
+        Args: {
+          user_email: string
+        }
+        Returns: string
+      }
       get_consultas_by_estado_and_filter_pagination: {
         Args: {
           estado_param: string
@@ -447,6 +504,7 @@ export interface Database {
           nombre_rol: string
           url_avatar: string
           estado_usuario: string
+          id_jornada: string
         }>
       }
       get_personas_count_by_rol_and_filter: {
@@ -475,7 +533,7 @@ export type Tables<
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof (Database[PublicTableNameOrOptions['schema']]['Tables'] &
     Database[PublicTableNameOrOptions['schema']]['Views'])
-    : never = never
+    : never = never,
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? (Database[PublicTableNameOrOptions['schema']]['Tables'] &
     Database[PublicTableNameOrOptions['schema']]['Views'])[TableName] extends {
@@ -499,7 +557,7 @@ export type TablesInsert<
   | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicTableNameOrOptions['schema']]['Tables']
-    : never = never
+    : never = never,
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? Database[PublicTableNameOrOptions['schema']]['Tables'][TableName] extends {
     Insert: infer I
@@ -520,7 +578,7 @@ export type TablesUpdate<
   | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicTableNameOrOptions['schema']]['Tables']
-    : never = never
+    : never = never,
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? Database[PublicTableNameOrOptions['schema']]['Tables'][TableName] extends {
     Update: infer U
@@ -541,7 +599,7 @@ export type Enums<
   | { schema: keyof Database },
   EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicEnumNameOrOptions['schema']]['Enums']
-    : never = never
+    : never = never,
 > = PublicEnumNameOrOptions extends { schema: keyof Database }
   ? Database[PublicEnumNameOrOptions['schema']]['Enums'][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema['Enums']

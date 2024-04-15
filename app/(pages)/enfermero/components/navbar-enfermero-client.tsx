@@ -12,7 +12,8 @@ import { Button } from '@/components/ui/button'
 
 const navigation = [
   { name: 'Perfil', href: '/enfermero', current: true },
-  { name: 'Pacientes', href: '/enfermero/pacientes', current: false }
+  { name: 'Pacientes', href: '/enfermero/pacientes', current: false },
+  { name: 'Doctores', href: '/enfermero/doctores', current: false }
 ]
 
 function classNames (...classes: string[]) {
@@ -130,10 +131,10 @@ export default function NavbarEnfermeroClient ({ user }: { user: UserType }) {
                               <Link
                                 href={`/${rol.rol.toLowerCase()}`}
                                 className={classNames(
-                                  rol.rol.toLowerCase() === pathname.split('/')[1] ? 'bg-gray-100 dark:bg-gray-800 pointer-events-none' : '',
+                                  rol.rol.toLowerCase() === pathname?.split('/')[1] ? 'bg-gray-100 dark:bg-gray-800 pointer-events-none' : '',
                                   'block px-4 py-2 text-sm text-gray-900 dark:text-gray-100 w-full text-start hover:bg-neutral-100 dark:hover:bg-gray-800'
                                 )}
-                                aria-current={rol.rol.toLowerCase() === pathname.split('/')[1] ? 'page' : undefined}
+                                aria-current={rol.rol.toLowerCase() === pathname?.split('/')[1] ? 'page' : undefined}
 
                               >
                                 Perfil de {rol.rol}
@@ -151,7 +152,7 @@ export default function NavbarEnfermeroClient ({ user }: { user: UserType }) {
                         <Menu.Item>
                           {({ active }) => (
                             <Link
-                              href="/perfil"
+                              href="/enfermero/perfil"
                               className={classNames(
                                 active ? 'bg-gray-100 dark:bg-gray-800' : '',
                                 'block px-4 py-2 text-sm text-gray-900 dark:text-gray-100 w-full text-start'

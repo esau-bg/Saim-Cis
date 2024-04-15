@@ -1,5 +1,6 @@
 import { readUserSession } from '@/lib/actions'
 import { supabase } from '@/lib/supabase'
+import { adminAuthClient } from '@/lib/supabase/auth-admin'
 
 export function calcularEdad (fechaNacimiento: Date) {
   const hoy = new Date()
@@ -123,6 +124,45 @@ export async function getInfoPersona () {
   return { usuario, errorUsuario }
 }
 
+export async function getPerfil ({ idPersona }: { idPersona: string }) {
+  const { idUsuario, errorIdUsuario } = await getIdUsuarioByIdPersona({ idPersona })
+  if (errorIdUsuario) {
+    return {
+      permissions: false,
+      message: 'Error al obtener el usuario',
+      errorCode: 500
+    }
+  }
+  if (!idUsuario) {
+    return { usuario: null, errorIdUsuario }
+  }
+
+  const { usuario, errorUsuario } = await getUser({ id: idUsuario.id_usuario })
+  if (errorUsuario) {
+    return {
+      permissions: false,
+      message: 'Error al obtener el usuario',
+      errorCode: 500
+    }
+  }
+  if (!usuario) {
+    return {
+      permissions: false,
+      message: 'No se encontró el usuario',
+      errorCode: 404
+    }
+  }
+  return { usuario, errorUsuario }
+}
+
+export async function getIdUsuarioByIdPersona ({ idPersona }: { idPersona: string }) {
+  const { data: idUsuario, error: errorIdUsuario } = await supabase
+    .from('personas_x_usuarios')
+    .select('id_usuario')
+    .eq('id_persona', idPersona)
+    .single()
+  return { idUsuario, errorIdUsuario }
+}
 export async function getPermissionsAndUser ({
   rolNecesario
 }: {
@@ -224,7 +264,7 @@ export async function getUsersByRoleAndQuery ({
       rol_param: rol,
       filtro_param: query,
       offset_param: offset,
-      limit_param: currentPage * perPage
+      limit_param: perPage
     }
   )
 
@@ -300,8 +340,13 @@ export async function updatePersonasXUsuarios ({ id, avatarUrl, descripcion }: {
   return { PersonasXUsuariosUpdate, errorPersonasXUsuariosUpdate }
 }
 
-export async function updatePersona ({ data }: { data: PersonasUpdate & { descripcion: string, avatarUrl: string } }) {
+export async function updatePersona ({ data }: { data: PersonasUpdate & { descripcion?: string, avatarUrl?: string } }) {
   const { id, descripcion, avatarUrl, ...rest } = data
+  let avatarUrlAux = avatarUrl
+  // Validando que se subio una imagen, de no ser asi se coloca como indefinido
+  if (avatarUrl === 'No hay avatar') {
+    avatarUrlAux = undefined
+  }
 
   const { data: personaUpdate, error: errorPersonaUpdate } = await supabase
     .from('personas')
@@ -315,7 +360,7 @@ export async function updatePersona ({ data }: { data: PersonasUpdate & { descri
   if (personaUpdate) {
     const { data: personaUpdate, error: errorPersonaUpdate } = await supabase
       .from('personas_x_usuarios')
-      .update({ descripcion, avatar_url: avatarUrl })
+      .update({ descripcion, avatar_url: avatarUrlAux })
       .eq('id_persona', id ?? '')
       .select('*')
       .single()
@@ -324,6 +369,36 @@ export async function updatePersona ({ data }: { data: PersonasUpdate & { descri
   }
 
   return { personaUpdate, errorPersonaUpdate }
+}
+// actualizamos el correo del usuario de la tabla auth.users
+export async function updateAuthUserEmail ({ email, newEmail, newPasswordTemp }: { email: string, newEmail: string, newPasswordTemp: string }) {
+  console.log(email, newEmail, newPasswordTemp)
+  const { userId, errorUserId } = await getAuthUserIdByEmail({ email })
+  if (errorUserId) {
+    return { userUpdated: userId, errorUserUpdated: errorUserId }
+  }
+  if (!userId) {
+    return { userUpdated: null, errorUserUpdated: { message: 'El usuario no existe' } }
+  }
+  const { data: userUpdated, error: errorUserUpdated } = await adminAuthClient
+    .updateUserById(userId.id_usuario, {
+      email: newEmail,
+      password: newPasswordTemp,
+      user_metadata: { passwordTemp: newPasswordTemp }
+    })
+
+  console.log(userUpdated, errorUserUpdated)
+  return { userUpdated, errorUserUpdated }
+}
+// obtenemos el id del usuario de la tabla auth.users por su correo electrónico
+export async function getAuthUserIdByEmail ({ email }: { email: string }) {
+  const { data: userId, error: errorUserId } = await supabase
+    .from('personas_x_usuarios')
+    .select('id_usuario')
+    .eq('correo', email)
+    .single()
+  console.log(userId, errorUserId)
+  return { userId, errorUserId }
 }
 
 interface UploadResponse {
@@ -473,4 +548,41 @@ export async function setEspecializacionUser ({ idPersona, especializaciones }: 
     .insert(especializaciones.map(especializacion => ({ id_persona: idPersona, id_especializacion: especializacion.id })))
 
   return { errorEspecializaciones }
+}
+
+// Obtener la informacion de las especializaciones mediante el campo de doctor
+export async function getEspecializacionesByDoctor () {
+  const { data, error } = await supabase
+    .from('especializaciones')
+    .select('*, roles!inner(*)')
+    .eq('roles.nombre', 'doctor')
+
+  return { data, error }
+}
+
+// Obtener la informacion de los doctores mediante su especializacion seleccionada de un select.
+export async function getDoctoresByEspecializacion ({ idEspecializacion }: { idEspecializacion: string }) {
+  const { data, error } = await supabase
+    .from('especializacion_x_personas')
+    .select(
+      '*, personas(nombre, apellido, idUsuario:personas_x_usuarios!inner(correo, avatar_url), idJornada:jornadas(jornada))'
+    )
+    .eq('id_especializacion', idEspecializacion)
+    .eq('personas.idUsuario.estado', 'activo')
+    .not('personas', 'is', null)
+
+  return { data, error }
+}
+
+// obtener los doctores con su especializacion
+export async function getDoctores () {
+  const { data, error } = await supabase
+    .from('especializacion_x_personas')
+    .select(
+      '*, personas(nombre, apellido, idUsuario:personas_x_usuarios!inner(correo, avatar_url), idJornada:jornadas(jornada)), especializaciones(nombre, idRoles:roles(nombre))'
+    )
+    .eq('idRoles.nombre', 'doctor')
+    .eq('personas.idUsuario.estado', 'activo')
+    .not('personas', 'is', null)
+  return { data, error }
 }

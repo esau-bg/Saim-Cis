@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { getPermissionsAndUser } from '@/app/actions'
 import Permissions from '@/components/permissions'
-import NavbarAdministradorClient from './components/navbar-administrador-client'
+import { SidebarAdministradorClient } from '@/app/(pages)/administrador/components/sidebar-administrador-client'
 
 export const metadata: Metadata = {
   title: 'Administrador',
@@ -24,8 +24,12 @@ export default async function AdministradorLayout ({
 
   return (
     <>
-      <NavbarAdministradorClient user={usuario ?? null} />
-      {children}
+      <SidebarAdministradorClient user={usuario ?? null}/>
+      <div className='px-2 py-4 sm:ml-[3.35rem] ease-in-out transition duration-500'>
+        <div className='mt-14'>
+          {children}
+        </div>
+      </div>
     </>
   )
 }
