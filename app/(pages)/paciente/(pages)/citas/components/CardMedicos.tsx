@@ -44,7 +44,6 @@ export default function cardMedicos () {
   const handleOnChange = async (selectedOption: Especializacion | null) => {
     if (selectedOption) {
       const { data: doctoresData, error: errorDoctor } = await getDoctoresByEspecializacion({ idEspecializacion: selectedOption.value })
-      console.log(doctoresData, errorDoctor)
       if (!errorDoctor) {
         setDoctores(doctoresData ?? [])
         setShow(true)
