@@ -176,13 +176,13 @@ export default function ActualizarUsuarioPersona ({ usuario }: { usuario: UserTy
         }
         if (userUpdated) {
           toast.success('El correo electrónico ha sido actualizado correctamente')
-          const emailResponse = await sendMailSingup({
-            email: data.correo ?? '',
-            passwordTemp: randomCode,
-            nombrePersona: data.nombre
-          })
+          // const emailResponse = await sendMailSingup({
+          //   email: data.correo ?? '',
+          //   passwordTemp: randomCode,
+          //   nombrePersona: data.nombre
+          // })
 
-          console.log('Email response: ', emailResponse)
+          // console.log('Email response: ', emailResponse)
           // if (emailResponse.accepted.includes(data.correo ?? '')) {
           //   // Email was sent successfully
           //   toast.success('Correo electrónico enviado exitosamente')
