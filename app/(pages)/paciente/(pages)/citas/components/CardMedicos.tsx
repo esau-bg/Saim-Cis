@@ -4,7 +4,7 @@ import * as React from 'react'
 import classNames from 'classnames'
 import { Label } from '@/components/ui/label'
 import AsyncSelect from 'react-select/async'
-import { type SingleValue } from 'react-select'
+import { type GroupBase, type OptionsOrGroups, type SingleValue } from 'react-select'
 // import { getDoctoresByEspecializacion } from '@/app/actions'
 import { usePathname, useRouter } from 'next/navigation'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
@@ -24,8 +24,7 @@ const option: string =
   '!text-gray-900 dark:!text-gray-100 !bg-white dark:!bg-slate-800 hover:!bg-sec-var-200 dark:hover:!bg-sec-var-900 hover:!text-sec-var-900 dark:hover:!text-sec-var-100 !cursor-pointer '
 const menu: string = ' !rounded-md !bg-background dark:!bg-slate-800'
 
-type Especializacion = { value: string, label: string } & Especializaciones & { roles: Roles } // Aqui esta el pedo
-
+type Especializacion = { value: string, label: string } & Especializaciones // Aqui esta el pedo
 export default function cardMedicos () {
   const [show, setShow] = React.useState(false)
   const [doctores, setDoctores] = React.useState<InfoMedico[]>([])
@@ -44,7 +43,6 @@ export default function cardMedicos () {
   const handleOnChange = (
     newValue: SingleValue<Especializacion>
   ) => {
-    console.log(newValue)
     if (newValue) {
       startTransition(() => {
         getDoctoresByEspecializacion({ idEspecializacion: newValue.value }).then(({ data }) => {
@@ -57,18 +55,20 @@ export default function cardMedicos () {
     }
   }
 
-  const promiseOptions = async () =>
-    await new Promise<Especializaciones[]>((resolve) => {
-      setTimeout(async () => {
-        const { data } = await getEspecializacionesByRol({ rol: 'doctor' })
-        const formattedData = data?.map(item => ({
-          ...item,
-          value: item.id,
-          label: item.nombre
-        })) ?? []
-        resolve(formattedData)
-      }, 1000)
-    })
+  const promiseOptions = (
+    inputValue: string,
+    callback: (options: OptionsOrGroups<Especializacion, GroupBase<Especializacion>>) => void
+  ) => {
+    setTimeout(async () => {
+      const { data } = await getEspecializacionesByRol({ rol: 'doctor' })
+      const formattedData = data?.map((item) => ({
+        ...item,
+        value: item.id,
+        label: item.nombre
+      })) ?? []
+      callback(formattedData)
+    }, 1000)
+  }
 
   return (
     <div className='grid gap-6 px-2 py-2 justify-items-center bg-slate-100 dark:bg-slate-900'>
