@@ -561,16 +561,3 @@ export async function getDoctoresByEspecializacion ({ idEspecializacion }: { idE
 
   return { data, error }
 }
-
-// obtener los doctores con su especializacion
-export async function getDoctores () {
-  const { data, error } = await supabase
-    .from('especializacion_x_personas')
-    .select(
-      '*, personas(nombre, apellido, idUsuario:personas_x_usuarios!inner(correo, avatar_url), idJornada:jornadas(jornada)), especializaciones(nombre, idRoles:roles(nombre))'
-    )
-    .eq('idRoles.nombre', 'doctor')
-    .eq('personas.idUsuario.estado', 'activo')
-    .not('personas', 'is', null)
-  return { data, error }
-}
