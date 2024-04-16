@@ -29,8 +29,41 @@ export default function CalendarClient ({ events }: { events: Events[] }) {
 
   const router = useRouter()
 
+  const comprobacion = ({ start, end }: { start: Date, end: Date }) => {
+    // comprobamos que el nuevo evento no sea en el pasado
+    if (start < new Date()) {
+      toast.error('No puedes agendar una cita en el pasado')
+      return
+    }
+
+    // comprobar que el nuevo evento no traslape con los eventos existentes cuando se haga resize o drag
+    const isOverlap = state.some(
+      (event) =>
+        (start >= event.start && start <= event.end) ||
+        (end >= event.start && end <= event.end) ||
+        (start <= event.start && end >= event.end)
+    )
+    console.log('isOverlap', isOverlap)
+    if (isOverlap) {
+      toast.error('No puedes agendar una cita en un horario ocupado')
+      return
+    }
+
+    // comprobar que el nuevo evento no dure mas de 1 hora
+    if (end.getTime() - start.getTime() > 3600000) {
+      toast.error('No puedes agendar una cita que dure mas de 1 hora')
+      return
+    }
+
+    return true
+  }
+
   const onEventResize = (args: EventInteractionArgs<object>) => {
     const { start, end } = args
+
+    if (!comprobacion({ start: start as Date, end: end as Date })) {
+      return
+    }
 
     setState((state) => {
       return state.map((event) => {
@@ -51,6 +84,10 @@ export default function CalendarClient ({ events }: { events: Events[] }) {
 
   const onEventDrop = (args: EventInteractionArgs<object>) => {
     const { start, end } = args
+
+    if (!comprobacion({ start: start as Date, end: end as Date })) {
+      return
+    }
 
     setState((prevState) => {
       // Creamos una nueva copia de los eventos
