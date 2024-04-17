@@ -188,7 +188,6 @@ export default function ActualizarUsuarioPersona ({ usuario }: { usuario: UserTy
         })
 
         if (errorEmail) {
-          console.log('Error al enviar el correo electrónico', errorEmail)
           toast.error('Error al enviar el correo electrónico')
           return
         }

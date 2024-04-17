@@ -54,10 +54,12 @@ type ValidationSchema = z.infer<typeof validationSchema>
 
 export function EnfermeroPacienteForm () {
   const [isPending, startTransition] = useTransition()
+
   const router = useRouter()
   const handleRecargar = () => {
     router.refresh() // Recarga la página
   }
+
   const {
     register,
     handleSubmit,

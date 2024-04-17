@@ -26,7 +26,7 @@ export default async function DoctorLayout ({
     <>
       <SidebarDoctorClient user={usuario ?? null}/>
       <div className='p-4 sm:ml-[3.35rem] ease-in-out transition duration-500'>
-        <div className='p-0 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-900 mt-14'>
+        <div className='p-0  dark:border-gray-900 mt-14'>
           {children}
         </div>
       </div>

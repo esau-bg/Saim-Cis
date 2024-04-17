@@ -29,8 +29,49 @@ export default function CalendarClient ({ events }: { events: Events[] }) {
 
   const router = useRouter()
 
+  const comprobacion = ({ args }: { args: EventInteractionArgs<object> }) => {
+    const { start, end } = args
+
+    // crear un state temporal eliminando el evento que se esta modificando
+    const newState = state.filter(
+      (event) => event.id !== (args.event as Events).id
+    )
+
+    // comprobamos que el nuevo evento no sea en el pasado
+    if (start < new Date()) {
+      toast.error('No puedes agendar una cita en el pasado')
+      return
+    }
+
+    // comprobar que el nuevo evento no traslape con los eventos existentes cuando se haga resize o drag
+    const isOverlap = newState.some(
+      (event) =>
+        (start >= event.start && start < event.end) ||
+        (end > event.start && end <= event.end) ||
+        (start <= event.start && end >= event.end)
+    )
+
+    console.log('isOverlap', isOverlap)
+    if (isOverlap) {
+      toast.error('No puedes agendar una cita en un horario ocupado')
+      return
+    }
+
+    // comprobar que el nuevo evento no dure mas de 1 hora
+    if (moment(end).diff(moment(start), 'hours') > 1) {
+      toast.error('No puedes agendar una cita que dure mas de 1 hora')
+      return
+    }
+
+    return true
+  }
+
   const onEventResize = (args: EventInteractionArgs<object>) => {
     const { start, end } = args
+
+    if (!comprobacion({ args })) {
+      return
+    }
 
     setState((state) => {
       return state.map((event) => {
@@ -51,6 +92,10 @@ export default function CalendarClient ({ events }: { events: Events[] }) {
 
   const onEventDrop = (args: EventInteractionArgs<object>) => {
     const { start, end } = args
+
+    if (!comprobacion({ args })) {
+      return
+    }
 
     setState((prevState) => {
       // Creamos una nueva copia de los eventos
