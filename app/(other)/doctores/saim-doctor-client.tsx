@@ -20,7 +20,7 @@ export default function SaimDoctoresClient ({
               En nuestro centro médico, contamos con un equipo de doctores altamente calificados y comprometidos con la excelencia en la atención médica. Cada uno de nuestros profesionales tiene una vasta experiencia en su especialidad, brindando un enfoque integral y personalizado a cada paciente.
             </p>
           </div>
-            <div className="gap-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 p-6">
+            <div className="gap-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4 p-6">
               {users?.map((dataDoctor) => (
                 <Card key={dataDoctor.id} className={`overflow-hidden hover:scale-105 transition-transform cursor-pointer ${
                   dataDoctor.id ? 'ring-2 ring-ring ring-sec ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ' : ''

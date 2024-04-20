@@ -32,7 +32,7 @@ export default async function DoctoresAdministradorPagina ({
   return (
     <main className="w-full px-8 py-2">
       <TitlePage title="Doctores" description="Listado de doctores" />
-          <div className="my-2 flex items-center  gap-2 md:mt-8">
+          <div className="my-2 flex flex-col items-center sm:flex-row gap-2 md:mt-8">
             <Search placeholder="Buscar doctor..." debounce={200} />
             <ModalAgregarDoctor />
           </div>

@@ -7,7 +7,6 @@ import { FaUserDoctor, FaUserNurse } from 'react-icons/fa6'
 import { FaUserShield } from 'react-icons/fa'
 import { usePathname, useRouter } from 'next/navigation'
 import { CiLogout } from 'react-icons/ci'
-import { IoCalendarNumberOutline } from 'react-icons/io5'
 import Link from 'next/link'
 import { ModeToggle } from '../../../../components/theme-toggle'
 
@@ -16,8 +15,7 @@ const navigation = [
   { name: 'Pacientes', href: '/administrador/pacientes', current: false, icono: UsersIcon },
   { name: 'Doctores', href: '/administrador/doctores', current: false, icono: FaUserDoctor },
   { name: 'Enfermeros', href: '/administrador/enfermeros', current: false, icono: FaUserNurse },
-  { name: 'Administradores', href: '/administrador/administradores', current: false, icono: FaUserShield },
-  { name: 'Calendario', href: '/administrador/calendario', current: false, icono: IoCalendarNumberOutline }
+  { name: 'Administradores', href: '/administrador/administradores', current: false, icono: FaUserShield }
 ]
 
 function classNames (...classes: string[]) {
