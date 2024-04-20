@@ -27,7 +27,11 @@ export default async function SaimDoctores ({
   })
 
   if (error) {
-    console.log(error)
+    return (
+      <div>
+        <span>Error al obtener la informacion de los usuarios</span>
+      </div>
+    )
   }
 
   if (!users) {
