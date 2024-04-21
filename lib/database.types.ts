@@ -300,6 +300,27 @@ export interface Database {
         }
         Relationships: []
       }
+      Medicamentos: {
+        Row: {
+          descripcion: string | null
+          forma_farmaceutica: string
+          id: string
+          nombre: string
+        }
+        Insert: {
+          descripcion?: string | null
+          forma_farmaceutica: string
+          id?: string
+          nombre: string
+        }
+        Update: {
+          descripcion?: string | null
+          forma_farmaceutica?: string
+          id?: string
+          nombre?: string
+        }
+        Relationships: []
+      }
       personas: {
         Row: {
           apellido: string
@@ -386,17 +407,17 @@ export interface Database {
         }
         Relationships: [
           {
-            foreignKeyName: 'personas_x_usuarios_id_persona_fkey'
-            columns: ['id_persona']
-            isOneToOne: false
-            referencedRelation: 'personas'
-            referencedColumns: ['id']
-          },
-          {
             foreignKeyName: 'personas_x_usuarios_id_usuario_fkey'
             columns: ['id_usuario']
             isOneToOne: false
             referencedRelation: 'users'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'public_personas_x_usuarios_id_persona_fkey'
+            columns: ['id_persona']
+            isOneToOne: false
+            referencedRelation: 'personas'
             referencedColumns: ['id']
           },
         ]
@@ -415,6 +436,54 @@ export interface Database {
           nombre?: string
         }
         Relationships: []
+      }
+      tratamiento_recetado: {
+        Row: {
+          dosis: string
+          fecha_final: string | null
+          fecha_inicio: string
+          id: string
+          id_consulta: string
+          id_medicamento: string
+          observaciones: string | null
+          url_comprobante: string
+        }
+        Insert: {
+          dosis: string
+          fecha_final?: string | null
+          fecha_inicio: string
+          id?: string
+          id_consulta: string
+          id_medicamento: string
+          observaciones?: string | null
+          url_comprobante: string
+        }
+        Update: {
+          dosis?: string
+          fecha_final?: string | null
+          fecha_inicio?: string
+          id?: string
+          id_consulta?: string
+          id_medicamento?: string
+          observaciones?: string | null
+          url_comprobante?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'public_tratamiento_recetado_id_consulta_fkey'
+            columns: ['id_consulta']
+            isOneToOne: false
+            referencedRelation: 'consultas'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'public_tratamiento_recetado_id_medicamento_fkey'
+            columns: ['id_medicamento']
+            isOneToOne: false
+            referencedRelation: 'Medicamentos'
+            referencedColumns: ['id']
+          },
+        ]
       }
     }
     Views: {
