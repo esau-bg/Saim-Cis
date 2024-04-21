@@ -28,6 +28,7 @@ export async function getCitasByPaciente ({ id_paciente }: { id_paciente: string
     .from('citas')
     .select('*, paciente:personas!citas_id_paciente_fkey(*), doctor:personas!citas_id_doctor_fkey(*) ')
     .eq('id_paciente', id_paciente)
+    .in('estado', ['Pendiente', 'pendiente'])
     .order('fecha_inicio', { ascending: true })
 
   return { citasPaciente, errorCitasPaciente }

@@ -561,3 +561,12 @@ export async function getDoctoresByEspecializacion ({ idEspecializacion }: { idE
 
   return { data, error }
 }
+
+export async function deletePersona ({ id }: { id: string }) {
+  const { error } = await supabase
+    .from('personas')
+    .delete()
+    .eq('id', id)
+
+  return { error }
+}

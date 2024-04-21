@@ -128,7 +128,7 @@ export default function cardMedicos () {
         <>
         {
           doctores.length > 0 ? (
-            <div className="gap-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 p-6">
+            <div className="gap-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 p-6">
             {doctores.map((doctor) => (
             <Card key={doctor.id_persona} onClick={() => { handleCardClick(doctor) }} className={` overflow-hidden hover:scale-105 transition-transform cursor-pointer ${
               doctorSelected?.id_persona === doctor.id_persona ? 'ring-2 ring-ring ring-sec ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ' : ''

@@ -33,7 +33,7 @@ export default async function PacientesAdministradorPagina ({
   return (
     <main className="w-full px-8 py-2">
       <TitlePage title="Pacientes" description="Listado de pacientes" />
-          <div className="my-2 flex items-center  gap-2 md:mt-8">
+          <div className="my-2 flex flex-col items-center sm:flex-row gap-2 md:mt-8">
             <Search placeholder="Buscar pacientes..." debounce={200} />
             <ModalAgregarPaciente />
           </div>

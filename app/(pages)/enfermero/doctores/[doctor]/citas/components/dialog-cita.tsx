@@ -295,8 +295,8 @@ export default function DialogCita ({
               </Link>
           </Button> */}
             <div className='flex gap-2'>
-              <AlertDialogCancel>Cerrar</AlertDialogCancel>
-              <Button onClick={handleClick}>
+              <AlertDialogCancel className='bg-slate-500 hover:bg-slate-600 text-white hover:text-white focus:outline-none'>Cerrar</AlertDialogCancel>
+              <Button onClick={handleClick} className='bg-sec hover:bg-sec-var-600'>
                     {isPending ? 'Guardando...' : 'Guardar'}
 
                 </Button>

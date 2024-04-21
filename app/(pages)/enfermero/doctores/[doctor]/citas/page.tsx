@@ -21,8 +21,8 @@ export default async function CitasPage ({
     info: cita
   }))
   return (
-    <main className="w-full flex flex-col sm:flex-col md:flex-row lg:flex-row xl:flex-row gap-5 px-8 py-2">
-        <section className=' border-r pr-4 py-4 w-[360px]'>
+    <main className="w-full flex flex-col sm:flex-col md:flex-row lg:flex-row xl:flex-row gap-5 px-5 py-2">
+        <section className=' border-r pr-2 py-4 w-[352px]'>
            <CitasInfo usuario={params.doctor} />
         </section>
         <section className='w-full h-full py-4'>

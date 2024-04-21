@@ -354,7 +354,7 @@ export default function SolicitarCitasPaciente ({
                   </Link>
               </Button> */}
               <div className='flex gap-3'>
-              <AlertDialogCancel className='bg-gray-500 hover:bg-gray-600 text-white hover:text-white focus:outline-none'>Cerrar</AlertDialogCancel>
+              <AlertDialogCancel className='bg-slate-500 hover:bg-slate-600 text-white hover:text-white focus:outline-none'>Cerrar</AlertDialogCancel>
                 <Button
                 onClick={handleClick}
                 disabled={isPending}
