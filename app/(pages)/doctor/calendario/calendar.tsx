@@ -23,6 +23,7 @@ import { Input } from '@/components/ui/input'
 import 'moment/locale/es'
 import { citaCancel } from '../actions'
 import { toast, ToastContainer } from 'react-toastify'
+import { useRouter } from 'next/navigation'
 moment.locale('es')
 
 const localizer = momentLocalizer(moment)
@@ -31,6 +32,7 @@ const DnDCalendar = withDragAndDrop(Calendar)
 export default function CitasDoctor ({ events, infoMedico }: { events: Events[], infoMedico: InfoMedicoJornada }) {
   const [isOpen, setIsOpen] = React.useState(false)
   const [eventSelected, setEventSelected] = React.useState<Events | null>(null)
+  const router = useRouter()
 
   const now = new Date()
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
@@ -49,13 +51,13 @@ export default function CitasDoctor ({ events, infoMedico }: { events: Events[],
   const eliminarCita = async (cita: string) => {
     const { citasCancel, errorCitasCancel } = await citaCancel(cita)
 
-    if (citasCancel) {
-      toast.success('La cita ha sido cancelada')
-      window.location.reload()
-    }
-
     if (errorCitasCancel) {
       toast.error('Error al cancelar la cita')
+      return
+    }
+    if (citasCancel) {
+      toast.success('La cita ha sido cancelada')
+      router.refresh()
     }
   }
 
