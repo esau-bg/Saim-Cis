@@ -7,14 +7,13 @@ export default async function page () {
 
   if (errorUsuario) {
     return (
-      <div>
+
         <span>Error al obtener los datos del usuario</span>
-      </div>
     )
   }
 
   if (!usuario) {
-    return (<div>Loading...</div>)
+    return (<div>Cargando...</div>)
   }
 
   // obtener citas que tiene asignadas un paciente
@@ -22,7 +21,7 @@ export default async function page () {
 
   if (errorCitasPaciente) return <div>Error</div>
 
-  if (!citasPaciente) return <div>Loading...</div>
+  if (!citasPaciente) return <div>Cargando...</div>
 
   const events = citasPaciente.map((cita) => ({
     id: cita.id,

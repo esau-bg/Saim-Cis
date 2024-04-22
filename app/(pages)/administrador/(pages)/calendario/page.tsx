@@ -14,14 +14,14 @@ export default async function page () {
   }
 
   if (!usuario) {
-    return (<div>Loading...</div>)
+    return (<div>Cargando...</div>)
   }
 
   const { citasPaciente, errorCitasPaciente } = await getCitasByPaciente({ id_paciente: usuario.id })
 
   if (errorCitasPaciente) return <div>Error</div>
 
-  if (!citasPaciente) return <div>Loading...</div>
+  if (!citasPaciente) return <div>Cargando...</div>
 
   const events = citasPaciente.map((cita) => ({
     id: cita.id,

@@ -11,7 +11,7 @@ export default async function CitasPage ({
 
   if (errorCitas) return <div>Error</div>
 
-  if (!citas) return <div>Loading...</div>
+  if (!citas) return <div>Cargando...</div>
 
   const events = citas.map((cita) => ({
     id: cita.id,

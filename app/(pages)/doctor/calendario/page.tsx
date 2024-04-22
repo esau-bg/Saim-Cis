@@ -14,17 +14,17 @@ export default async function page () {
   }
 
   if (!usuario) {
-    return (<div>Loading...</div>)
+    return (<div>Cargando...</div>)
   }
 
   const { citas, errorCitas } = await getCitasByDoctor({ id_doctor: usuario.id })
   const { InfoMedico, errorMedico } = await getInfoDoctor({ id_doctor: usuario.id })
 
   if (errorCitas) return <div>Error</div>
-  if (!citas) return <div>Loading...</div>
+  if (!citas) return <div>Cargando...</div>
 
   if (errorMedico) return <div>Error</div>
-  if (!InfoMedico) return <div>Loading...</div>
+  if (!InfoMedico) return <div>Cargando...</div>
 
   const events = citas.map((cita) => ({
     id: cita.id,
