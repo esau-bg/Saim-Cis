@@ -1,7 +1,15 @@
 // ./src/services/sendMail.js
 import transporter from '@/lib/nodemailer'
 
-export default async function sendEmail ({ subject, html, to }: { subject: string, html: string, to: string }) {
+export default async function sendEmail ({
+  subject,
+  html,
+  to
+}: {
+  subject: string
+  html: string
+  to: string
+}) {
   const mailOptions = {
     from: `SAIM CIS ${process.env.NEXT_PUBLIC_EMAIL}`,
     to, // The person you want your email to be sent

@@ -4,7 +4,13 @@ import { ToastContainer, toast } from 'react-toastify'
 
 type ToastType = 'error' | 'success' | 'info' | 'warning'
 
-export default function ToastClient ({ type, message }: { type: ToastType, message: string }) {
+export default function ToastClient ({
+  type,
+  message
+}: {
+  type: ToastType
+  message: string
+}) {
   if (type === 'error') {
     toast.error(message)
   } else if (type === 'success') {
@@ -19,7 +25,7 @@ export default function ToastClient ({ type, message }: { type: ToastType, messa
   return (
     <main>
       <ToastContainer
-        position="top-right"
+        position='top-right'
         autoClose={3000}
         hideProgressBar
         newestOnTop={false}
@@ -28,7 +34,7 @@ export default function ToastClient ({ type, message }: { type: ToastType, messa
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="light"
+        theme='light'
       />
     </main>
   )

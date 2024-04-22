@@ -9,11 +9,7 @@ import { type NextRequest, NextResponse } from 'next/server'
  * @returns {Promise<NextResponse>}
  */
 export async function POST (request: NextRequest): Promise<NextResponse> {
-  const {
-    email,
-    passwordTemp,
-    nombrePersona
-  } = await request.json()
+  const { email, passwordTemp, nombrePersona } = await request.json()
 
   try {
     const response = await sendMail({
@@ -29,8 +25,14 @@ export async function POST (request: NextRequest): Promise<NextResponse> {
       throw response
     }
 
-    return NextResponse.json({ message: 'Correo enviado con exito' }, { status: 200 })
+    return NextResponse.json(
+      { message: 'Correo enviado con exito' },
+      { status: 200 }
+    )
   } catch (error: any) {
-    return NextResponse.json({ message: 'Something went wrong!', error: error.message }, { status: 503 })
+    return NextResponse.json(
+      { message: 'Something went wrong!', error: error.message },
+      { status: 503 }
+    )
   }
 }
