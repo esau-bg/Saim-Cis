@@ -5,6 +5,7 @@ import moment from 'moment'
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
 import {
   AlertDialog,
+  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -20,7 +21,9 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 
 import 'moment/locale/es'
-import { ToastContainer } from 'react-toastify'
+import { toast, ToastContainer } from 'react-toastify'
+import { citaCancel } from '@/app/(pages)/doctor/actions'
+import { useRouter } from 'next/navigation'
 moment.locale('es')
 
 const localizer = momentLocalizer(moment)
@@ -29,6 +32,7 @@ const DnDCalendar = withDragAndDrop(Calendar)
 export default function VisualizarCitasPaciente ({ events, paciente }: { events: Events[], paciente: UserType }) {
   const [isOpen, setIsOpen] = React.useState(false)
   const [eventSelected, setEventSelected] = React.useState<Events | null>(null)
+  const router = useRouter()
 
   const scrollToTime = new Date(1970, 1, 1, 6)
 
@@ -36,6 +40,19 @@ export default function VisualizarCitasPaciente ({ events, paciente }: { events:
     const offset = date.getTimezoneOffset()
     date = new Date(date.getTime() - offset * 60 * 1000)
     return date.toISOString().slice(0, -1)
+  }
+
+  const eliminarCita = async (cita: string) => {
+    const { citasCancel, errorCitasCancel } = await citaCancel(cita)
+
+    if (errorCitasCancel) {
+      toast.error('Error al cancelar la cita')
+      return
+    }
+    if (citasCancel) {
+      toast.success('La cita ha sido cancelada')
+      router.refresh()
+    }
   }
 
   const [theme] = useState('dark')
@@ -91,7 +108,32 @@ export default function VisualizarCitasPaciente ({ events, paciente }: { events:
               Cita: {eventSelected?.info?.descripcion}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              Información de la cita
+              <div className='flex flex-col gap-3 justify-between'>
+                <div>
+                  <p>Información de la cita</p>
+                </div>
+                <div>
+                  <p>Estado:
+                    <span
+                      className={`capitalize px-2 py-1 rounded-md mx-2
+                          ${
+                            eventSelected?.info?.estado === 'completada'
+                              ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-500'
+                              : eventSelected?.info?.estado === 'pendiente'
+                              ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-500'
+                              : eventSelected?.info?.estado === 'no disponible'
+                              ? 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-500'
+                              : eventSelected?.info?.estado === 'cancelada'
+                              ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-500'
+                              : 'bg-neutral-100 text-neutral-800 dark:bg-neutral-900/30 dark:text-neutral-500'
+                          }
+                        `}
+                        >
+                          {eventSelected?.info?.estado ?? 'No disponible'}
+                    </span>
+                  </p>
+                </div>
+              </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <form className='grid gap-3'>
@@ -224,7 +266,8 @@ export default function VisualizarCitasPaciente ({ events, paciente }: { events:
               <AlertDialogCancel className='bg-gray-500 hover:bg-gray-600 text-white hover:text-white focus:outline-none'>Cerrar</AlertDialogCancel>
               </div>
               <div>
-
+              <AlertDialogAction className='bg-rose-600 hover:bg-rose-800 dark:text-white' onClick={() => { eliminarCita(eventSelected?.id ?? '') }
+                  }>Cancelar cita</AlertDialogAction>
               </div>
             </footer>
           </AlertDialogFooter>
