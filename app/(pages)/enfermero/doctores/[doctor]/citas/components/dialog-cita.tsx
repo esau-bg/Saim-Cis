@@ -1,6 +1,7 @@
 'use client'
 import {
   AlertDialog,
+  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -18,6 +19,8 @@ import * as z from 'zod'
 import { useTransition } from 'react'
 import { Button } from '@/components/ui/button'
 import { toast } from 'react-toastify'
+import { citaCancel } from '@/app/(pages)/doctor/actions'
+import { useRouter } from 'next/navigation'
 
 const validationSchema = z.object({
   fechaInicio: z.date().refine(date => !isNaN(date.getTime()), {
@@ -42,6 +45,7 @@ export default function DialogCita ({
   isOpen: boolean
 }) {
   const [isPending, startTransition] = useTransition()
+  const router = useRouter()
 
   const {
     handleSubmit,
@@ -99,6 +103,19 @@ export default function DialogCita ({
     onSubmit(getValues())
   }
 
+  const eliminarCita = async (cita: string) => {
+    const { citasCancel, errorCitasCancel } = await citaCancel(cita)
+
+    if (errorCitasCancel) {
+      toast.error('Error al cancelar la cita')
+      return
+    }
+    if (citasCancel) {
+      toast.success('La cita ha sido cancelada')
+      router.refresh()
+    }
+  }
+
   return (
     <>
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
@@ -108,7 +125,32 @@ export default function DialogCita ({
             Cita: {eventSelected?.info?.descripcion}
           </AlertDialogTitle>
           <AlertDialogDescription>
-            Información de la cita
+              <div className='flex flex-col gap-3 justify-between'>
+                <div>
+                  <p>Información de la cita</p>
+                </div>
+                <div>
+                  <p>Estado:
+                    <span
+                      className={`capitalize px-2 py-1 rounded-md mx-2
+                          ${
+                            eventSelected?.info?.estado === 'completada'
+                              ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-500'
+                              : eventSelected?.info?.estado === 'pendiente'
+                              ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-500'
+                              : eventSelected?.info?.estado === 'no disponible'
+                              ? 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-500'
+                              : eventSelected?.info?.estado === 'cancelada'
+                              ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-500'
+                              : 'bg-neutral-100 text-neutral-800 dark:bg-neutral-900/30 dark:text-neutral-500'
+                          }
+                        `}
+                        >
+                          {eventSelected?.info?.estado ?? 'No disponible'}
+                    </span>
+                  </p>
+                </div>
+              </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <form className='grid gap-3' onSubmit={handleSubmit(onSubmit)}>
@@ -118,72 +160,39 @@ export default function DialogCita ({
             </div>
             <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
               <div className='grid gap-2'>
-                <Label className='' htmlFor='first-name'>
-                  Nombre Paciente
-                </Label>
-                <Input
-                  placeholder='Nombre'
-                  type='text'
-                  autoCapitalize='none'
-                  autoComplete='first-name'
-                  autoCorrect='off'
-                  autoFocus
-                  defaultValue={
-                    eventSelected?.info?.paciente?.nombre ?? 'No disponible'
-                  }
-                  disabled
-                />
-              </div>
-              <div className='grid gap-2'>
-                <Label className='' htmlFor='family-name'>
-                  Apellido Paciente
-                </Label>
-                <Input
-                  placeholder='Apellidos'
-                  type='text'
-                  autoCapitalize='none'
-                  autoComplete='family-name'
-                  autoCorrect='off'
-                  defaultValue={
-                    eventSelected?.info?.paciente?.apellido ?? 'No disponible'
-                  }
-                  disabled
-                />
-              </div>
-              <div className='grid gap-2'>
-                <Label className='' htmlFor='first-name'>
-                  Nombre Doctor
-                </Label>
-                <Input
-                  placeholder='Nombre'
-                  type='text'
-                  autoCapitalize='none'
-                  autoComplete='first-name'
-                  autoCorrect='off'
-                  autoFocus
-                  defaultValue={
-                    eventSelected?.info?.paciente?.nombre ?? 'No disponible'
-                  }
-                  disabled
-                />
-              </div>
-              <div className='grid gap-2'>
-                <Label className='' htmlFor='first-name'>
-                  Especialidad Doctor
-                </Label>
-                <Input
-                  placeholder='Especialidad'
-                  type='text'
-                  autoCapitalize='none'
-                  autoComplete='first-name'
-                  autoCorrect='off'
-                  autoFocus
-                  defaultValue={
-                    eventSelected?.info?.paciente?.nombre ?? 'No disponible'
-                  }
-                  disabled
-                />
-              </div>
+                  <Label className='' htmlFor='full-name'>
+                    Nombre del paciente
+                  </Label>
+                  <Input
+                    placeholder='Nombre Completo'
+                    type='text'
+                    autoCapitalize='none'
+                    autoComplete='full-name'
+                    autoCorrect='off'
+                    autoFocus
+                    defaultValue={
+                      `${eventSelected?.info?.paciente?.nombre ?? 'No disponible'} ${eventSelected?.info?.paciente?.apellido ?? 'No disponible'}`
+                    }
+                    disabled
+                  />
+                </div>
+                <div className='grid gap-2'>
+                    <Label className='' htmlFor='full-name'>
+                      Nombre del doctor
+                    </Label>
+                    <Input
+                      placeholder='Nombre Completo Doctor'
+                      type='text'
+                      autoCapitalize='none'
+                      autoComplete='full-name'
+                      autoCorrect='off'
+                      autoFocus
+                      defaultValue={
+                        `${eventSelected?.info?.doctor?.nombre ?? 'No disponible'} ${eventSelected?.info?.doctor?.apellido ?? 'No disponible'}`
+                      }
+                      disabled
+                    />
+                </div>
             </div>
             <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
               <div className='grid gap-2'>
@@ -300,6 +309,10 @@ export default function DialogCita ({
                     {isPending ? 'Guardando...' : 'Guardar'}
 
                 </Button>
+                <div>
+              <AlertDialogAction className='bg-rose-600 hover:bg-rose-800 dark:text-white' onClick={() => { eliminarCita(eventSelected?.id ?? '') }
+                  }>Cancelar cita</AlertDialogAction>
+              </div>
             </div>
           </footer>
         </AlertDialogFooter>

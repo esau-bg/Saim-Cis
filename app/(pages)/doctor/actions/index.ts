@@ -7,7 +7,7 @@ export async function getCitasByDoctor ({ id_doctor }: { id_doctor: string }) {
     .from('citas')
     .select('*, doctor:personas!citas_id_doctor_fkey(*), paciente:personas!citas_id_paciente_fkey(*)')
     .eq('id_doctor', id_doctor)
-    .in('estado', ['Pendiente', 'pendiente'])
+    .in('estado', ['completada', 'pendiente'])
     .order('fecha_inicio', { ascending: true })
 
   return { citas, errorCitas }
@@ -28,7 +28,7 @@ export async function getCitasByPaciente ({ id_paciente }: { id_paciente: string
     .from('citas')
     .select('*, paciente:personas!citas_id_paciente_fkey(*), doctor:personas!citas_id_doctor_fkey(*) ')
     .eq('id_paciente', id_paciente)
-    .in('estado', ['Pendiente', 'pendiente'])
+    .in('estado', ['completada', 'pendiente'])
     .order('fecha_inicio', { ascending: true })
 
   return { citasPaciente, errorCitasPaciente }
@@ -61,6 +61,16 @@ export async function citaCancel (id: string) {
     .select()
     .single()
   return { citasCancel, errorCitasCancel }
+}
+
+export async function citaCompleta (id: string) {
+  const { data: citasCompleta, error: errorCitasCompleta } = await supabase
+    .from('citas')
+    .update({ estado: 'completada' })
+    .eq('id', id)
+    .select()
+    .single()
+  return { citasCompleta, errorCitasCompleta }
 }
 
 export async function getCita ({ id_cita }: { id_cita: string }) {
